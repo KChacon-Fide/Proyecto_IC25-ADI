@@ -27,30 +27,32 @@ if (!empty($_POST)) {
     $rol = $_POST['rol'];
     $turno = $_POST['turno'];
     $alert = "";
+
     if (empty($nombre) || empty($correo) || empty($rol) || empty($turno)) {
         $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    Todo los campos son obligatorio
+                    Todos los campos son obligatorios.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
     } else {
         if (empty($id)) {
+            // Registro de un nuevo usuario
             $pass = $_POST['pass'];
             if (empty($pass)) {
                 $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    La contraseña es requerido
+                    La contraseña es requerida.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
             } else {
-                $pass = md5($_POST['pass']);
+                $pass = md5($pass);
                 $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
                 $result = mysqli_fetch_array($query);
                 if ($result > 0) {
                     $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    El correo ya existe
+                    El correo ya existe.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -59,14 +61,14 @@ if (!empty($_POST)) {
                     $query_insert = mysqli_query($conexion, "INSERT INTO usuarios (nombre, correo, rol, pass, turno) VALUES ('$nombre', '$correo', '$rol', '$pass', '$turno')");
                     if ($query_insert) {
                         $alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                    Usuario Registrado
+                    Usuario registrado exitosamente.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
                     } else {
                         $alert = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Error al registrar
+                    Error al registrar el usuario.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -75,17 +77,25 @@ if (!empty($_POST)) {
                 }
             }
         } else {
-            $sql_update = mysqli_query($conexion, "UPDATE usuarios SET nombre = '$nombre', correo = '$correo', rol = '$rol', turno = '$turno' WHERE id = $id");
+            // Actualización de un usuario existente
+            $pass = $_POST['pass'] ?? null;
+            if (!empty($pass)) {
+                $pass = md5($pass);
+                $sql_update = mysqli_query($conexion, "UPDATE usuarios SET nombre = '$nombre', correo = '$correo', rol = '$rol', turno = '$turno', pass = '$pass' WHERE id = $id");
+            } else {
+                $sql_update = mysqli_query($conexion, "UPDATE usuarios SET nombre = '$nombre', correo = '$correo', rol = '$rol', turno = '$turno' WHERE id = $id");
+            }
+
             if ($sql_update) {
                 $alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                    Usuario Modificado
+                    Usuario modificado exitosamente.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>';
             } else {
                 $alert = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Error al modificar
+                    Error al modificar el usuario.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -125,7 +135,7 @@ include "includes/header.php";
                             <option value="2" <?php echo (isset($data['rol']) && $data['rol'] == 2) ? 'selected' : ''; ?>>
                                 Cocinero</option>
                             <option value="3" <?php echo (isset($data['rol']) && $data['rol'] == 3) ? 'selected' : ''; ?>>
-                                Mozo</option>
+                                Mesero</option>
                             <option value="4" <?php echo (isset($data['rol']) && $data['rol'] == 4) ? 'selected' : ''; ?>>
                                 Bartender</option>
                             <option value="5" <?php echo (isset($data['rol']) && $data['rol'] == 5) ? 'selected' : ''; ?>>
@@ -142,6 +152,15 @@ include "includes/header.php";
                         </select>
                     </div>
                 </div>
+                <?php if (empty($data['id'])) { ?>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="pass">Contraseña</label>
+                            <input type="password" class="form-control" placeholder="Ingrese Contraseña" name="pass"
+                                id="pass">
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
             <input type="submit" value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
                 class="btn btn-primary">
@@ -172,7 +191,7 @@ include "includes/header.php";
                     } elseif ($data['rol'] == 2) {
                         $rol = '<span class="badge badge-info">Cocinero</span>';
                     } elseif ($data['rol'] == 3) {
-                        $rol = '<span class="badge badge-warning">Mozo</span>';
+                        $rol = '<span class="badge badge-warning">Mesero</span>';
                     } elseif ($data['rol'] == 4) {
                         $rol = '<span class="badge badge-primary">Bartender</span>';
                     } elseif ($data['rol'] == 5) {

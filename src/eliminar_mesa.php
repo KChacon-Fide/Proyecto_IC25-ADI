@@ -9,7 +9,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         $mesas = $_POST['mesas'];
 
         // Eliminamos la mesa usando la columna "id"
-        $query = mysqli_query($conexion, "DELETE FROM mesas WHERE id = '$id_mesa'");
+        $query = mysqli_query($conexion, "DELETE FROM mesas WHERE id_mesa = '$id_mesa'");
 
         if ($query) {
             // Redireccionamos con los valores de sala y mesas
