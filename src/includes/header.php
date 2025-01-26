@@ -12,7 +12,8 @@ if (empty($_SESSION['active'])) {
     <title>Sistema de restaurante</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
     <!-- IonIcons -->
@@ -48,10 +49,22 @@ if (empty($_SESSION['active'])) {
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="dashboard.php" class="brand-link">
-                <img src="../assets/img/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">  SAN ISIDRO </span>
-            </a>
+            <?php if ($_SESSION['rol'] == 3) {
+                echo '<a href="index.php" class="brand-link">
+                        <img src="../assets/img/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                        style="opacity: .8">
+                        <span class="brand-text font-weight-light"> SAN ISIDRO </span>
+                        </a>';
+            } else {
+                echo '<a href="dashboard.php" class="brand-link">
+                <img src="../assets/img/Logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                    style="opacity: .8">
+                <span class="brand-text font-weight-light"> SAN ISIDRO </span>
+            </a>';
+
+            }
+            ?>
+
 
             <!-- Sidebar -->
             <div class="sidebar">
@@ -61,23 +74,27 @@ if (empty($_SESSION['active'])) {
                         <i class="fas fa-user-circle fa-2x text-info"></i>
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block"><?php echo $_SESSION['nombre']; ?></a>
+                        <a href="mi_perfil.php" class="d-block"><?php echo $_SESSION['nombre']; ?></a>
                     </div>
                 </div>
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                        <li class="nav-item">
+                        <?php if ($_SESSION['rol'] == 1) {
+                            echo '<li class="nav-item">
                             <a href="dashboard.php" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Dashboard
                                 </p>
                             </a>
-                        </li>
+                        </li>';
+                        } ?>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-pizza-slice"></i>
@@ -94,7 +111,8 @@ if (empty($_SESSION['active'])) {
                                             <p>Nueva venta</p>
                                         </a>
                                     </li>';
-                                } if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
+                                }
+                                if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                     echo '<li class="nav-item">
                                         <a href="lista_ventas.php" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
@@ -115,7 +133,8 @@ if (empty($_SESSION['active'])) {
                                     </p>
                                 </a>
                             </li>';
-                        } if ($_SESSION['rol'] == 1) {
+                        }
+                        if ($_SESSION['rol'] == 1) {
                             echo '<li class="nav-item">
                                 <a href="salas.php" class="nav-link">
                                     <i class="nav-icon fas fa-door-open"></i>

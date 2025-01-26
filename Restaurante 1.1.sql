@@ -142,7 +142,7 @@ INSERT INTO `platos` (`id`, `nombre`, `precio`, `imagen`, `fecha`, `estado`) VAL
 --
 
 CREATE TABLE `salas` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `nombre` varchar(100) NOT NULL,
   `mesas` int(11) NOT NULL,
   `estado` int(11) NOT NULL DEFAULT 1
@@ -166,6 +166,8 @@ CREATE TABLE mesas (
     capacidad INT NOT NULL,
     estado VARCHAR(50) DEFAULT 'DISPONIBLE',
     FOREIGN KEY (id_sala) REFERENCES salas(id) ON DELETE CASCADE);
+  
+
 
 SELECT * FROM MESAS;
 UPDATE mesas SET estado = 'DESACTIVADA' WHERE estado IS NULL;
