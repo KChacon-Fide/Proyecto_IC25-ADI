@@ -1,8 +1,14 @@
 <?php
 session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
-    $id = $_GET['id_sala'];
-    $mesas = $_GET['mesas'];
+    if (isset($_GET['id_sala']) && isset($_GET['mesas'])) {
+        $id = $_GET['id_sala'];
+        $mesas = $_GET['mesas'];
+    } else {
+        // Si no existen los parámetros, redirigir o mostrar un mensaje de error
+        echo "Faltan parámetros en la URL.";
+        exit;
+    }
     include_once "includes/header.php";
     ?>
     <div class="card">
@@ -42,6 +48,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         <select name="estado" id="estado" class="form-control">
                                             <option value="DISPONIBLE">Disponible</option>
                                             <option value="OCUPADA">Ocupada</option>
+                                            <option value="RESERVADA">Reservado</option>
                                         </select>
                                     </div>
                                 </div>
@@ -68,10 +75,20 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                         ?>
                         <div class="col-md-3">
                             <div class="card card-widget widget-user">
-                                <div class="widget-user-header bg-<?php echo $isPendiente ? 'danger' : 'success'; ?>">
-                                    <h3 class="widget-user-username">MESA <?php echo $data['num_mesa']; ?></h3>
-                                    <h5 class="widget-user-desc">Capacidad: <?php echo $data['capacidad']; ?></h5>
-                                </div>
+                            <div class="widget-user-header bg-<?php 
+                                if ($data['estado'] == 'RESERVADA' && $isPendiente) {
+                                    echo 'danger'; // Rojo para 'RESERVADO' con pedido pendiente
+                                } elseif ($data['estado'] == 'RESERVADA') {
+                                    echo 'warning'; // Amarillo para 'RESERVADO' sin pedido pendiente
+                                } elseif ($isPendiente) {
+                                    echo 'danger'; // Rojo para 'PENDIENTE' sin estar reservado
+                                } else {
+                                    echo 'success'; // Verde para 'DISPONIBLE'
+                                }
+                            ?>">
+                                <h3 class="widget-user-username">MESA <?php echo $data['num_mesa']; ?></h3>
+                                <h5 class="widget-user-desc">Capacidad: <?php echo $data['capacidad']; ?></h5>
+                            </div>
                                 <div class="widget-user-image">
                                     <img class="img-circle elevation-2" src="../assets/img/mesa.jpg" alt="User Avatar">
                                 </div>
@@ -85,6 +102,12 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                             echo '<a class="btn btn-outline-success mb-2" href="finalizar.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '">Finalizar</a>';
                                         }
                                         ?>
+                                        <!-- Botón para abrir el modal, pasamos el id de la mesa -->
+                                        <a class="btn btn-outline-info mb-2" href="#" data-toggle="modal" data-target="#cambiarMesaModal" onclick="setMesaId(<?php echo $data['id_mesa']; ?>)">
+                                            Cambio Mesa
+                                        </a>
+
+                                       
                                         <!-- Botones de editar y eliminar solo visibles para Administradores -->
                                         <?php if ($_SESSION['rol'] == 1) { ?>
                                             <div class="d-flex justify-content-center">
@@ -111,6 +134,42 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             </div>
         </div>
     </div>
+       <!-- Modal -->
+    <div class="modal fade" id="cambiarMesaModal" tabindex="-1" role="dialog" aria-labelledby="cambiarMesaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cambiarMesaModalLabel">Cambiar Mesa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="cambiar_mesa.php" method="POST">
+                <div class="modal-body">
+                <!-- Campo oculto para pasar el id de la mesa -->
+                <input type="hidden" id="id_mesa_antigua" name="id_mesa_antigua">
+
+                <label for="nueva_mesa">Selecciona la nueva mesa:</label>
+                <select class="form-control" id="nueva_mesa" name="nueva_mesa">
+                    <!-- Suponiendo que tienes una lista de mesas disponibles -->
+                    <?php
+                    // Obtener todas las mesas disponibles
+                    $query = "SELECT * FROM mesas WHERE estado = 'disponible'";
+                    $result = mysqli_query($conexion, $query);
+                    while ($row = mysqli_fetch_assoc($result)) {
+                    echo '<option value="' . $row['id_mesa'] . '">Mesa ' . $row['num_mesa'] . '</option>';
+                    }
+                    ?>
+                </select>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar Cambio</button>
+                </div>
+            </form>
+            </div>
+        </div>
+        </div>
 
     <!-- Modal para agregar mesas (solo para Administradores) -->
     <?php if ($_SESSION['rol'] == 1) { ?>
@@ -151,6 +210,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             document.getElementById('id_mesa').value = idMesa;
             document.getElementById('capacidad').value = capacidad;
             document.getElementById('estado').value = estado;
+        }
+        function setMesaId(mesaId) {
+            // Asignar el id de la mesa seleccionada al campo oculto
+            document.getElementById('id_mesa_antigua').value = mesaId;
         }
     </script>
     <?php
