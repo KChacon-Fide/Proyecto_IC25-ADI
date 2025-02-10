@@ -175,6 +175,31 @@ UPDATE mesas SET estado = 'DESACTIVADA' WHERE estado IS NULL;
 ALTER TABLE mesas MODIFY COLUMN estado ENUM('DISPONIBLE', 'OCUPADA', 'DESACTIVADA') DEFAULT 'DISPONIBLE';
 
 -- --------------------------------------------------------
+--
+-- Estructura de tabla para la tabla `ordenes_listas`
+--
+CREATE TABLE ordenes_listas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    num_mesa INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    cantidad INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+
+CREATE TABLE `bebidas` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(200) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `imagen` varchar(100) DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+ALTER TABLE bebidas MODIFY id INT(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `bebidas`
+  ADD PRIMARY KEY (`id`);
+-- --------------------------------------------------------
+
 
 --
 -- Estructura de tabla para la tabla `temp_pedidos`
