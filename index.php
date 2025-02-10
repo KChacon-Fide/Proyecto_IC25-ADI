@@ -16,7 +16,7 @@ if (!empty($_SESSION['active'])) {
       require_once "conexion.php";
       $user = mysqli_real_escape_string($conexion, $_POST['correo']);
       $pass = md5(mysqli_real_escape_string($conexion, $_POST['pass']));
-      $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$user' AND pass = '$pass' AND estado = 1"); // Aseguramos que el estado sea 1
+      $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$user' AND pass = '$pass' AND estado = 1");
       mysqli_close($conexion);
       $resultado = mysqli_num_rows($query);
       if ($resultado > 0) {
@@ -62,6 +62,7 @@ if (!empty($_SESSION['active'])) {
   <link rel="stylesheet" href="assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="assets/dist/css/adminlte.min.css">
+  <link rel="icon" href="./assets/img/logo.png" type="image/png">
 </head>
 
 <body class="hold-transition login-page">

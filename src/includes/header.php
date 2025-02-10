@@ -99,7 +99,7 @@ if (empty($_SESSION['active'])) {
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-pizza-slice"></i>
                                 <p>
-                                    Ventas
+                                    Ordenar
                                     <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
@@ -108,7 +108,7 @@ if (empty($_SESSION['active'])) {
                                     echo '<li class="nav-item">
                                         <a href="index.php" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Nueva venta</p>
+                                            <p>Nueva Orden</p>
                                         </a>
                                     </li>';
                                 }
@@ -116,7 +116,7 @@ if (empty($_SESSION['active'])) {
                                     echo '<li class="nav-item">
                                         <a href="lista_ventas.php" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Historial ventas</p>
+                                            <p>Historial Ordenes</p>
                                         </a>
                                     </li>';
                                 } ?>
@@ -167,6 +167,30 @@ if (empty($_SESSION['active'])) {
                                 </ul>
                             </li>';
                         } ?>
+                        <li class="nav-item">
+                            <a href="cocina.php" class="nav-link">
+                                <i class="nav-icon fas fa-utensils"></i>
+                                <p>Pedidos Cocina</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="ordenes_listas.php" class="nav-link">
+                                <i class="nav-icon fas fa-check-circle"></i>
+                                <p>Ordenes Listas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="bebidas.php" class="nav-link">
+                                <i class="nav-icon fas fa-wine-glass"></i>
+                                <p>Bebidas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="bar.php" class="nav-link">
+                                <i class="nav-icon fas fa-cocktail"></i>
+                                <p>Pedidos Bar</p>
+                            </a>
+                        </li>
 
 
 
