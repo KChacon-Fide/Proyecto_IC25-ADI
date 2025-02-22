@@ -4,7 +4,7 @@ session_start();
 if (isset($_GET['detalle'])) {
     $id = $_SESSION['idUser'];
     $datos = array();
-    $detalle = mysqli_query($conexion, "SELECT d.*, p.nombre, p.precio, p.imagen FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.id_usuario = $id");
+    $detalle = mysqli_query($conexion, "SELECT d.*, p.nombre, p.precio, p.imagen FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.id_usuario = $id AND d.tipo = 1");
     while ($row = mysqli_fetch_assoc($detalle)) {
         $data['id'] = $row['id'];
         $data['nombre'] = $row['nombre'];
@@ -12,8 +12,23 @@ if (isset($_GET['detalle'])) {
         $data['precio'] = $row['precio'];
         $data['imagen'] = ($row['imagen'] == null) ? '../assets/img/default.png' : $row['imagen'];
         $data['total'] = $data['precio'] * $data['cantidad'];
+        $data['tipo'] = 1;
         array_push($datos, $data);
     }
+
+    $detalle = mysqli_query($conexion, "SELECT d.*, b.nombre, b.precio, b.imagen FROM temp_pedidos d INNER JOIN bebidas b ON d.id_producto = b.id WHERE d.id_usuario = $id AND d.tipo = 2");
+    while ($row = mysqli_fetch_assoc($detalle)) {
+        $data['id'] = $row['id'];
+        $data['nombre'] = $row['nombre'];
+        $data['cantidad'] = $row['cantidad'];
+        $data['precio'] = $row['precio'];
+        $data['imagen'] = ($row['imagen'] == null) ? '../assets/img/default.png' : $row['imagen'];
+        $data['total'] = $data['precio'] * $data['cantidad'];
+        $data['tipo'] = 2;
+        array_push($datos, $data);
+    }
+
+
     echo json_encode($datos);
     die();
 } else if (isset($_GET['delete_detalle'])) {
@@ -42,7 +57,8 @@ if (isset($_GET['detalle'])) {
     $id_user = $_SESSION['idUser'];
     $mesa = $_GET['mesa'];
     $observacion = $_GET['observacion'];
-    $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.id_usuario = $id_user");
+    $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.tipo = 1 AND d.id_usuario = $id_user 
+                                            UNION ALL SELECT d.*, b.nombre FROM temp_pedidos d INNER JOIN bebidas b ON d.id_producto = b.id WHERE d.tipo = 2 AND d.id_usuario = $id_user ");
     $total = 0;
     while ($row = mysqli_fetch_assoc($consulta)) {
         $total += $row['cantidad'] * $row['precio'];
@@ -51,12 +67,14 @@ if (isset($_GET['detalle'])) {
     $id_pedido = mysqli_insert_id($conexion);
     if ($insertar == 1) {
         //$insertarDet = 0;
-        $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.id_usuario = $id_user");
+        $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.tipo = 1 AND d.id_usuario = $id_user 
+                                            UNION ALL SELECT d.*, b.nombre FROM temp_pedidos d INNER JOIN bebidas b ON d.id_producto = b.id WHERE d.tipo = 2 AND d.id_usuario = $id_user ");
         while ($dato = mysqli_fetch_assoc($consulta)) {
             $nombre = $dato['nombre'];
             $cantidad = $dato['cantidad'];
             $precio = $dato['precio'];
-            $insertarDet = mysqli_query($conexion, "INSERT INTO detalle_pedidos (nombre, precio, cantidad, id_pedido) VALUES ('$nombre', '$precio', $cantidad, $id_pedido)");
+            $tipo = $dato['tipo'];
+            $insertarDet = mysqli_query($conexion, "INSERT INTO detalle_pedidos (nombre, precio, cantidad, id_pedido, tipo) VALUES ('$nombre', '$precio', $cantidad, $id_pedido, $tipo)");
         }
         if ($insertarDet > 0) {
             $eliminar = mysqli_query($conexion, "DELETE FROM temp_pedidos WHERE id_usuario = $id_user");
@@ -101,16 +119,39 @@ if (isset($_GET['detalle'])) {
 if (isset($_POST['regDetalle'])) {
     $id_producto = $_POST['id'];
     $id_user = $_SESSION['idUser'];
-    $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user");
+    $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 1");
     $row = mysqli_fetch_assoc($consulta);
     if (empty($row)) {
         $producto = mysqli_query($conexion, "SELECT * FROM platos WHERE id = $id_producto");
         $result = mysqli_fetch_assoc($producto);
         $precio = $result['precio'];
-        $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario) VALUES (1, $precio, $id_producto, $id_user)");
+        $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario, tipo) VALUES (1, $precio, $id_producto, $id_user, 1)");
     } else {
         $nueva = $row['cantidad'] + 1;
-        $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user");
+        $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 1");
+    }
+    if ($query) {
+        $msg = "registrado";
+    } else {
+        $msg = "Error al ingresar";
+    }
+    echo json_encode($msg);
+    die();
+}
+
+if (isset($_POST['regDetalleBebida'])) {
+    $id_producto = $_POST['id'];
+    $id_user = $_SESSION['idUser'];
+    $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2");
+    $row = mysqli_fetch_assoc($consulta);
+    if (empty($row)) {
+        $producto = mysqli_query($conexion, "SELECT * FROM bebidas WHERE id = $id_producto");
+        $result = mysqli_fetch_assoc($producto);
+        $precio = $result['precio'];
+        $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario, tipo) VALUES (1, $precio, $id_producto, $id_user, 2)");
+    } else {
+        $nueva = $row['cantidad'] + 1;
+        $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2");
     }
     if ($query) {
         $msg = "registrado";

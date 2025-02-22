@@ -29,7 +29,7 @@ if (empty($_SESSION['active'])) {
         <div class="content-wrapper">
             <section class="content">
                 <h2 class="text-center">Órdenes de Bar Pendientes</h2>
-                <div id="pedidos-bar-container">
+                <div id="pedidos-container">
                     <!-- Aquí se insertarán las órdenes dinámicamente -->
                 </div>
             </section>

@@ -15,30 +15,20 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 // Validar que se recibe un ID válido
 
-if (!isset($data['tipo'])) {
-    echo json_encode(["success" => false, "message" => "Tipo de pedido no proporcionado."]);
-    exit;
-}
 
-$tipo = intval($data['tipo']);
-
-if (isset($data['misPedidos'])) {
-    $misPedidos = $data['misPedidos'];
-    $idusuario = 4;
-} else {
-    $misPedidos = false;
-    $idusuario = '';
-}
-
-$query = "SELECT p.id, p.num_mesa, p.fecha, p.observacion
+if (isset($_SESSION['rol']) && $_SESSION['rol' == 1]) {
+    $query = "SELECT p.id, p.num_mesa, p.fecha, p.observacion
           FROM pedidos p 
           WHERE p.estado = 'PENDIENTE' AND p.id in ( 
-          select d.id_pedido from detalle_pedidos d where  d.tipo = " . $tipo . ")";
+          select d.id_pedido from detalle_pedidos d where p.idPedido = d.id";
+} else {
+    $idusuario = 4;
+    $query = "SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE'AND p.id_usuario = " . $idusuario ." AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  p.idPedido = d.id)";
+}
 
-
-// if ($tipo == 1 || $tipo == 2) {
-//     $query += ' AND tipo = ' . $tipo;
-// }
 if ($misPedidos == true && $idusuario != '') {
     $query += ' AND p.id_usuario = ' . $idusuario;
 }
@@ -54,7 +44,8 @@ echo json_encode($pedidos);
 
 
 
-function escribirEnArchivo($contenido) {
+function escribirEnArchivo($contenido)
+{
     $nombreArchivo = "./log.txt";
     // Abre el archivo en modo de escritura. Si el archivo no existe, lo crea.
     // 'a' significa "append", lo que agrega el contenido al final del archivo si ya existe.

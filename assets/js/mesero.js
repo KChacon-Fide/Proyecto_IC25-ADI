@@ -3,18 +3,17 @@ document.addEventListener("DOMContentLoaded", function () {
   cargarPedidos();
 
   // Refrescar la lista de pedidos cada 5 segundos para actualizar en tiempo real
-
   setInterval(cargarPedidos, 5000);
 });
 
 // Función para obtener los pedidos pendientes desde la API
 function cargarPedidos() {
-  fetch("api/obtener_pedidos.php", {
+  fetch("api/obtener_pedidos_mesero.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tipo: 1 }),
+    body: JSON.stringify({ tipo: 0, misPedidos: false }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -53,7 +52,7 @@ function cargarPedidos() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: pedido.id, tipo: 1 }),
+          body: JSON.stringify({ id: pedido.id, tipo: 0 }),
         })
           .then((response2) => {
             if (!response2.ok) {
@@ -65,22 +64,16 @@ function cargarPedidos() {
             console.log("Detalle de pedidos recibidos:", data2);
             data2.forEach((DetallePedido) => {
               infoPedido += ` <p><strong>${DetallePedido.cantidad}: </strong> ${DetallePedido.nombre} <strong>[${DetallePedido.estado}]</strong> 
-              <button class="btn btn-danger cambiarEstadoPendiente" type="button" data-id="${DetallePedido.id}">Pendiente</button>
-              <button class="btn btn-warning cambiarEstadoEnPreparacion" type="button" data-id="${DetallePedido.id}">En Preparacion</button>
-              <button class="btn btn-success cambiarEstadoListo" type="button" data-id="${DetallePedido.id}">Listo</button>
-              </p><p></p>`;
+                          <button class="btn btn-warning cambiarEstadoListo" type="button" data-id="${DetallePedido.id}">Listo para servir</button>
+                          <button class="btn btn-success cambiarEstadoServido" type="button" data-id="${DetallePedido.id}">Servido</button>
+                          </p><p></p>`;
             });
             infoPedido += ` </div><div class="card-body"><p><strong>Observacion: </strong> ${pedido.observacion}</p></div>`;
             card.innerHTML = infoPedido;
             contenedor.appendChild(card);
-
-            $(".cambiarEstadoPendiente").click(function () {
+            $(".cambiarEstadoServido").click(function () {
               let id = $(this).data("id");
-              cambioEstadoPlato(id, "PENDIENTE");
-            });
-            $(".cambiarEstadoEnPreparacion").click(function () {
-              let id = $(this).data("id");
-              cambioEstadoPlato(id, "EN PREPARACION");
+              cambioEstadoPlato(id, "SERVIDO");
             });
             $(".cambiarEstadoListo").click(function () {
               let id = $(this).data("id");
@@ -93,7 +86,6 @@ function cargarPedidos() {
 }
 
 function cambioEstadoPlato(id, estado) {
-
   fetch("api/cambiar_estado_plato.php", {
     method: "POST",
     headers: {
@@ -111,11 +103,11 @@ function cambioEstadoPlato(id, estado) {
       if (data == "ok") {
         location.reload();
         //Swal.fire({
-         // position: "top-end",
-          // icon: "succes",
-          // title: "Cambio exitoso el estado",
-          // showConfirmButton: false,
-          // timer: 2000,
+        // position: "top-end",
+        // icon: "succes",
+        // title: "Cambio exitoso el estado",
+        // showConfirmButton: false,
+        // timer: 2000,
         // });
       } else {
         // Swal.fire({
@@ -128,7 +120,6 @@ function cambioEstadoPlato(id, estado) {
       }
     });
 }
-
 
 // Función para mover un pedido a órdenes listas cuando el cocinero finaliza su preparación
 function moverPedido(id, header) {

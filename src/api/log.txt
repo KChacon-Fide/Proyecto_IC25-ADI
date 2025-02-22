@@ -1,0 +1,60 @@
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 0)
+SELECT p.id, p.num_mesa, p.fecha, p.observacion
+          FROM pedidos p 
+          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
+          select d.id_pedido from detalle_pedidos d where  d.tipo = 1)

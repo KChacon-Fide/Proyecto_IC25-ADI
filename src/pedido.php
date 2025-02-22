@@ -65,7 +65,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         </div>
 
                                         <div class="mt-4">
-                                            <a class="btn btn-primary btn-block btn-flat addDetalle" href="#"
+                                            <a class="btn btn-primary btn-block btn-flat addDetalleBebida" href="#"
                                                 data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
                                                 <i class="fas fa-cart-plus mr-2"></i> Agregar
                                             </a>

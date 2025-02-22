@@ -68,23 +68,32 @@ CREATE TABLE `detalle_pedidos` (
   `nombre` varchar(200) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `id_pedido` int(11) NOT NULL
+  `id_pedido` int(11) NOT NULL,
+  `estado` enum('PENDIENTE', 'EN PREPARACION','LISTO PARA SERVIR', 'SERVIDO') NOT NULL DEFAULT 'PENDIENTE',
+  `tipo` varchar(200) NOT NULL COMMENT '1 plato, 2 bebida';
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
---
--- Volcado de datos para la tabla `detalle_pedidos`
---
 
-INSERT INTO `detalle_pedidos` (`id`, `nombre`, `precio`, `cantidad`, `id_pedido`) VALUES
-(1, 'AJI DE GALLINA', '10.00', 1, 1),
-(2, 'CEBICHE', '25.00', 1, 1),
-(3, 'ARROZ CON POLLO', '8.00', 3, 1),
-(4, 'CEBICHE', '25.00', 1, 2),
-(5, 'ARROZ CON POLLO', '8.00', 1, 2),
-(6, 'AJI DE GALLINA', '10.00', 1, 3),
-(7, 'CEBICHE', '25.00', 1, 4);
+-- Indices de la tabla `detalle_pedidos`
+--
+ALTER TABLE `detalle_pedidos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_pedido` (`id_pedido`);
 
+--
+-- AUTO_INCREMENT de la tabla `detalle_pedidos`
+--
+ALTER TABLE `detalle_pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+--
+-- Filtros para la tabla `detalle_pedidos`
+--
+ALTER TABLE `detalle_pedidos`
+  ADD CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`);
 -- --------------------------------------------------------
+
 
 --
 -- Estructura de tabla para la tabla `pedidos`
@@ -101,15 +110,17 @@ CREATE TABLE `pedidos` (
   `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
---
--- Volcado de datos para la tabla `pedidos`
---
 
-INSERT INTO `pedidos` (`id`, `id_sala`, `num_mesa`, `fecha`, `total`, `observacion`, `estado`, `id_usuario`) VALUES
-(1, 1, 1, '2023-05-25 20:03:27', '59.00', '', 'FINALIZADO', 1),
-(2, 3, 3, '2023-05-25 20:03:43', '33.00', '', 'FINALIZADO', 1),
-(3, 3, 5, '2023-05-25 20:04:17', '10.00', '', 'FINALIZADO', 1),
-(4, 2, 10, '2023-05-25 20:03:11', '25.00', '', 'PENDIENTE', 1);
+-- Indices de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_sala` (`id_sala`);
+
+-- AUTO_INCREMENT de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 -- --------------------------------------------------------
 
@@ -198,6 +209,12 @@ ALTER TABLE bebidas MODIFY id INT(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `bebidas`
   ADD PRIMARY KEY (`id`);
+
+  INSERT INTO `bebidas` (`id`, `nombre`, `precio`, `fecha`, `imagen`) VALUES
+(1, 'AguaL', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/20250220071401.jpg'),
+(2, 'Coca', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/20250210041557.jpg'),
+(3, 'Pepsi', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/Pepsi.jpg');
+
 -- --------------------------------------------------------
 
 
@@ -210,8 +227,27 @@ CREATE TABLE `temp_pedidos` (
   `cantidad` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `id_producto` int(11) NOT NULL,
-  `id_usuario` int(11) NOT NULL
+  `id_usuario` int(11) NOT NULL,
+  `tipo` int(11) NOT NULL COMMENT '1 plato, 2 bebida'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
+-- Indices de la tabla `temp_pedidos`
+--
+ALTER TABLE `temp_pedidos`
+  ADD PRIMARY KEY (`id`);
+
+
+
+
+-- AUTO_INCREMENT de la tabla `temp_pedidos`
+--
+ALTER TABLE `temp_pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+
+
 
 -- --------------------------------------------------------
 
@@ -227,6 +263,19 @@ CREATE TABLE `usuarios` (
   `rol` int(11) NOT NULL,
   `estado` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`);
+
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+
+
 
 --
 -- Volcado de datos para la tabla `usuarios`
@@ -251,18 +300,8 @@ ALTER TABLE `config`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `detalle_pedidos`
---
-ALTER TABLE `detalle_pedidos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_pedido` (`id_pedido`);
 
 --
--- Indices de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_sala` (`id_sala`);
 
 --
 -- Indices de la tabla `platos`
@@ -276,19 +315,9 @@ ALTER TABLE `platos`
 ALTER TABLE `salas`
   ADD PRIMARY KEY (`id`);
 
---
--- Indices de la tabla `temp_pedidos`
---
-ALTER TABLE `temp_pedidos`
-  ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
 
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -297,18 +326,6 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `config`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `detalle_pedidos`
---
-ALTER TABLE `detalle_pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `pedidos`
---
-ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `platos`
@@ -323,26 +340,10 @@ ALTER TABLE `salas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `temp_pedidos`
---
-ALTER TABLE `temp_pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `detalle_pedidos`
---
-ALTER TABLE `detalle_pedidos`
-  ADD CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`);
 
 --
 -- Filtros para la tabla `pedidos`

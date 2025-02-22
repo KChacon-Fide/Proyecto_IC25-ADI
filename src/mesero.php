@@ -10,7 +10,7 @@ if (empty($_SESSION['active'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Cocina</title>
+    <title>Panel de Mesero</title>
     <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../assets/dist/css/Cocina.css"> 
@@ -28,7 +28,7 @@ if (empty($_SESSION['active'])) {
     <div class="wrapper">
         <div class="content-wrapper">
             <section class="content">
-                <h2 class="text-center">Órdenes Pendientes Cocina</h2>
+                <h2 class="text-center">Órdenes Pendientes Mesero</h2>
                 <div id="pedidos-container">
                     <!-- Aquí se insertarán las órdenes dinámicamente -->
                 </div>
@@ -39,6 +39,6 @@ if (empty($_SESSION['active'])) {
     <script src="../assets/plugins/jquery/jquery.min.js"></script>
     <script src="../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/dist/js/adminlte.min.js"></script>
-    <script src="../assets/js/cocina.js"></script>  
+    <script src="../assets/js/mesero.js"></script>  
 </body>
 </html>

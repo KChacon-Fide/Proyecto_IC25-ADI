@@ -21,9 +21,14 @@ if (empty($_SESSION['active'])) {
     <!-- Theme style -->
     <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+
+
+
+    
 </head>
 
 <body class="hold-transition sidebar-mini">
+<script src="../assets/js/sweetalert2.all.min.js"></script>
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -166,13 +171,7 @@ if (empty($_SESSION['active'])) {
                                     </li>
                                 </ul>
                             </li>';
-                        } ?>
-                        <li class="nav-item">
-                            <a href="cocina.php" class="nav-link">
-                                <i class="nav-icon fas fa-utensils"></i>
-                                <p>Pedidos Cocina</p>
-                            </a>
-                        </li>
+                        } ?>                    
                         <li class="nav-item">
                             <a href="ordenes_listas.php" class="nav-link">
                                 <i class="nav-icon fas fa-check-circle"></i>
@@ -186,13 +185,23 @@ if (empty($_SESSION['active'])) {
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="cocina.php" class="nav-link">
+                                <i class="nav-icon fas fa-utensils"></i>
+                                <p>Pedidos Cocina</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="bar.php" class="nav-link">
                                 <i class="nav-icon fas fa-cocktail"></i>
                                 <p>Pedidos Bar</p>
                             </a>
                         </li>
-
-
+                        <li class="nav-item">
+                            <a href="mesero.php" class="nav-link">
+                                <i class="nav-icon fas fa-cocktail"></i>
+                                <p>Pedidos Mesero</p>
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a href="salir.php" class="nav-link">
