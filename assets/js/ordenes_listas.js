@@ -24,6 +24,12 @@ function cargarOrdenesListas() {
             data.forEach(orden => {
                 let card = document.createElement("div");
                 card.classList.add("pedido-card");
+                card.setAttribute("id", `orden-${orden.id}`);  // Agregar ID a la tarjeta
+
+                // Formatear la fecha
+                let fecha = new Date(orden.fecha);
+                let opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                let fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
 
                 card.innerHTML = `
                     <div class="card">
@@ -33,7 +39,7 @@ function cargarOrdenesListas() {
                         <div class="card-body">
                             <p><strong>Plato:</strong> ${orden.nombre}</p>
                             <p><strong>Cantidad:</strong> ${orden.cantidad}</p>
-                            <p><strong>Hora de pedido:</strong> ${orden.fecha}</p>
+                            <p><strong>Hora de pedido:</strong> ${fechaFormateada}</p>
                         </div>
                     </div>
                 `;
@@ -43,3 +49,4 @@ function cargarOrdenesListas() {
         })
         .catch(error => console.error("Error al cargar órdenes listas:", error));
 }
+

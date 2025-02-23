@@ -92,8 +92,7 @@ function cargarPedidos() {
     .catch((error) => console.error("Error al cargar pedidos:", error));
 }
 
-function cambioEstadoPlato(id, estado) {
-
+function cambioEstadoPlato(id, estado, num_mesa, nombre, cantidad) {
   fetch("api/cambiar_estado_plato.php", {
     method: "POST",
     headers: {
@@ -101,32 +100,40 @@ function cambioEstadoPlato(id, estado) {
     },
     body: JSON.stringify({ id: id, estado: estado }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la respuesta del servidor.");
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
       if (data == "ok") {
-        location.reload();
-        //Swal.fire({
-         // position: "top-end",
-          // icon: "succes",
-          // title: "Cambio exitoso el estado",
-          // showConfirmButton: false,
-          // timer: 2000,
-        // });
+        if (estado === "LISTO PARA SERVIR") {
+          insertarEnOrdenesListas(num_mesa, nombre, cantidad, fecha);
+        } else {
+          location.reload();
+        }
       } else {
-        // Swal.fire({
-        //   position: "top-end",
-        //   icon: "error",
-        //   title: "Error al cambiar el estado",
-        //   showConfirmButton: false,
-        //   timer: 2000,
-        // });
+        console.error("Error al cambiar el estado");
       }
-    });
+    })
+    .catch((error) => console.error("Error en la solicitud:", error));
+}
+
+// Función para insertar en la tabla 'ordenes_listas'
+function insertarEnOrdenesListas(num_mesa, nombre, cantidad) {
+  fetch("api/insertar_orden.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ num_mesa, nombre, cantidad}),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log("Pedido insertado en órdenes listas.");
+        location.reload();
+      } else {
+        console.error("Error al insertar en órdenes listas:", data.message);
+      }
+    })
+    .catch((error) => console.error("Error en la solicitud:", error));
 }
 
 

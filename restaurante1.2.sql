@@ -1,0 +1,138 @@
+/*create database restaurante;*/
+
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `telefono` varchar(11) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `direccion` text NOT NULL,
+  `mensaje` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_sala` int(11) NOT NULL,
+  `num_mesa` int(11) NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `total` decimal(10,2) NOT NULL,
+  `observacion` text DEFAULT NULL,
+  `estado` enum('PENDIENTE','FINALIZADO') NOT NULL DEFAULT 'PENDIENTE',
+  `id_usuario` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_sala` (`id_sala`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `detalle_pedidos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(200) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `id_pedido` int(11) NOT NULL,
+  `estado` enum('PENDIENTE', 'EN PREPARACION','LISTO PARA SERVIR', 'SERVIDO') NOT NULL DEFAULT 'PENDIENTE',
+  `tipo` varchar(200) NOT NULL COMMENT '1 plato, 2 bebida',
+  PRIMARY KEY (`id`),
+  KEY `id_pedido` (`id_pedido`),
+  CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+
+
+CREATE TABLE `platos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(200) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `imagen` varchar(100) DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `salas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `mesas` int(11) NOT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `mesas` (
+  `id_mesa` INT AUTO_INCREMENT PRIMARY KEY,
+  `id_sala` INT NOT NULL,
+  `num_mesa` INT NOT NULL,
+  `capacidad` INT NOT NULL,
+  `estado` ENUM('DISPONIBLE', 'OCUPADA', 'DESACTIVADA') DEFAULT 'DISPONIBLE',
+  FOREIGN KEY (`id_sala`) REFERENCES `salas`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+drop table ordenes_listas;
+
+CREATE TABLE `ordenes_listas` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `num_mesa` INT ,
+  `nombre` VARCHAR(255) ,
+  `cantidad` INT ,
+  `fecha` datetime
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `bebidas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(200) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `imagen` varchar(100) DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE `temp_pedidos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cantidad` int(11) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `tipo` int(11) NOT NULL COMMENT '1 plato, 2 bebida',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(200) NOT NULL,
+  `correo` varchar(200) NOT NULL,
+  `pass` varchar(50) NOT NULL,
+  `rol` int(11) NOT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+INSERT INTO `config` (`id`, `nombre`, `telefono`, `email`, `direccion`, `mensaje`) VALUES
+(1, 'Restaurante San Isidro', '89377531', 'mespinozacam@yahoo.es', 'Puriscal - San José', '¡Realizado con Exito!');
+
+INSERT INTO `platos` (`id`, `nombre`, `precio`, `imagen`, `fecha`, `estado`) VALUES
+(1, 'AJI DE GALLINA', '10.00', '', NULL, 1),
+(2, 'CEVICHE', '25.00', '', NULL, 1),
+(3, 'ARROZ CON POLLO', '8.00', '', NULL, 1);
+
+INSERT INTO `salas` (`id`, `nombre`, `mesas`, `estado`) VALUES
+(1, 'ENTRADA PRINCIPAL', 5, 1),
+(2, 'SEGUNDO PISO', 10, 1),
+(3, 'FRENTE COCINA', 8, 1);
+
+  INSERT INTO `bebidas` (`id`, `nombre`, `precio`, `fecha`, `imagen`) VALUES
+(1, 'AguaL', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/20250220071401.jpg'),
+(2, 'Coca', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/20250210041557.jpg'),
+(3, 'Pepsi', 500, '2023-05-25 20:03:27', '../assets/img/bebidas/Pepsi.jpg');
+
+INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `pass`, `rol`, `estado`) VALUES
+(1, 'Owner', 'admin@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 1, 1);
+
+
+
+
+
+
+
+
+
+
+
