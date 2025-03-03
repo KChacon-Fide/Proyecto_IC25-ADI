@@ -22,6 +22,35 @@ body {
     padding-top: 10px;
 }
 
+.botones-cambiar-estado{
+    width: 50px;
+    height: 25px;
+    padding: 0;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+  }
+  
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
 
 .content-wrapper {
     flex: 1;
@@ -56,7 +85,7 @@ h2 {
 }
 
 
-#pedidos-container {
+/* #pedidos-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 15px;
@@ -65,10 +94,10 @@ h2 {
     width: 90%;
     max-width: 1400px;
     margin: 0 auto;
-}
+} */
 
 
-.pedido-card {
+/* .pedido-card {
     width: 100%;
     background-color: #ffffff;
     border-radius: 10px;
@@ -80,17 +109,17 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
+} */
 
 
-.pedido-card .card-header {
+/* .pedido-card .card-header {
     background-color: #ffc107;
     color: #000;
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 1rem;
-}
+} */
 
 
 .pedido-card p {
@@ -147,7 +176,7 @@ footer {
 }
 
 
-.card-header {
+/* .card-header {
     background-color: #ffc107;
     color: #000;
     font-weight: bold;
@@ -157,10 +186,11 @@ footer {
     cursor: pointer;
     transition: background-color 0.3s ease;
     text-align: center;
-}
+} */
 
 
-.card-header:hover {
+/* .card-header:hover {
     background-color: #28a745 !important;
     color: white !important;
-}
+} */
+

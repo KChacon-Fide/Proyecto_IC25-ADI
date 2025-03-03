@@ -69,7 +69,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 if ($result > 0) {
                     while ($data = mysqli_fetch_assoc($query)) {
                         // Consulta para verificar si hay pedidos pendientes
-                        $consulta = mysqli_query($conexion, "SELECT COUNT(*) as total FROM pedidos WHERE id_sala = $id AND num_mesa = " . $data['num_mesa'] . " AND estado = 'PENDIENTE'");
+                        $consulta = mysqli_query($conexion, "SELECT COUNT(*) as total FROM pedidos WHERE id_sala = $id AND num_mesa = " . $data['num_mesa'] . " AND estado = 'ACTIVO'");
                         $resultPedido = mysqli_fetch_assoc($consulta);
                         $isPendiente = $resultPedido['total'] > 0;
                         ?>

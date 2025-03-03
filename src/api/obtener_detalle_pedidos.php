@@ -20,21 +20,36 @@ if (!isset($data['id'])) {
     echo json_encode(["success" => false, "message" => "ID de pedido no proporcionado."]);
     exit;
 }
+$id_pedido = intval($data['id']);
 
 if (!isset($data['tipo'])) {
     echo json_encode(["success" => false, "message" => "Tipo de pedido no proporcionado."]);
     exit;
 }
-
-$id_pedido = intval($data['id']);
-
 $tipo = intval($data['tipo']);
 
-$query = "SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado
+
+if (isset($data['vista'])) {
+    $vista = $data['vista'];
+} else {
+    $vista = 'TODOS';
+}
+
+$query = "SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
           FROM detalle_pedidos d
-          WHERE d.id_pedido = $id_pedido and d.tipo = $tipo
+          WHERE d.id_pedido = $id_pedido and d.tipo = $tipo and @estado
           ORDER BY d.nombre ASC";
 
+
+escribirLog($query);
+
+if ($vista == 'TODOS') {
+    $query = str_replace("@estado", "'1=1'",$query);
+} else {
+    $query = str_replace("@estado", "d.estado = '$vista'", $query);
+}
+$pedidos = [];
+escribirLog($query);
 
 
 $result = mysqli_query($conexion, $query);

@@ -78,11 +78,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                         <div class="tab-pane fade" id="pedido" role="tabpanel" aria-labelledby="pedido-tab">
                             <div class="row" id="detalle_pedido"></div>
                             <hr>
-                            <div class="form-group">
-                                <label for="observacion">Observaciones</label>
-                                <textarea id="observacion" class="form-control" rows="3"
-                                    placeholder="Observaciones"></textarea>
-                            </div>
                             <button class="btn btn-primary" type="button" id="realizar_pedido">Realizar pedido</button>
                         </div>
                     </div>
@@ -90,16 +85,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 <div class="col-5 col-sm-3">
                     <div class="nav flex-column nav-tabs nav-tabs-right h-100" id="vert-tabs-right-tab" role="tablist"
                         aria-orientation="vertical">
-                        <a class="nav-link active" id="vert-tabs-right-home-tab" data-toggle="pill"
+                        <a class="nav-link active" id="vert-tabs-right-home-tab" data-bs-toggle="pill"
                             href="#vert-tabs-right-home" role="tab" aria-controls="vert-tabs-right-home"
                             aria-selected="true">Platos y Bebidas</a>
-                        <a class="nav-link" id="pedido-tab" data-toggle="pill" href="#pedido" role="tab"
+                        <a class="nav-link" id="pedido-tab" data-bs-toggle="pill" href="#pedido" role="tab"
                             aria-controls="pedido" aria-selected="false">Pedido</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <input type="hidden" id="totalPlatos" name="totalPlatos" value="0"> 
+
 
     <?php include_once "includes/footer.php";
 } else {

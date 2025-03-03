@@ -10,6 +10,27 @@ CREATE TABLE `config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+
+
+CREATE TABLE `salas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `mesas` int(11) NOT NULL,
+  `estado` int(11) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+
+CREATE TABLE `mesas` (
+  `id_mesa` INT AUTO_INCREMENT PRIMARY KEY,
+  `id_sala` INT NOT NULL,
+  `num_mesa` INT NOT NULL,
+  `capacidad` INT NOT NULL,
+  `estado` ENUM('DISPONIBLE', 'OCUPADA', 'DESACTIVADA') DEFAULT 'DISPONIBLE',
+  FOREIGN KEY (`id_sala`) REFERENCES `salas`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+
 CREATE TABLE `pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_sala` int(11) NOT NULL,
@@ -17,7 +38,7 @@ CREATE TABLE `pedidos` (
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `total` decimal(10,2) NOT NULL,
   `observacion` text DEFAULT NULL,
-  `estado` enum('PENDIENTE','FINALIZADO') NOT NULL DEFAULT 'PENDIENTE',
+  `estado` enum('ACTIVO','FINALIZADO') NOT NULL DEFAULT 'ACTIVO',
   `id_usuario` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_sala` (`id_sala`)
@@ -31,10 +52,12 @@ CREATE TABLE `detalle_pedidos` (
   `id_pedido` int(11) NOT NULL,
   `estado` enum('PENDIENTE', 'EN PREPARACION','LISTO PARA SERVIR', 'SERVIDO') NOT NULL DEFAULT 'PENDIENTE',
   `tipo` varchar(200) NOT NULL COMMENT '1 plato, 2 bebida',
+  `observacion` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_pedido` (`id_pedido`),
   CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
 
 
 
@@ -88,10 +111,14 @@ CREATE TABLE `bebidas` (
 CREATE TABLE `temp_pedidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cantidad` int(11) NOT NULL,
+  `id_sala` int(11) NOT NULL,
+  `num_mesa` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `id_producto` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `tipo` int(11) NOT NULL COMMENT '1 plato, 2 bebida',
+  `observacion` text DEFAULT "",
+  
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

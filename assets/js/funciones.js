@@ -38,6 +38,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   $("#realizar_pedido").click(function (e) {
     e.preventDefault();
+    let totalDePlatos = parseInt($("#totalPlatos").val());
+    if (totalDePlatos == 0)
+    {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Por favor añadir productos para continuar",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return false;
+    }
     var action = "procesarPedido";
     var id_sala = $("#id_sala").val();
     var mesa = $("#mesa").val();
@@ -82,6 +94,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   $(".finalizarPedido").click(function () {
+    let totalDePlatos = parseInt($("#totalPlatos").val());
+    if (totalDePlatos == 0)
+    {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Por favor añadir productos para continuar",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return false;
+    }
     var action = "finalizarPedido";
     var id_sala = $("#id_sala").val();
     var mesa = $("#mesa").val();
@@ -127,13 +151,17 @@ document.addEventListener("DOMContentLoaded", function () {
 function listar() {
   let html = "";
   let detalle = "detalle";
+  let params = new URLSearchParams(document.location.search);
   $.ajax({
     url: "ajax.php",
     dataType: "json",
     data: {
+      id_sala: params.get("id_sala"),
+      id_mesa: params.get("mesa"),
       detalle: detalle,
     },
     success: function (response) {
+      $("#totalPlatos").val(response.length);
       response.forEach((row) => {
         // Aqui no se distingue entre plato y bebida ya que eliminar o cambiar cantidad usan el id de TEMP_PEDIDOS
         html += `<div class="col-md-4">
@@ -146,6 +174,11 @@ function listar() {
                     <h2 class="mb-0">${row.precio}</h2>
                     <div class="mt-1">
                         <input type="number" class="form-control addCantidad mb-2" data-id="${row.id}" value="${row.cantidad}">
+                        <div class="form-group">
+                                <label for="addObservacion">Observaciones</label>
+                                <textarea id="addObservacion" class="form-control addObservacion"  rows="2" data-id="${row.id}"
+                                    placeholder="Observaciones">${row.observacion}</textarea>
+                            </div>
                         <button class="btn btn-danger eliminarPlato" type="button" data-id="${row.id}">Eliminar</button>
                     </div>
                 </div>
@@ -161,18 +194,28 @@ function listar() {
         let id = $(this).data("id");
         cantidadPlato(e.target.value, id);
       });
+      $(".addObservacion").change(function (e) {
+        let id = $(this).data("id");
+        addObservacion(e.target.value, id);
+      });
     },
+    error: function (error) {
+      console.log(error);
+    }
   });
 }
 
 function registrarDetalle(id_pro) {
   let action = "regDetalle";
+  let params = new URLSearchParams(document.location.search);
   $.ajax({
     url: "ajax.php",
     type: "POST",
     dataType: "json",
     data: {
       id: id_pro,
+       id_mesa: params.get("mesa"),
+       id_sala: params.get("id_sala"),
       regDetalle: action,
     },
     success: function (response) {
@@ -187,17 +230,23 @@ function registrarDetalle(id_pro) {
         timer: 2000,
       });
     },
+    error: function (error) {
+      console.log(error);
+    },
   });
 }
 
 function registrarDetalleBebida(id_pro) {
   let action = "regDetalleBebida";
+  let params = new URLSearchParams(document.location.search);
   $.ajax({
     url: "ajax.php",
     type: "POST",
     dataType: "json",
     data: {
       id: id_pro,
+      id_mesa: params.get("mesa"),
+       id_sala: params.get("id_sala"),
       regDetalleBebida: action,
     },
     success: function (response) {
@@ -211,6 +260,9 @@ function registrarDetalleBebida(id_pro) {
         showConfirmButton: false,
         timer: 2000,
       });
+    },
+    error: function (error) {
+      console.log(error);
     },
   });
 }
@@ -254,6 +306,28 @@ function cantidadPlato(cantidad, id) {
       id: id,
       cantidad: cantidad,
       detalle_cantidad: detalle,
+    },
+    success: function (response) {
+      if (response != "ok") {
+        listar();
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Error al agregar cantidad",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    },
+  });
+}
+
+function addObservacion(texto, id) {
+  $.ajax({
+    url: "ajax.php",
+    data: {
+      id: id,
+      agregar_observacion: texto,
     },
     success: function (response) {
       if (response != "ok") {
@@ -379,3 +453,8 @@ function limpiar() {
   $("#id").val("");
   $("#btnAccion").val("Registrar");
 }
+
+// para que funcionen los tooltips en bootstrap
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})

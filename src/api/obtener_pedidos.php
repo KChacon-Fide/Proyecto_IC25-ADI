@@ -1,6 +1,9 @@
 <?php
 include __DIR__ . "/../../conexion.php";  // ✅ CORRECTO
 
+
+
+
 header('Content-Type: application/json');
 
 // Consulta para obtener los pedidos pendientes
@@ -19,58 +22,44 @@ if (!isset($data['tipo'])) {
     echo json_encode(["success" => false, "message" => "Tipo de pedido no proporcionado."]);
     exit;
 }
-
 $tipo = intval($data['tipo']);
 
-if (isset($data['misPedidos'])) {
-    $misPedidos = $data['misPedidos'];
-    $idusuario = 4;
+if (isset($data['vista'])) {
+    $vista = $data['vista'];
 } else {
-    $misPedidos = false;
-    $idusuario = '';
+    $vista = 'TODOS';
 }
 
-$query = "SELECT p.id, p.num_mesa, p.fecha, p.observacion
+
+
+$query = "SELECT p.id, p.num_mesa, p.fecha, p.estado
           FROM pedidos p 
-          WHERE p.estado = 'PENDIENTE' AND p.id in ( 
-          select d.id_pedido from detalle_pedidos d where  d.tipo = " . $tipo . ")";
+          WHERE p.id in ( 
+                            SELECT d.id_pedido 
+                            FROM detalle_pedidos d 
+                            WHERE d.id_pedido= p.id AND 
+                                  d.tipo = @tipo AND 
+                                  @estado
+                            ORDER BY d.nombre)
+                            
+          ORDER BY p.fecha";
+          
+escribirLog($query);
+$query = str_replace("@tipo", $tipo, $query);
 
-
-// if ($tipo == 1 || $tipo == 2) {
-//     $query += ' AND tipo = ' . $tipo;
-// }
-if ($misPedidos == true && $idusuario != '') {
-    $query += ' AND p.id_usuario = ' . $idusuario;
+if ($vista == 'TODOS') {
+    $query = str_replace("@estado", "'1=1'",$query);
+} else {
+    $query = str_replace("@estado", "d.estado = '$vista'", $query);
 }
+$pedidos = [];
+escribirLog($query);
 
 $result = mysqli_query($conexion, $query);
-$pedidos = [];
+
 
 while ($row = mysqli_fetch_assoc($result)) {
     $pedidos[] = $row;
 }
 
 echo json_encode($pedidos);
-
-
-
-function escribirEnArchivo($contenido) {
-    $nombreArchivo = "./log.txt";
-    // Abre el archivo en modo de escritura. Si el archivo no existe, lo crea.
-    // 'a' significa "append", lo que agrega el contenido al final del archivo si ya existe.
-    $archivo = fopen($nombreArchivo, 'a');
-
-    if ($archivo === false) {
-        echo "Error al abrir el archivo.";
-        return false;
-    }
-
-    // Escribe el contenido en el archivo
-    fwrite($archivo, $contenido . PHP_EOL);  // PHP_EOL agrega un salto de línea al final
-
-    // Cierra el archivo después de escribir
-    fclose($archivo);
-
-    echo "Contenido escrito correctamente en el archivo.";
-    return true;
-}
