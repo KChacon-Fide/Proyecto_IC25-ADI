@@ -30,7 +30,7 @@ if (empty($_SESSION['active'])) {
         onclick="location.href='dashboard.php';">
 
     <div class="container mt-4">
-        <h2  class="fw-bold">ESTADO DE LA COCINA </h2>
+        <h2  class="fw-bold">Panel de la Cocina </h2>
         <div id="botonesFiltro" class="d-flex gap-2 mb-4">
         </div>
         <hr>

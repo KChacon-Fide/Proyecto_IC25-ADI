@@ -413,11 +413,12 @@ function cambioEstadoPlato(id, estado, num_mesa, nombre, cantidad) {
         .then((response) => response.json())
         .then((data) => {
             if (data == "ok") {
-                if (estado === "LISTO PARA SERVIR") {
-                    insertarEnOrdenesListas(num_mesa, nombre, cantidad, fecha);
-                } else {
-                    location.reload();
-                }
+                location.reload();
+                // if (estado === "LISTO PARA SERVIR") {
+                //     insertarEnOrdenesListas(num_mesa, nombre, cantidad, fecha);
+                // } else {
+                //     location.reload();
+                // }
             } else {
                 console.error("Error al cambiar el estado");
             }

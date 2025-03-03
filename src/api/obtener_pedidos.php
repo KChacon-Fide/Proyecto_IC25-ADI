@@ -34,18 +34,20 @@ if (isset($data['vista'])) {
 
 $query = "SELECT p.id, p.num_mesa, p.fecha, p.estado
           FROM pedidos p 
-          WHERE p.id in ( 
+          WHERE  p.estado = 'ACTIVO' AND p.id in ( 
                             SELECT d.id_pedido 
                             FROM detalle_pedidos d 
                             WHERE d.id_pedido= p.id AND 
-                                  d.tipo = @tipo AND 
+                                  @tipo AND 
                                   @estado
                             ORDER BY d.nombre)
-                            
-          ORDER BY p.fecha";
-          
-escribirLog($query);
-$query = str_replace("@tipo", $tipo, $query);
+                        order by p.fecha";
+ 
+if ($tipo == 0) {
+    $query = str_replace("@tipo", "'1=1'",$query);
+} else {
+    $query = str_replace("@tipo", "d.tipo = '$tipo'", $query);
+}
 
 if ($vista == 'TODOS') {
     $query = str_replace("@estado", "'1=1'",$query);
@@ -63,3 +65,5 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 echo json_encode($pedidos);
+
+

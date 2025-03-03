@@ -37,11 +37,18 @@ if (isset($data['vista'])) {
 
 $query = "SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
           FROM detalle_pedidos d
-          WHERE d.id_pedido = $id_pedido and d.tipo = $tipo and @estado
+          WHERE d.id_pedido = $id_pedido and @tipo and @estado
           ORDER BY d.nombre ASC";
 
 
 escribirLog($query);
+
+if ($tipo == 0) {
+    $query = str_replace("@tipo", "'1=1'",$query);
+} else {
+    $query = str_replace("@tipo", "d.tipo = $tipo", $query);
+}
+
 
 if ($vista == 'TODOS') {
     $query = str_replace("@estado", "'1=1'",$query);
