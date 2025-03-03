@@ -15,7 +15,7 @@
         $logFile = __DIR__ . '/log.txt';  // Ruta del archivo log
         $fecha = date('Y-m-d H:i:s');  // Fecha y hora actual
         $mensajeCompleto = "[$fecha] $mensaje" . PHP_EOL;
-        file_put_contents($logFile, $mensajeCompleto, FILE_APPEND);  // Escribir al archivo log
+        // file_put_contents($logFile, $mensajeCompleto, FILE_APPEND);  // Escribir al archivo log
     }
     
 ?>

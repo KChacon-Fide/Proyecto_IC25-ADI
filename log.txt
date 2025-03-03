@@ -34044,3 +34044,105 @@
                                   '1=1'
                             ORDER BY d.nombre)
                         order by p.fecha
+[2025-03-03 03:33:49] SELECT p.id, p.num_mesa, p.fecha, p.estado
+          FROM pedidos p 
+          WHERE  p.estado = 'ACTIVO' AND p.id in ( 
+                            SELECT d.id_pedido 
+                            FROM detalle_pedidos d 
+                            WHERE d.id_pedido= p.id AND 
+                                  '1=1' AND 
+                                  '1=1'
+                            ORDER BY d.nombre)
+                        order by p.fecha
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:49] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT p.id, p.num_mesa, p.fecha, p.estado
+          FROM pedidos p 
+          WHERE  p.estado = 'ACTIVO' AND p.id in ( 
+                            SELECT d.id_pedido 
+                            FROM detalle_pedidos d 
+                            WHERE d.id_pedido= p.id AND 
+                                  '1=1' AND 
+                                  '1=1'
+                            ORDER BY d.nombre)
+                        order by p.fecha
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:33:51] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT p.id, p.num_mesa, p.fecha, p.estado
+          FROM pedidos p 
+          WHERE  p.estado = 'ACTIVO' AND p.id in ( 
+                            SELECT d.id_pedido 
+                            FROM detalle_pedidos d 
+                            WHERE d.id_pedido= p.id AND 
+                                  '1=1' AND 
+                                  '1=1'
+                            ORDER BY d.nombre)
+                        order by p.fecha
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 2 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 3 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and @tipo and @estado
+          ORDER BY d.nombre ASC
+[2025-03-03 03:34:05] SELECT d.id, d.nombre, d.precio, d.cantidad, d.estado, d.observacion
+          FROM detalle_pedidos d
+          WHERE d.id_pedido = 4 and '1=1' and '1=1'
+          ORDER BY d.nombre ASC
