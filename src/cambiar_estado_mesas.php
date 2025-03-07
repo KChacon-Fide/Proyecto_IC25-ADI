@@ -9,11 +9,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         $id_sala = $_POST['id_sala'];
         $mesas = $_POST['mesas'];
 
-        // Actualizamos el estado de la mesa
+
         $query = mysqli_query($conexion, "UPDATE mesas SET estado = '$nuevo_estado' WHERE id = '$id_mesa'");
 
         if ($query) {
-            // Redireccionamos con los valores de sala y mesas
+
             header("Location: mesas.php?id_sala=$id_sala&mesas=$mesas");
             exit();
         } else {

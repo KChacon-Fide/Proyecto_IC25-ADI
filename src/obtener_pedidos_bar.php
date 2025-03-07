@@ -1,9 +1,8 @@
 <?php
-include __DIR__ . "/../../conexion.php";  
+include __DIR__ . "/../../conexion.php";
 
 header('Content-Type: application/json');
 
-// Consulta para obtener los pedidos de bar pendientes
 $query = "SELECT p.id, p.num_mesa, p.fecha, d.cantidad, d.nombre
           FROM pedidos p
           INNER JOIN detalle_pedidos d ON p.id = d.id_pedido

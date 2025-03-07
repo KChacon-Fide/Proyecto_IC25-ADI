@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Cargar los pedidos al iniciar la página
+
     cargarPedidos();
 
-    // Refrescar la lista de pedidos cada 5 segundos para actualizar en tiempo real
 
-     setInterval(cargarPedidos, 5000);
+
+    setInterval(cargarPedidos, 5000);
 });
 
-// Función para obtener los pedidos pendientes desde la API
+
 async function cargarPedidos() {
     try {
         let params = new URLSearchParams(document.location.search);
@@ -16,14 +16,14 @@ async function cargarPedidos() {
         if (vista == undefined) vista = "TODOS";
         vista = vista.toUpperCase().replaceAll("_", " ");
 
-        //<button class="btn ${botonSegunEstado("SERVIDO", vista)}" id = "btnServido">Servido</button>
+
         $("#botonesFiltro").html(`
             <button class="btn ${botonSegunEstado("TODOS", vista)}" id = "btnTodos">Todos</button>
             <button class="btn ${botonSegunEstado("PENDIENTE", vista)}" id = "btnPendientes" >Pendientes</button>
             <button class="btn ${botonSegunEstado("EN PREPARACION", vista)}" id = "btnEnPreparacion" >En Preparación</button>
             <button class="btn ${botonSegunEstado("LISTO PARA SERVIR", vista)}" id = "btnListoParaServir">Listo para Servir</button>
         `);
-        
+
         $("#btnTodos").click(function () {
             window.location.href = "cocina.php?Vista=TODOS";
         });
@@ -46,10 +46,10 @@ async function cargarPedidos() {
             throw new Error("No se encontro pedidos-container");
         }
 
-        contenedor.innerHTML = ""; // Limpiar el contenedor para evitar duplicados
+        contenedor.innerHTML = "";
 
         let pedidos = await obtenerListaPedidos(1, vista);
-        // console.log("Pedidos recibidos:", pedidos);
+
 
         if (pedidos == undefined || !Array.isArray(pedidos)) {
             contenedor.innerHTML = "No hay pedidos con el filtro indicado (" + vista + ")";
@@ -80,14 +80,14 @@ async function cargarPedidos() {
 
             let card = document.createElement("div");
             card.classList.add("col-md-4");
-            
+
             card.innerHTML = obtenerDisenoPedido(
                 pedido.num_mesa,
                 pedido.id,
                 pedido.estado,
                 pedido.fecha,
                 calcularTiempoTranscurrido(pedido.fecha),
-                platos            );
+                platos);
 
             contenedor.appendChild(card);
 
@@ -111,7 +111,7 @@ async function cargarPedidos() {
     }
 }
 
-function obtenerDisenoPedido(MesaNumero, idPedido,estadoPedido, horaPedido, duracionPedido, detallePlatos) {
+function obtenerDisenoPedido(MesaNumero, idPedido, estadoPedido, horaPedido, duracionPedido, detallePlatos) {
     let card = `
               <div class="card ${BordeSegunEstado(estadoPedido)}">
                   <div class="card-header ${fondoSegunEstado(estadoPedido)}">
@@ -199,7 +199,7 @@ async function obtenerListaDetallePedidos(idPedido, idTipo, vista) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ id: idPedido, tipo: idTipo, vista:vista }),
+            body: JSON.stringify({ id: idPedido, tipo: idTipo, vista: vista }),
         });
 
         if (!response.ok) {
@@ -267,7 +267,7 @@ function fondoSegunEstado(estado) {
 
 function botonSegunEstado(tipoBoton, estadoActual) {
     switch (tipoBoton) {
-    
+
         case "PENDIENTE":
             if (estadoActual == "PENDIENTE") {
                 return "btn-danger";
@@ -388,14 +388,14 @@ function iconoSegunEstado(estado) {
 }
 
 function calcularTiempoTranscurrido(horaPedido) {
-    // Convertir horaPedido a objeto Date
+
     let pedido = new Date(horaPedido);
     let ahora = new Date();
 
-    // Calcular la diferencia en milisegundos
+
     let diferenciaMs = ahora - pedido;
 
-    // Convertir a minutos y segundos
+
     let minutos = Math.floor(diferenciaMs / 60000);
     let segundos = Math.floor((diferenciaMs % 60000) / 1000);
 
@@ -414,11 +414,11 @@ function cambioEstadoPlato(id, estado, num_mesa, nombre, cantidad) {
         .then((data) => {
             if (data == "ok") {
                 location.reload();
-                // if (estado === "LISTO PARA SERVIR") {
-                //     insertarEnOrdenesListas(num_mesa, nombre, cantidad, fecha);
-                // } else {
-                //     location.reload();
-                // }
+
+
+
+
+
             } else {
                 console.error("Error al cambiar el estado");
             }
@@ -426,7 +426,7 @@ function cambioEstadoPlato(id, estado, num_mesa, nombre, cantidad) {
         .catch((error) => console.error("Error en la solicitud:", error));
 }
 
-// Función para insertar en la tabla 'ordenes_listas'
+
 function insertarEnOrdenesListas(num_mesa, nombre, cantidad) {
     fetch("api/insertar_orden.php", {
         method: "POST",
@@ -447,7 +447,7 @@ function insertarEnOrdenesListas(num_mesa, nombre, cantidad) {
         .catch((error) => console.error("Error en la solicitud:", error));
 }
 
-// Función para mover un pedido a órdenes listas cuando el cocinero finaliza su preparación
+
 function moverPedido(id, header) {
     console.log(`Enviando pedido ${id} a órdenes listas...`);
 
@@ -462,7 +462,7 @@ function moverPedido(id, header) {
         .then((result) => {
             if (result.success) {
                 let card = header.closest(".pedido-card");
-                card.remove(); // Eliminar la tarjeta de la vista de cocina
+                card.remove();
                 console.log("Pedido movido correctamente.");
             } else {
                 console.error("Error al mover el pedido:", result.message);
@@ -474,7 +474,7 @@ function moverPedido(id, header) {
         });
 }
 
-// Función para activar/desactivar el modo pantalla completa
+
 function toggleFullscreen() {
     let elem = document.documentElement;
     let icon = document.getElementById("expand-icon");
@@ -482,12 +482,12 @@ function toggleFullscreen() {
     if (!document.fullscreenElement) {
         elem.requestFullscreen().then(() => {
             icon.classList.remove("fa-expand-arrows-alt");
-            icon.classList.add("fa-compress-arrows-alt"); // Cambiar icono a modo reducir
+            icon.classList.add("fa-compress-arrows-alt");
         });
     } else {
         document.exitFullscreen().then(() => {
             icon.classList.remove("fa-compress-arrows-alt");
-            icon.classList.add("fa-expand-arrows-alt"); // Cambiar icono a modo expandir
+            icon.classList.add("fa-expand-arrows-alt");
         });
     }
 }

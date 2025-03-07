@@ -39,8 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
   $("#realizar_pedido").click(function (e) {
     e.preventDefault();
     let totalDePlatos = parseInt($("#totalPlatos").val());
-    if (totalDePlatos == 0)
-    {
+    if (totalDePlatos == 0) {
       Swal.fire({
         position: "top-end",
         icon: "error",
@@ -95,8 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   $(".finalizarPedido").click(function () {
     let totalDePlatos = parseInt($("#totalPlatos").val());
-    if (totalDePlatos == 0)
-    {
+    if (totalDePlatos == 0) {
       Swal.fire({
         position: "top-end",
         icon: "error",
@@ -163,7 +161,6 @@ function listar() {
     success: function (response) {
       $("#totalPlatos").val(response.length);
       response.forEach((row) => {
-        // Aqui no se distingue entre plato y bebida ya que eliminar o cambiar cantidad usan el id de TEMP_PEDIDOS
         html += `<div class="col-md-4">
             <div class="card">
                 <div class="card-body">
@@ -171,7 +168,7 @@ function listar() {
                         <img src="${row.imagen}" class="product-image" alt="Product Image">
                     </div>
                     <p class="my-3">${row.nombre}</p>
-                    <h2 class="mb-0">${row.precio}</h2>
+                    <h2 class="mb-3">${row.precio}</h2>
                     <div class="mt-1">
                         <input type="number" class="form-control addCantidad mb-2" data-id="${row.id}" value="${row.cantidad}">
                         <div class="form-group">
@@ -214,8 +211,8 @@ function registrarDetalle(id_pro) {
     dataType: "json",
     data: {
       id: id_pro,
-       id_mesa: params.get("mesa"),
-       id_sala: params.get("id_sala"),
+      id_mesa: params.get("mesa"),
+      id_sala: params.get("id_sala"),
       regDetalle: action,
     },
     success: function (response) {
@@ -246,7 +243,7 @@ function registrarDetalleBebida(id_pro) {
     data: {
       id: id_pro,
       id_mesa: params.get("mesa"),
-       id_sala: params.get("id_sala"),
+      id_sala: params.get("id_sala"),
       regDetalleBebida: action,
     },
     success: function (response) {
@@ -454,7 +451,6 @@ function limpiar() {
   $("#btnAccion").val("Registrar");
 }
 
-// para que funcionen los tooltips en bootstrap
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })

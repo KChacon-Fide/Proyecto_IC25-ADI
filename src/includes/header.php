@@ -21,6 +21,7 @@ if (empty($_SESSION['active'])) {
     <!-- Theme style -->
     <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../assets/dist/css/custom.css">
 
 
     
@@ -124,7 +125,7 @@ if (empty($_SESSION['active'])) {
                                     echo '<li class="nav-item">
                                         <a href="lista_ventas.php" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Historial Ordenes</p>
+                                            <p>Historial</p>
                                         </a>
                                     </li>';
                                 } ?>
@@ -175,12 +176,7 @@ if (empty($_SESSION['active'])) {
                                 </ul>
                             </li>';
                         } ?>                    
-                        <li class="nav-item">
-                            <a href="ordenes_listas.php" class="nav-link">
-                                <i class="nav-icon fas fa-check-circle"></i>
-                                <p>Ordenes Listas</p>
-                            </a>
-                        </li>
+                       
                         <li class="nav-item">
                             <a href="bebidas.php" class="nav-link">
                                 <i class="nav-icon fas fa-wine-glass"></i>
@@ -201,8 +197,8 @@ if (empty($_SESSION['active'])) {
                         </li>
                         <li class="nav-item">
                             <a href="mesero.php" class="nav-link">
-                                <i class="nav-icon fas fa-cocktail"></i>
-                                <p>Pedidos Mesero</p>
+                            <i class="nav-icon fas fa-check-circle"></i>
+                            <p>Pedidos Mesero</p>
                             </a>
                         </li>
 

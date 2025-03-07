@@ -1,0 +1,32 @@
+.main-sidebar {
+    background-color: #2C3E50 !important;
+   
+}
+
+.nav-sidebar .nav-item .nav-link {
+    color: #ecf0f1 !important;
+   
+}
+
+.nav-sidebar .nav-item .nav-link:hover {
+    background-color: #1A252F !important;
+   
+}
+
+.nav-sidebar .nav-icon {
+    color: #F1C40F !important;
+   
+}
+
+.nav-sidebar .nav-item .nav-link {
+    border-radius: 5px;
+   
+    margin-bottom: 5px;
+   
+    transition: background 0.3s ease;
+}
+
+.nav-sidebar .nav-item .nav-link:hover {
+    background-color: #3498DB !important;
+    color: #fff !important;
+}

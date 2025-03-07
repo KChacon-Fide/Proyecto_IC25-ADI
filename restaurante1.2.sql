@@ -1,4 +1,4 @@
-/*create database restaurante;*/
+create database restaurante;
 
 CREATE TABLE `config` (
   `id` int(11) NOT NULL,
@@ -6,11 +6,10 @@ CREATE TABLE `config` (
   `telefono` varchar(11) NOT NULL,
   `email` varchar(150) NOT NULL,
   `direccion` text NOT NULL,
-  `mensaje` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `mensaje` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
-
+ALTER TABLE `config` ADD PRIMARY KEY (`id`);
 
 CREATE TABLE `salas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -118,9 +117,11 @@ CREATE TABLE `temp_pedidos` (
   `id_usuario` int(11) NOT NULL,
   `tipo` int(11) NOT NULL COMMENT '1 plato, 2 bebida',
   `observacion` text DEFAULT "",
-  
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `temp_pedidos` 
+MODIFY `observacion` text DEFAULT "";
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -131,6 +132,12 @@ CREATE TABLE `usuarios` (
   `estado` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+/*Ejecutar este alter que hace falta para la tabla de Users*/
+ALTER TABLE usuarios ADD COLUMN turno ENUM('diurno', 'nocturno') NOT NULL DEFAULT 'diurno';
+
+
+
 
 INSERT INTO `config` (`id`, `nombre`, `telefono`, `email`, `direccion`, `mensaje`) VALUES
 (1, 'Restaurante San Isidro', '89377531', 'mespinozacam@yahoo.es', 'Puriscal - San José', '¡Realizado con Exito!');
@@ -154,12 +161,17 @@ INSERT INTO `usuarios` (`id`, `nombre`, `correo`, `pass`, `rol`, `estado`) VALUE
 (1, 'Owner', 'admin@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 1, 1);
 
 
+SELECT * FROM mesas;
+SELECT * FROM salas;
+SELECT * FROM pedidos;
+SELECT * FROM temp_pedidos;
+SELECT * FROM platos;
+SELECT * FROM bebidas;
+SELECT * FROM usuarios;
+SELECT * FROM config;
 
-
-
-
-
-
+INSERT INTO `mesas` (`id_sala`, `num_mesa`, `capacidad`, `estado`) VALUES
+(1, 1, 4, 'DISPONIBLE');
 
 
 

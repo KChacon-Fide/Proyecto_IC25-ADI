@@ -18,19 +18,19 @@ if (empty($_SESSION['active'])) {
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="../assets/dist/css/Bar.css">
 
-    
-    
+
+
 </head>
 
 <body>
-    
+
 
     <!-- Botón de regreso -->
     <img src="../assets/img/return.png" alt="Volver al Dashboard" class="return-button"
         onclick="location.href='dashboard.php';">
 
     <div class="container mt-4">
-        <h2  class="fw-bold">Panel del Bar </h2>
+        <h2 class="fw-bold">Panel del Bar </h2>
         <div id="botonesFiltro" class="d-flex gap-2 mb-4">
         </div>
         <hr>
@@ -44,7 +44,7 @@ if (empty($_SESSION['active'])) {
     <script src="../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/bar.js"></script>
     <script src="../assets/plugins/fontawesome-free/js/all.min.js"></script>
-    
+
 </body>
 
 </html>

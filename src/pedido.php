@@ -2,103 +2,199 @@
 session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     include_once "includes/header.php";
-    ?>
-    <div class="card card-primary card-outline">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-edit"></i>
-                Platos y Bebidas
-            </h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-7 col-sm-9">
-                    <div class="tab-content" id="vert-tabs-right-tabContent">
-                        <div class="tab-pane fade show active" id="vert-tabs-right-home" role="tabpanel"
-                            aria-labelledby="vert-tabs-right-home-tab">
-                            <input type="hidden" id="id_sala" value="<?php echo $_GET['id_sala'] ?>">
-                            <input type="hidden" id="mesa" value="<?php echo $_GET['mesa'] ?>">
-
-                            <!-- Platos -->
-                            <h4>Platos</h4>
-                            <div class="row">
-                                <?php
-                                include "../conexion.php";
-                                $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
-                                while ($data = mysqli_fetch_assoc($query)) { ?>
-                                    <div class="col-md-3">
-                                        <div class="col-12">
-                                            <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                                class="product-image" alt="Product Image">
-                                        </div>
-                                        <h6 class="my-3"><?php echo $data['nombre']; ?></h6>
-
-                                        <div class="bg-gray py-2 px-3 mt-4">
-                                            <h2 class="mb-0">$<?php echo $data['precio']; ?></h2>
-                                        </div>
-
-                                        <div class="mt-4">
-                                            <a class="btn btn-primary btn-block btn-flat addDetalle" href="#"
-                                                data-id="<?php echo $data['id']; ?>" data-tipo="plato">
-                                                <i class="fas fa-cart-plus mr-2"></i> Agregar
-                                            </a>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-
-                            <!-- Bebidas -->
-                            <h4>Bebidas</h4>
-                            <div class="row">
-                                <?php
-                                $queryBebidas = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
-                                while ($data = mysqli_fetch_assoc($queryBebidas)) { ?>
-                                    <div class="col-md-3">
-                                        <div class="col-12">
-                                            <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                                class="product-image" alt="Product Image">
-                                        </div>
-                                        <h6 class="my-3"><?php echo $data['nombre']; ?></h6>
-
-                                        <div class="bg-gray py-2 px-3 mt-4">
-                                            <h2 class="mb-0">$<?php echo $data['precio']; ?></h2>
-                                        </div>
-
-                                        <div class="mt-4">
-                                            <a class="btn btn-primary btn-block btn-flat addDetalleBebida" href="#"
-                                                data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
-                                                <i class="fas fa-cart-plus mr-2"></i> Agregar
-                                            </a>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-
-                        </div>
-                        <div class="tab-pane fade" id="pedido" role="tabpanel" aria-labelledby="pedido-tab">
-                            <div class="row" id="detalle_pedido"></div>
-                            <hr>
-                            <button class="btn btn-primary" type="button" id="realizar_pedido">Realizar pedido</button>
-                        </div>
-                    </div>
+?>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sección de Platos y Bebidas -->
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4><i class="fas fa-utensils"></i> Menú</h4>
                 </div>
-                <div class="col-5 col-sm-3">
-                    <div class="nav flex-column nav-tabs nav-tabs-right h-100" id="vert-tabs-right-tab" role="tablist"
-                        aria-orientation="vertical">
-                        <a class="nav-link active" id="vert-tabs-right-home-tab" data-bs-toggle="pill"
-                            href="#vert-tabs-right-home" role="tab" aria-controls="vert-tabs-right-home"
-                            aria-selected="true">Platos y Bebidas</a>
-                        <a class="nav-link" id="pedido-tab" data-bs-toggle="pill" href="#pedido" role="tab"
-                            aria-controls="pedido" aria-selected="false">Pedido</a>
+                <div class="card-body">
+                    <input type="hidden" id="id_sala" value="<?php echo $_GET['id_sala'] ?>">
+                    <input type="hidden" id="mesa" value="<?php echo $_GET['mesa'] ?>">
+
+                    <!-- Platos -->
+                    <h4 class="text-center mb-3">Platos</h4>
+                    <div class="row">
+                        <?php
+                        include "../conexion.php";
+                        $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
+                        while ($data = mysqli_fetch_assoc($query)) { ?>
+                            <div class="col-md-4">
+                                <div class="card product-card text-center p-2">
+                                    <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
+                                         class="product-image img-thumbnail">
+                                    <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
+                                    <span class="badge badge-dark price-badge">₡<?php echo number_format($data['precio'], 2); ?></span>
+                                    <button class="btn btn-success btn-sm addDetalle"
+                                            data-id="<?php echo $data['id']; ?>" data-tipo="plato">
+                                        <i class="fas fa-cart-plus"></i> Agregar
+                                    </button>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                    <!-- Bebidas -->
+                    <h4 class="text-center mt-4 mb-3">Bebidas</h4>
+                    <div class="row">
+                        <?php
+                        $queryBebidas = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
+                        while ($data = mysqli_fetch_assoc($queryBebidas)) { ?>
+                            <div class="col-md-3">
+                                <div class="card product-card text-center p-2">
+                                    <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
+                                         class="product-image img-thumbnail">
+                                    <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
+                                    <span class="badge badge-dark price-badge">₡<?php echo number_format($data['precio'], 2); ?></span>
+                                    <button class="btn btn-success btn-sm addDetalleBebida"
+                                            data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
+                                        <i class="fas fa-cart-plus"></i> Agregar
+                                    </button>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white text-center">
+                    <h4><i class="fas fa-shopping-cart"></i> Pedido</h4>
+                </div>
+                <div class="card-body">
+                    <div id="detalle_pedido"></div>
+                    <hr>
+                    <button class="btn btn-danger btn-block" id="limpiar_pedido">
+                        <i class="fas fa-trash-alt"></i> Limpiar Pedido
+                    </button>
+                    <button class="btn btn-primary btn-block" id="realizar_pedido">
+                        <i class="fas fa-check"></i> Realizar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    <input type="hidden" id="totalPlatos" name="totalPlatos" value="0"> 
+</div>
 
+<style>
+    .product-card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        transition: 0.3s;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
 
-    <?php include_once "includes/footer.php";
+    .product-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .price-badge {
+        display: block;
+        font-size: 16px;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+    .pedido-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let pedido = [];
+
+    document.querySelectorAll(".addDetalle, .addDetalleBebida").forEach(button => {
+        button.addEventListener("click", function () {
+            const id = this.getAttribute("data-id");
+            const tipo = this.getAttribute("data-tipo");
+            const nombre = this.closest(".product-card").querySelector("h6").textContent;
+            const precio = parseFloat(this.closest(".product-card").querySelector(".price-badge").textContent.replace("₡", ""));
+
+            let productoExistente = pedido.find(p => p.id == id && p.tipo == tipo);
+            if (productoExistente) {
+                productoExistente.cantidad++;
+            } else {
+                pedido.push({id, nombre, precio, tipo, cantidad: 1, descripcion: ""});
+            }
+
+            actualizarPedido();
+        });
+    });
+
+    function actualizarPedido() {
+        let detalleHTML = "";
+        let total = 0;
+        pedido.forEach((producto, index) => {
+            let subtotal = producto.precio * producto.cantidad;
+            total += subtotal;
+            detalleHTML += `
+                <div class="pedido-item">
+                    <div>${producto.nombre}</div>
+                    <div>${producto.cantidad}</div>
+                    <div>₡${subtotal.toFixed(2)}</div>
+                    <button class="btn btn-info btn-sm edit-desc" data-index="${index}"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm remove-product" data-index="${index}"><i class="fas fa-minus"></i></button>
+                    <button class="btn btn-success btn-sm add-product" data-index="${index}"><i class="fas fa-plus"></i></button>
+                </div>
+            `;
+        });
+
+        detalleHTML += <hr><h5>Total: ₡${total.toFixed(2)}</h5>;
+        document.getElementById("detalle_pedido").innerHTML = detalleHTML;
+
+        document.querySelectorAll(".remove-product").forEach(button => {
+            button.addEventListener("click", function () {
+                let index = this.getAttribute("data-index");
+                if (pedido[index].cantidad > 1) {
+                    pedido[index].cantidad--;
+                } else {
+                    pedido.splice(index, 1);
+                }
+                actualizarPedido();
+            });
+        });
+
+        document.querySelectorAll(".add-product").forEach(button => {
+            button.addEventListener("click", function () {
+                let index = this.getAttribute("data-index");
+                pedido[index].cantidad++;
+                actualizarPedido();
+            });
+        });
+
+        document.querySelectorAll(".edit-desc").forEach(button => {
+            button.addEventListener("click", function () {
+                let index = this.getAttribute("data-index");
+                let nuevaDesc = prompt("Ingrese una descripción para este producto:", pedido[index].descripcion);
+                if (nuevaDesc !== null) {
+                    pedido[index].descripcion = nuevaDesc;
+                }
+                actualizarPedido();
+            });
+        });
+    }
+
+    document.getElementById("realizar_pedido").addEventListener("click", function () {
+        console.log("Pedido procesado:", pedido);
+        alert("Pedido procesado con éxito.");
+    });
+});
+</script>
+
+<?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 }

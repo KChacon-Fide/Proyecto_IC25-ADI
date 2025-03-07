@@ -1,12 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Cargar las órdenes listas al iniciar la página
-    cargarOrdenesListas();
 
-    // Refrescar la lista de órdenes cada 5 segundos
+    cargarOrdenesListas();
     setInterval(cargarOrdenesListas, 5000);
 });
 
-// Función para obtener órdenes listas desde la API
 function cargarOrdenesListas() {
     fetch("api/obtener_ordenes_listas.php")
         .then(response => response.json())
@@ -20,13 +17,12 @@ function cargarOrdenesListas() {
                 return;
             }
 
-            // Crear tarjetas de órdenes listas
             data.forEach(orden => {
                 let card = document.createElement("div");
                 card.classList.add("pedido-card");
-                card.setAttribute("id", `orden-${orden.id}`);  // Agregar ID a la tarjeta
+                card.setAttribute("id", `orden-${orden.id}`);
 
-                // Formatear la fecha
+
                 let fecha = new Date(orden.fecha);
                 let opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
                 let fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFecha);
@@ -41,8 +37,7 @@ function cargarOrdenesListas() {
                             <p><strong>Cantidad:</strong> ${orden.cantidad}</p>
                             <p><strong>Hora de pedido:</strong> ${fechaFormateada}</p>
                         </div>
-                    </div>
-                `;
+                    </div>`;
 
                 contenedor.appendChild(card);
             });

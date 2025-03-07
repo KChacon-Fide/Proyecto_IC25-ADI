@@ -13,12 +13,12 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         $fecha = date('YmdHis');
         $directorio = '../assets/img/bebidas/';
 
-        // Verificar si la carpeta de imágenes existe, si no, crearla
+        // Crear la carpeta si no existe
         if (!is_dir($directorio)) {
             mkdir($directorio, 0777, true);
         }
 
-        // Validar que los datos sean correctos
+        // Validar los datos ingresados
         if (empty($nombre) || empty($precio) || $precio < 0) {
             $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
         } else {
@@ -29,7 +29,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             }
 
             if (empty($id)) {
-                // Inserción de nueva bebida
+                // Insertar nueva bebida
                 $query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE nombre = '$nombre' AND estado = 1");
                 if (mysqli_num_rows($query) > 0) {
                     $alert = '<div class="alert alert-warning">La bebida ya existe.</div>';
@@ -45,7 +45,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     }
                 }
             } else {
-                // Actualización de bebida existente
+                // Actualizar bebida existente
                 $query_update = mysqli_query($conexion, "UPDATE bebidas SET nombre = '$nombre', precio = $precio, imagen = '$imagen' WHERE id = $id");
                 if ($query_update) {
                     if (!empty($foto['name'])) {
@@ -60,8 +60,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     }
 
     include_once "includes/header.php";
-    ?>
-    <div class="card">
+?>
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-wine-glass-alt"></i> Gestión de Bebidas</h4>
+        </div>
         <div class="card-body">
             <form action="" method="post" enctype="multipart/form-data">
                 <?php echo isset($alert) ? $alert : ''; ?>
@@ -70,20 +73,20 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                         <div class="form-group">
                             <input type="hidden" id="id" name="id">
                             <input type="hidden" id="foto_actual" name="foto_actual">
-                            <label for="nombre">Bebida</label>
+                            <label for="nombre" class="font-weight-bold">Nombre de la Bebida</label>
                             <input type="text" name="nombre" id="nombre" class="form-control"
-                                placeholder="Nombre de la bebida">
+                                placeholder="Ingrese nombre de la bebida">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="precio">Precio</label>
-                            <input type="text" name="precio" id="precio" class="form-control" placeholder="Precio">
+                            <label for="precio" class="font-weight-bold">Precio</label>
+                            <input type="text" name="precio" id="precio" class="form-control" placeholder="Ingrese precio">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="foto">Imagen</label>
+                            <label for="foto" class="font-weight-bold">Imagen (510.5px - 510.5px)</label>
                             <input type="file" class="form-control" name="foto" id="foto">
                         </div>
                     </div>
@@ -97,16 +100,17 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
+    <div class="card shadow-lg">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center" style="border: 0.5px solid #2C3E50;">
+                <thead style="background-color: #2C3E50; color: white;">
                     <tr>
-                        <th>#</th>
-                        <th>Bebida</th>
-                        <th>Precio</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
+                        <th style="border: 0.5px solid #2C3E50;">#</th>
+                        <th style="border: 0.5px solid #2C3E50;">Bebida</th>
+                        <th style="border: 0.5px solid #2C3E50;">Precio</th>
+                        <th style="border: 0.5px solid #2C3E50;">Imagen</th>
+                        <th style="border: 0.5px solid #2C3E50;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,18 +118,20 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     $query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
                     while ($data = mysqli_fetch_assoc($query)) { ?>
                         <tr>
-                            <td><?php echo $data['id']; ?></td>
-                            <td><?php echo $data['nombre']; ?></td>
-                            <td><?php echo $data['precio']; ?></td>
-                            <td><img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                    width="100"></td>
-                            <td>
-                                <a href="#"
-                                    onclick="editarBebida(<?php echo $data['id']; ?>, '<?php echo $data['nombre']; ?>', '<?php echo $data['precio']; ?>', '<?php echo $data['imagen']; ?>')"
-                                    class="btn btn-primary"><i class='fas fa-edit'></i></a>
-                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=bebidas" method="post"
-                                    class="confirmar d-inline">
-                                    <button class="btn btn-danger" type="submit"><i class='fas fa-trash-alt'></i></button>
+                            <td style="border: 0.5px solid #2C3E50;"><?php echo $data['id']; ?></td>
+                            <td class="font-weight-bold" style="border: 0.5px solid #2C3E50;"><?php echo strtoupper($data['nombre']); ?></td>
+                            <td class="text-success font-weight-bold" style="border: 0.5px solid #2C3E50;">₡<?php echo number_format($data['precio'], 0, '', '.'); ?></td>
+                            <td style="border: 0.5px solid #2C3E50;">
+                                <img class="img-thumbnail" src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>" alt="" width="80">
+                            </td>
+                            <td style="border: 0.5px solid #2C3E50;">
+                                <a href="#" onclick="editarBebida(<?php echo $data['id']; ?>, '<?php echo $data['nombre']; ?>', '<?php echo $data['precio']; ?>', '<?php echo $data['imagen']; ?>')" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=bebidas" method="post" class="d-inline">
+                                    <button class="btn btn-danger" type="submit">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -134,6 +140,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             </table>
         </div>
     </div>
+</div>
 
     <script>
         function editarBebida(id, nombre, precio, imagen) {
@@ -144,7 +151,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         }
     </script>
 
-    <?php include_once "includes/footer.php";
+<?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 } ?>

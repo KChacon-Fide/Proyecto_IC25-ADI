@@ -6,7 +6,7 @@ if ($_SESSION['rol'] != 1) {
 }
 include "../conexion.php";
 
-// Recuperar datos del usuario para edición
+
 $data = null;
 if (!empty($_GET['id'])) {
     $idUsuario = $_GET['id'];
@@ -29,55 +29,29 @@ if (!empty($_POST)) {
     $alert = "";
 
     if (empty($nombre) || empty($correo) || empty($rol) || empty($turno)) {
-        $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    Todos los campos son obligatorios.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+        $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
     } else {
         if (empty($id)) {
-            // Registro de un nuevo usuario
+
             $pass = $_POST['pass'];
             if (empty($pass)) {
-                $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    La contraseña es requerida.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                $alert = '<div class="alert alert-warning">La contraseña es requerida.</div>';
             } else {
                 $pass = md5($pass);
                 $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
-                $result = mysqli_fetch_array($query);
-                if ($result > 0) {
-                    $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    El correo ya existe.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                if (mysqli_num_rows($query) > 0) {
+                    $alert = '<div class="alert alert-warning">El correo ya existe.</div>';
                 } else {
                     $query_insert = mysqli_query($conexion, "INSERT INTO usuarios (nombre, correo, rol, pass, turno) VALUES ('$nombre', '$correo', '$rol', '$pass', '$turno')");
                     if ($query_insert) {
-                        $alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                    Usuario registrado exitosamente.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                        $alert = '<div class="alert alert-success">Usuario registrado exitosamente.</div>';
                     } else {
-                        $alert = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Error al registrar el usuario.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                        $alert = '<div class="alert alert-danger">Error al registrar el usuario.</div>';
                     }
                 }
             }
         } else {
-            // Actualización de un usuario existente
+
             $pass = $_POST['pass'] ?? null;
             if (!empty($pass)) {
                 $pass = md5($pass);
@@ -87,48 +61,42 @@ if (!empty($_POST)) {
             }
 
             if ($sql_update) {
-                $alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                    Usuario modificado exitosamente.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                $alert = '<div class="alert alert-success">Usuario modificado exitosamente.</div>';
             } else {
-                $alert = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Error al modificar el usuario.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                $alert = '<div class="alert alert-danger">Error al modificar el usuario.</div>';
             }
         }
     }
 }
 include "includes/header.php";
 ?>
-<div class="card">
+
+<div class="card shadow-lg">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="fas fa-user"></i> Gestión de Usuarios</h4>
+    </div>
     <div class="card-body">
-        <form action="" method="post" autocomplete="off" id="formulario">
+        <form action="" method="post" autocomplete="off">
             <?php echo isset($alert) ? $alert : ''; ?>
             <div class="row">
                 <input type="hidden" name="id" value="<?php echo $data['id'] ?? ''; ?>">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="nombre">Nombre</label>
+                        <label for="nombre" class="font-weight-bold">Nombre</label>
                         <input type="text" class="form-control" placeholder="Ingrese Nombre" name="nombre" id="nombre"
                             value="<?php echo $data['nombre'] ?? ''; ?>">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="correo">Correo</label>
+                        <label for="correo" class="font-weight-bold">Correo</label>
                         <input type="email" class="form-control" placeholder="Ingrese correo Electrónico" name="correo"
                             id="correo" value="<?php echo $data['correo'] ?? ''; ?>">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="rol">Rol</label>
+                        <label for="rol" class="font-weight-bold">Rol</label>
                         <select id="rol" class="form-control" name="rol">
                             <option value="1" <?php echo (isset($data['rol']) && $data['rol'] == 1) ? 'selected' : ''; ?>>
                                 Administrador</option>
@@ -145,7 +113,7 @@ include "includes/header.php";
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="turno">Turno</label>
+                        <label for="turno" class="font-weight-bold">Turno</label>
                         <select id="turno" class="form-control" name="turno">
                             <option value="diurno" <?php echo (isset($data['turno']) && $data['turno'] == 'diurno') ? 'selected' : ''; ?>>Diurno</option>
                             <option value="nocturno" <?php echo (isset($data['turno']) && $data['turno'] == 'nocturno') ? 'selected' : ''; ?>>Nocturno</option>
@@ -155,7 +123,7 @@ include "includes/header.php";
                 <?php if (empty($data['id'])) { ?>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="pass">Contraseña</label>
+                            <label for="pass" class="font-weight-bold">Contraseña</label>
                             <input type="password" class="form-control" placeholder="Ingrese Contraseña" name="pass"
                                 id="pass">
                         </div>
@@ -168,54 +136,45 @@ include "includes/header.php";
         </form>
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-hover table-striped table-bordered mt-2" id="tbl">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Turno</th>
-                <th>Rol</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE estado = 1");
-            $result = mysqli_num_rows($query);
-            if ($result > 0) {
-                while ($data = mysqli_fetch_assoc($query)) {
-                    if ($data['rol'] == 1) {
-                        $rol = '<span class="badge badge-success">Administrador</span>';
-                    } elseif ($data['rol'] == 2) {
-                        $rol = '<span class="badge badge-info">Cocinero</span>';
-                    } elseif ($data['rol'] == 3) {
-                        $rol = '<span class="badge badge-warning">Mesero</span>';
-                    } elseif ($data['rol'] == 4) {
-                        $rol = '<span class="badge badge-primary">Bartender</span>';
-                    } elseif ($data['rol'] == 5) {
-                        $rol = '<span class="badge badge-secondary">Cajero</span>';
-                    }
-                    ?>
+
+<div class="card shadow-lg">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center" style="border: 2px solid #2C3E50;">
+                <thead style="background-color: #2C3E50; color: white;">
                     <tr>
-                        <td><?php echo $data['id']; ?></td>
-                        <td><?php echo $data['nombre']; ?></td>
-                        <td><?php echo $data['correo']; ?></td>
-                        <td><?php echo $data['turno']; ?></td>
-                        <td><?php echo $rol; ?></td>
-                        <td>
-                            <a href="usuarios.php?id=<?php echo $data['id']; ?>" class="btn btn-success"><i
-                                    class="fas fa-edit"></i></a>
-                            <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=usuarios" method="post"
-                                class="confirmar d-inline">
-                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                        </td>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Turno</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
                     </tr>
-                <?php }
-            } ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    <?php
+                    $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE estado = 1");
+                    while ($data = mysqli_fetch_assoc($query)) { ?>
+                        <tr>
+                            <td><?php echo $data['id']; ?></td>
+                            <td><?php echo $data['nombre']; ?></td>
+                            <td><?php echo $data['correo']; ?></td>
+                            <td><?php echo ucfirst($data['turno']); ?></td>
+                            <td><?php echo ucfirst($data['rol']); ?></td>
+                            <td>
+                                <a href="usuarios.php?id=<?php echo $data['id']; ?>" class="btn btn-warning"><i
+                                        class="fas fa-edit"></i></a>
+                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=usuarios" method="post"
+                                    class="d-inline">
+                                    <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
 <?php include_once "includes/footer.php"; ?>
