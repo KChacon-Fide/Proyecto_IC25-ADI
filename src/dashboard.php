@@ -8,12 +8,13 @@ $query2 = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM platos WHERE e
 $totalPlatos = mysqli_fetch_assoc($query2);
 $query3 = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM usuarios WHERE estado = 1");
 $totalUsuarios = mysqli_fetch_assoc($query3);
-$query4 = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM pedidos WHERE estado = 1");
+$query4 = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM pedidos");
 $totalPedidos = mysqli_fetch_assoc($query4);
 
 $query5 = mysqli_query($conexion, "SELECT SUM(total) AS total FROM pedidos");
 $totalVentas = mysqli_fetch_assoc($query5);
 ?>
+<link rel="stylesheet" href="../assets/dist/css/dashboard.css">
 <div class="card">
     <div class="card-header text-center">
         Panel
@@ -31,7 +32,8 @@ $totalVentas = mysqli_fetch_assoc($query5);
                     <div class="icon">
                         <i class="ion ion-bag"></i>
                     </div>
-                    <a href="platos.php" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="platos.php" class="small-box-footer">Más Información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -46,7 +48,8 @@ $totalVentas = mysqli_fetch_assoc($query5);
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="salas.php" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="salas.php" class="small-box-footer">Más Información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -61,7 +64,8 @@ $totalVentas = mysqli_fetch_assoc($query5);
                     <div class="icon">
                         <i class="ion ion-person-add"></i>
                     </div>
-                    <a href="usuarios.php" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="usuarios.php" class="small-box-footer">Más Información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -76,7 +80,8 @@ $totalVentas = mysqli_fetch_assoc($query5);
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="lista_ventas.php" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="lista_ventas.php" class="small-box-footer">Más Información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -92,7 +97,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
                     <div class="card-body">
                         <div class="d-flex">
                             <p class="d-flex flex-column">
-                                <span class="text-bold text-lg">$<?php echo $totalVentas['total']; ?></span>
+                                <span class="text-bold text-lg">₡<?php echo $totalVentas['total']; ?></span>
                                 <span>Total</span>
                             </p>
                         </div>

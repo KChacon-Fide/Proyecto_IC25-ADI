@@ -3,6 +3,9 @@ session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     include_once "includes/header.php";
 ?>
+
+<link rel="stylesheet" href="../assets/dist/css/pedido.css">
+
 <div class="container-fluid">
     <div class="row">
         <!-- Sección de Platos y Bebidas -->
@@ -79,38 +82,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         </div>
     </div>
 </div>
-
-<style>
-    .product-card {
-        border: 1px solid #ddd;
-        padding: 10px;
-        transition: 0.3s;
-        border-radius: 10px;
-        background-color: #f8f9fa;
-    }
-
-    .product-card img {
-        width: 100%;
-        height: auto;
-        border-radius: 5px;
-    }
-
-    .price-badge {
-        display: block;
-        font-size: 16px;
-        padding: 5px;
-        margin-bottom: 5px;
-    }
-
-    .pedido-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
-    }
-    
-</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

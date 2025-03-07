@@ -1,0 +1,28 @@
+    .product-card {
+        border: 1px solid #ddd;
+        padding: 10px;
+        transition: 0.3s;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .product-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .price-badge {
+        display: block;
+        font-size: 16px;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+    .pedido-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
