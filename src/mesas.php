@@ -95,14 +95,14 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     <div class="btn-group d-flex">
                                         <?php
                                         if (!$isPendiente) {
-                                            echo '<a class="btn btn-outline-info w-50" href="pedido.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-concierge-bell"></i> Atender</a>';
+                                            echo '<a class="btn btn-outline-info w-50" href="pedido.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-concierge-bell"></i> <!--Atender --> </a>';
                                         } else {
                                             echo '<a class="btn btn-outline-success w-50" href="finalizar.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-check-circle"></i> Finalizar</a>';
                                         }
                                         ?>
                                         <a class="btn btn-outline-info w-50" href="#" data-toggle="modal"
                                             data-target="#cambiarMesaModal" onclick="setMesaId(<?php echo $data['id_mesa']; ?>)">
-                                            <i class="fas fa-exchange-alt"></i> Cambio
+                                            <i class="fas fa-exchange-alt"> </i> <!--Cambiar -->
                                         </a>
                                     </div>
 

@@ -3,16 +3,26 @@ session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     require_once "../conexion.php";
     $id_user = $_SESSION['idUser'];
-    $query = mysqli_query($conexion, "SELECT p.*, s.nombre AS sala, u.nombre FROM pedidos p INNER JOIN salas s ON p.id_sala = s.id INNER JOIN usuarios u ON p.id_usuario = u.id");
+
+    $limit = 40;
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $offset = ($page - 1) * $limit;
+
+    $total_pedidos_query = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM pedidos");
+    $total_pedidos = mysqli_fetch_assoc($total_pedidos_query)['total'];
+    $total_pages = ceil($total_pedidos / $limit);
+
+    $query = mysqli_query($conexion, "SELECT p.*, s.nombre AS sala, u.nombre FROM pedidos p INNER JOIN salas s ON p.id_sala = s.id INNER JOIN usuarios u ON p.id_usuario = u.id LIMIT $limit OFFSET $offset");
+
     include_once "includes/header.php";
     ?>
     <div class="card shadow-lg rounded">
         <div class="card-header bg-primary text-white d-flex align-items-center">
-            <h3 class="mb-0"><i class="fas fa-history mr-2"></i> Historial de Órdenes</h3>
+            <h4 class="mb-0"><i class="fas fa-door-open"></i> Historial de Órdenes</h4>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">
                         <tr>
                             <th>#</th>
@@ -45,9 +55,39 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 </table>
             </div>
         </div>
+
+        <div class="text-center mt-3">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <?php if ($page > 1): ?>
+                        <li class="page-item"><a class="page-link" href="?page=<?php echo $page - 1; ?>">Anterior</a></li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $total_pages): ?>
+                        <li class="page-item"><a class="page-link" href="?page=<?php echo $page + 1; ?>">Siguiente</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+        </div>
+
         <div class="card-footer text-right">
-            <a href="Reporte.php" class="btn btn-danger btn-lg shadow">
-                <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+            <a href="Reporte.php" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
+                <i class="fas fa-file-pdf"></i> Día
+            </a>
+            <a href="ReporteSemanal.php" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
+                <i class="fas fa-file-pdf"></i> Semana
+            </a>
+            <a href="ReporteMes.php" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
+                <i class="fas fa-file-pdf"></i> Mes
+            </a>
+            <a href="ReporteAño.php" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
+                <i class="fas fa-file-pdf"></i> Año
             </a>
         </div>
     </div>
@@ -55,7 +95,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     <style>
         .custom-thead {
             background: #1E3A8A;
-
             color: white;
             font-size: 16px;
             text-transform: uppercase;
@@ -63,7 +102,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
 
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
-
         }
 
         .table td,
@@ -93,6 +131,16 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             font-size: 18px;
+        }
+
+        .pagination .page-link {
+            color: #1E3A8A;
+        }
+
+        .pagination .active .page-link {
+            background-color: #1E3A8A;
+            border-color: #1E3A8A;
+            color: white;
         }
     </style>
 

@@ -85,7 +85,8 @@ include_once "includes/header.php";
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Modificar Datos</button>
+            <button type="submit" class="btn btn-primary" style="background-color: #1E3A8A;"><i class="fas fa-save"></i>
+                Modificar Datos</button>
         </form>
     </div>
 </div>

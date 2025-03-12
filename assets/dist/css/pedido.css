@@ -26,3 +26,21 @@
         padding: 8px;
         border-bottom: 1px solid #ddd;
     }
+
+    #pedidos-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .pedido-card {
+        width: 300px;
+    }
+
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }

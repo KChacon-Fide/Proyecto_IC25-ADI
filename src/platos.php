@@ -78,11 +78,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         }
     }
     include_once "includes/header.php";
-?>
-    
+    ?>
+
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white">
-            <h3><i class="fas fa-utensils"></i> Gestión de Platos</h3>
+            <h4 class="mb-0"><i class="fas fa-door-open"></i> Gestión de Platos</h4>
         </div>
         <div class="card-body">
             <form action="" method="post" autocomplete="off" id="formulario" enctype="multipart/form-data">
@@ -93,7 +93,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <input type="hidden" id="id" name="id">
                             <input type="hidden" id="foto_actual" name="foto_actual">
                             <label for="plato" class="text-dark font-weight-bold">Nombre del Plato</label>
-                            <input type="text" placeholder="Ingrese nombre del plato" name="plato" id="plato" class="form-control">
+                            <input type="text" placeholder="Ingrese nombre del plato" name="plato" id="plato"
+                                class="form-control">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -110,7 +111,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     </div>
                     <div class="col-md-3">
                         <label for="">Acciones</label> <br>
-                        <input type="submit" value="Registrar" class="btn btn-primary">
+                        <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
                         <input type="button" value="Nuevo" onclick="limpiar()" class="btn btn-success">
                     </div>
                 </div>
@@ -119,44 +120,58 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     </div>
 
     <div class="card shadow-lg">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="tbl" style="border: 0.5px solid #2C3E50;">
-                <thead style="background-color: #2C3E50; color: white;">
-                    <tr>
-                        <th style="border: 0.5px solid #2C3E50;">#</th>
-                        <th style="border: 0.5px solid #2C3E50;">Plato</th>
-                        <th style="border: 0.5px solid #2C3E50;">Precio</th>
-                        <th style="border: 0.5px solid #2C3E50;">Imagen</th>
-                        <th style="border: 0.5px solid #2C3E50;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
-                    while ($data = mysqli_fetch_assoc($query)) { ?>
+        <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+            <div class="table-responsive">
+                <table class="table table-bordered table-center" id="tbl" style="border: 0.5px solid #1E3A8A;">
+                    <thead style="background-color: #1E3A8A; color: white;">
                         <tr>
-                            <td style="border: 0.5px solid #2C3E50;"><?php echo $data['id']; ?></td>
-                            <td class="font-weight-bold" style="border: 0.5px solid #2C3E50;"><?php echo strtoupper($data['nombre']); ?></td>
-                            <td style="border: 0.5px solid #2C3E50;"><span class="text-success font-weight-bold">₡<?php echo number_format($data['precio'], 0); ?></span></td>
-                            <td style="border: 0.5px solid #2C3E50;">
-                                <img class="img-thumbnail" src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>" alt="" width="80">
-                            </td>
-                            <td style="border: 0.5px solid #2C3E50;">
-                                <a href="#" onclick="editarPlato(<?php echo $data['id']; ?>)" class="btn btn-warning text-white"><i class='fas fa-edit'></i></a>
-                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=platos" method="post" class="d-inline">
-                                    <button class="btn btn-danger" type="submit"><i class='fas fa-trash-alt'></i></button>
-                                </form>
-                            </td>
+                            <th style="border: 0.5px solid #1E3A8A;">#</th>
+                            <th style="border: 0.5px solid #1E3A8A;">Plato</th>
+                            <th style="border: 0.5px solid #1E3A8A;">Precio</th>
+                            <th style="border: 0.5px solid #1E3A8A;">Imagen</th>
+                            <th style="border: 0.5px solid #1E3A8A;">Acciones</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
+                        while ($data = mysqli_fetch_assoc($query)) { ?>
+                            <tr>
+                                <td style="border: 0.5px solid #1E3A8A;"><?php echo $data['id']; ?></td>
+                                <td class="font-weight-bold" style="border: 0.5px solid #1E3A8A;">
+                                    <?php echo strtoupper($data['nombre']); ?>
+                                </td>
+                                <td style="border: 0.5px solid #1E3A8A;"><span
+                                        class="text-success font-weight-bold">₡<?php echo number_format($data['precio'], 0); ?></span>
+                                </td>
+                                <td style="border: 0.5px solid #1E3A8A;">
+                                    <img class="img-thumbnail"
+                                        src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
+                                        alt="" width="80">
+                                </td>
+                                <td style="border: 0.5px solid #1E3A8A;">
+                                    <a href="#" onclick="editarPlato(<?php echo $data['id']; ?>)" class="btn btn-warning">
+                                        <i class='fas fa-edit'></i></a>
+                                    <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=platos" method="post"
+                                        class="d-inline">
+                                        <button class="btn btn-danger" type="submit">
+                                            <i class='fas fa-trash-alt'></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    <style>
+        .table tbody tr:hover {
+            background: rgba(30, 58, 138, 0.1);
 
-<?php include_once "includes/footer.php";
+        }
+    </style>
+    <?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 }

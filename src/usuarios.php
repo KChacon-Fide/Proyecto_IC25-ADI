@@ -6,7 +6,6 @@ if ($_SESSION['rol'] != 1) {
 }
 include "../conexion.php";
 
-
 $data = null;
 if (!empty($_GET['id'])) {
     $idUsuario = $_GET['id'];
@@ -19,7 +18,6 @@ if (!empty($_GET['id'])) {
         exit;
     }
 }
-
 if (!empty($_POST)) {
     $id = $_POST['id'];
     $nombre = $_POST['nombre'];
@@ -51,7 +49,6 @@ if (!empty($_POST)) {
                 }
             }
         } else {
-
             $pass = $_POST['pass'] ?? null;
             if (!empty($pass)) {
                 $pass = md5($pass);
@@ -131,8 +128,9 @@ include "includes/header.php";
                 <?php } ?>
             </div>
             <input type="submit" value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
-                class="btn btn-primary">
-            <a href="usuarios.php" class="btn btn-secondary">Cancelar</a>
+                class="btn btn-primary" style="background-color: #1E3A8A;">
+            <a href="usuarios.php" class="btn btn-danger"> <i class="fas fa-trash-alt"></i>
+            </a>
         </form>
     </div>
 </div>
@@ -140,8 +138,8 @@ include "includes/header.php";
 <div class="card shadow-lg">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered text-center" style="border: 2px solid #2C3E50;">
-                <thead style="background-color: #2C3E50; color: white;">
+            <table class="table table-bordered text-center" style="border: 2px solid #1E3A8A;">
+                <thead style="background-color: #1E3A8A; color: white;">
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
@@ -166,7 +164,9 @@ include "includes/header.php";
                                         class="fas fa-edit"></i></a>
                                 <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=usuarios" method="post"
                                     class="d-inline">
-                                    <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt"></i></button>
+                                    <button class="btn btn-danger" type="submit">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -176,5 +176,4 @@ include "includes/header.php";
         </div>
     </div>
 </div>
-
 <?php include_once "includes/footer.php"; ?>

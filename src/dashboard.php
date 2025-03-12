@@ -23,7 +23,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
         <div class="row">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-info">
+                <div class="small-box bg-info" style="background-color:rgb(67, 163, 184) !important;">
                     <div class="inner">
                         <h3><?php echo $totalPlatos['total']; ?></h3>
 
@@ -39,7 +39,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
             <!-- ./col -->
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-success">
+                <div class="small-box bg-success" style="background-color:rgb(67, 167, 69) !important;">
                     <div class="inner">
                         <h3><?php echo $totalSalas['total']; ?></h3>
 
@@ -55,7 +55,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
             <!-- ./col -->
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-warning">
+                <div class="small-box bg-warning" style="background-color:rgb(255, 172, 5) !important;">
                     <div class="inner">
                         <h3><?php echo $totalUsuarios['total']; ?></h3>
 
@@ -71,7 +71,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
             <!-- ./col -->
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-danger">
+                <div class="small-box bg-danger" style="background-color:rgb(191, 36, 51) !important;">
                     <div class="inner">
                         <h3><?php echo $totalPedidos['total']; ?></h3>
 

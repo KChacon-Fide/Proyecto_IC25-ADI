@@ -8,7 +8,7 @@ class PDF extends FPDF
     function Header()
     {
         $this->SetFont('Arial', 'B', 18);
-        $this->Cell(0, 15, utf8_decode('REPORTE DE ÓRDENES DEL DÍA'), 0, 1, 'C');
+        $this->Cell(0, 15, utf8_decode('REPORTE DE ÓRDENES DE LA SEMANA'), 0, 1, 'C');
         $this->Ln(8);
 
         $this->SetX(27);
@@ -35,11 +35,13 @@ $pdf = new PDF('L', 'mm', 'A4');
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 12);
 
-$fecha_hoy = date('Y-m-d');
+$fecha_inicio_semana = date('Y-m-d', strtotime('monday this week'));
+$fecha_fin_semana = date('Y-m-d', strtotime('sunday this week'));
+
 $query = mysqli_query($conexion, "SELECT p.*, s.nombre AS sala, u.nombre FROM pedidos p 
     INNER JOIN salas s ON p.id_sala = s.id 
     INNER JOIN usuarios u ON p.id_usuario = u.id 
-    WHERE DATE(p.fecha) = '$fecha_hoy'");
+    WHERE DATE(p.fecha) BETWEEN '$fecha_inicio_semana' AND '$fecha_fin_semana'");
 
 $rowHeight = 12;
 
@@ -53,5 +55,5 @@ while ($row = mysqli_fetch_assoc($query)) {
     $pdf->Cell(50, $rowHeight, utf8_decode($row['nombre']), 1, 1, 'C');
 }
 
-$pdf->Output('I', 'Historial Ordenes.pdf');
+$pdf->Output('I', 'Historial Ordenes Semana.pdf');
 ?>

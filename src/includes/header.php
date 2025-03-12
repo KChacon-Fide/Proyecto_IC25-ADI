@@ -9,7 +9,7 @@ if (empty($_SESSION['active'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistema de restaurante</title>
+    <title>Sistema RSI</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -22,17 +22,10 @@ if (empty($_SESSION['active'])) {
     <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../assets/dist/css/custom.css">
-
-
-    
-
-
-
-    
 </head>
 
 <body class="hold-transition sidebar-mini">
-<script src="../assets/js/sweetalert2.all.min.js"></script>
+    <script src="../assets/js/sweetalert2.all.min.js"></script>
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -133,6 +126,13 @@ if (empty($_SESSION['active'])) {
 
                         </li>
 
+                        <li class="nav-item">
+                            <a href="bebidas.php" class="nav-link">
+                                <i class="nav-icon fas fa-wine-glass"></i>
+                                <p>Bebidas</p>
+                            </a>
+                        </li>
+
                         <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             echo '<li class="nav-item">
                                 <a href="platos.php" class="nav-link">
@@ -175,14 +175,9 @@ if (empty($_SESSION['active'])) {
                                     </li>
                                 </ul>
                             </li>';
-                        } ?>                    
-                       
-                        <li class="nav-item">
-                            <a href="bebidas.php" class="nav-link">
-                                <i class="nav-icon fas fa-wine-glass"></i>
-                                <p>Bebidas</p>
-                            </a>
-                        </li>
+                        } ?>
+
+
                         <li class="nav-item">
                             <a href="cocina.php" class="nav-link">
                                 <i class="nav-icon fas fa-utensils"></i>
@@ -197,8 +192,8 @@ if (empty($_SESSION['active'])) {
                         </li>
                         <li class="nav-item">
                             <a href="mesero.php" class="nav-link">
-                            <i class="nav-icon fas fa-check-circle"></i>
-                            <p>Pedidos Mesero</p>
+                                <i class="nav-icon fas fa-check-circle"></i>
+                                <p>Pedidos Mesero</p>
                             </a>
                         </li>
 

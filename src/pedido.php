@@ -30,7 +30,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
                                          class="product-image img-thumbnail">
                                     <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
-                                    <span class="badge badge-dark price-badge">₡<?php echo number_format($data['precio'], 2); ?></span>
+                                    <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
                                     <button class="btn btn-success btn-sm addDetalle"
                                             data-id="<?php echo $data['id']; ?>" data-tipo="plato">
                                         <i class="fas fa-cart-plus"></i> Agregar
@@ -51,7 +51,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
                                          class="product-image img-thumbnail">
                                     <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
-                                    <span class="badge badge-dark price-badge">₡<?php echo number_format($data['precio'], 2); ?></span>
+                                    <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
                                     <button class="btn btn-success btn-sm addDetalleBebida"
                                             data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
                                         <i class="fas fa-cart-plus"></i> Agregar
@@ -65,17 +65,17 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         </div>
         <div class="col-md-4">
             <div class="card shadow-lg">
-                <div class="card-header bg-secondary text-white text-center">
+                <div class="card-header text-white text-center" style="background-color: #007bff;">
                     <h4><i class="fas fa-shopping-cart"></i> Pedido</h4>
                 </div>
                 <div class="card-body">
                     <div id="detalle_pedido"></div>
                     <hr>
                     <button class="btn btn-danger btn-block" id="limpiar_pedido">
-                        <i class="fas fa-trash-alt"></i> Limpiar Pedido
+                        <i class="fas fa-trash-alt"></i>  Limpiar Pedido
                     </button>
-                    <button class="btn btn-primary btn-block" id="realizar_pedido">
-                        <i class="fas fa-check"></i> Realizar Pedido
+                    <button class="btn btn-primary btn-block" id="realizar_pedido" style="background-color: #1E3A8A;">
+                        <i class="fas fa-check"></i>  Realizar Pedido
                     </button>
                 </div>
             </div>
