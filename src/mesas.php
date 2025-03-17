@@ -45,7 +45,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         <select name="estado" id="estado" class="form-control">
                                             <option value="DISPONIBLE">Disponible</option>
                                             <option value="OCUPADA">Ocupada</option>
-                                            <option value="RESERVADA">Reservada</option>
+                                            <option value="DESACTIVADA">Reservada</option>
                                         </select>
                                     </div>
                                 </div>
@@ -59,8 +59,12 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                     <?php } ?>
                 </div>
             </div>
+            </div>
+            </div>
 
-            <hr>
+
+            <div class="card shadow-lg">
+            <div class="card-body">
 
             <div class="row">
                 <?php
@@ -76,9 +80,9 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                         <div class="col-md-4">
                             <div class="card border-secondary shadow-lg">
                                 <div class="card-header bg-<?php
-                                if ($data['estado'] == 'RESERVADA' && $isPendiente) {
+                                if ($data['estado'] == 'DESACTIVADA' && $isPendiente) {
                                     echo 'danger';
-                                } elseif ($data['estado'] == 'RESERVADA') {
+                                } elseif ($data['estado'] == 'DESACTIVADA') {
                                     echo 'warning';
                                 } elseif ($isPendiente) {
                                     echo 'danger';
@@ -97,6 +101,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         if (!$isPendiente) {
                                             echo '<a class="btn btn-outline-info w-50" href="pedido.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-concierge-bell"></i> <!--Atender --> </a>';
                                         } else {
+                                            
                                             echo '<a class="btn btn-outline-success w-50" href="finalizar.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-check-circle"></i> Finalizar</a>';
                                         }
                                         ?>
@@ -162,6 +167,42 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             </div>
         </div>
     </div>
+     <!-- Modal para agregar mesas (solo para Administradores) -->
+     <?php if ($_SESSION['rol'] == 1) { ?>
+         <div class="modal fade" id="agregarMesasModal" tabindex="-1" role="dialog" aria-labelledby="agregarMesasModalLabel"
+             aria-hidden="true">
+             <div class="modal-dialog" role="document">
+                 <form action="agregar_mesas.php" method="post">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5 class="modal-title" id="agregarMesasModalLabel">Agregar Mesas</h5>
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                 <span aria-hidden="true">&times;</span>
+                             </button>
+                         </div>
+                         <div class="modal-body">
+                             <input type="hidden" name="id_sala" value="<?php echo $id; ?>">
+                             <div class="form-group">
+                                 <label for="nuevas_mesas">Cantidad de Mesas</label>
+                                 <input type="number" name="nuevas_mesas" id="nuevas_mesas" class="form-control" required>
+                             </div>
+                             <div class="form-group">
+                                 <label for="capacidad">Capacidad</label>
+                                 <input type="number" name="capacidad" id="capacidad" class="form-control" required>
+                             </div>
+                         </div>
+                         <div class="modal-footer">
+                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                             <button type="submit" class="btn btn-primary">Guardar</button>
+                         </div>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     <?php } ?>
+<!-- jQuery y Bootstrap JS (justo antes de cerrar el body) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         function cargarDatosMesa(idMesa, capacidad, estado) {
@@ -173,6 +214,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         function setMesaId(mesaId) {
             document.getElementById('id_mesa_antigua').value = mesaId;
         }
+        
+    
     </script>
 
     <?php

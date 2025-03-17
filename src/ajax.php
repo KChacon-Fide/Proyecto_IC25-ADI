@@ -173,13 +173,20 @@ if (isset($_POST['regDetalleBebida'])) {
         $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario, tipo, id_sala, num_mesa) VALUES (1, $precio, $id_producto, $id_user, 2, $id_sala, $id_mesa)");
     } else {
         $nueva = $row['cantidad'] + 1;
-        $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2 AND id_sala = $id_sala AND id_mesa = $id_mesa");
+        $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2 AND id_sala = $id_sala AND num_mesa = $id_mesa");
     }
     if ($query) {
-        $msg = "registrado";
+        // Reducir la cantidad en el inventario
+        $update_inventario = mysqli_query($conexion, "UPDATE inventario SET cantidad = cantidad - 1 WHERE id_bebida = $id_producto");
+        if ($update_inventario) {
+            $msg = "registrado";
+        } else {
+            $msg = "Error al actualizar el inventario";
+        }
     } else {
         $msg = "Error al ingresar";
     }
     echo json_encode($msg);
     die();
 }
+

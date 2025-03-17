@@ -46,10 +46,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                         <?php
                         $queryBebidas = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
                         while ($data = mysqli_fetch_assoc($queryBebidas)) { ?>
-                            <div class="col-md-3">
-                                <div class="card product-card text-center p-2">
+                            <div class="col-md-3"  >
+                            <div class="card product-card text-center p-2">
                                     <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                         class="product-image img-thumbnail">
+                                         class="product-image img-thumbnail"
+                                         style="width: 180px; height: 150px; object-fit:contain ; border-radius: 8px;">
                                     <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
                                     <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
                                     <button class="btn btn-success btn-sm addDetalleBebida"
@@ -69,7 +70,9 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                     <h4><i class="fas fa-shopping-cart"></i> Pedido</h4>
                 </div>
                 <div class="card-body">
+                    <div  style="width: 1000px; ">
                     <div id="detalle_pedido"></div>
+                    </div>
                     <hr>
                     <button class="btn btn-danger btn-block" id="limpiar_pedido">
                         <i class="fas fa-trash-alt"></i>  Limpiar Pedido
@@ -123,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
         });
 
-        detalleHTML += <hr><h5>Total: ₡${total.toFixed(2)}</h5>;
+        detalleHTML += <h5>Total: ₡${total.toFixed(2)}</h5>;
         document.getElementById("detalle_pedido").innerHTML = detalleHTML;
 
         document.querySelectorAll(".remove-product").forEach(button => {
@@ -158,9 +161,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    document.getElementById("realizar_pedido").addEventListener("click", function () {
+    document.getElementById("realizar_pedido").addEventListener("click", function (event) {
+        event.preventDefault();
+        // Aquí puedes agregar la lógica para procesar el pedido sin redirigir a otra página
         console.log("Pedido procesado:", pedido);
         alert("Pedido procesado con éxito.");
+        // Eliminar cualquier lógica de redirección
     });
 });
 </script>

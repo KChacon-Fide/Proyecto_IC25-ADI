@@ -133,6 +133,23 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+CREATE TABLE proveedores (
+    id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(50) UNIQUE NOT NULL
+);
+CREATE TABLE inventario (
+  id_inventario INT PRIMARY KEY AUTO_INCREMENT,
+  id_bebida INT,
+  cantidad DECIMAL(10,2) NOT NULL,
+  precio Decimal (10,2) NOT NULL,
+  total DECIMAL(10,2),
+  iva DECIMAL(10,2) DEFAULT 0,
+  total_final DECIMAL(10,2),
+  id_proveedor int,
+  FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
+  FOREIGN KEY (id_bebida) REFERENCES bebidas(id)
+);
+
 /*Ejecutar este alter que hace falta para la tabla de Users*/
 ALTER TABLE usuarios ADD COLUMN turno ENUM('diurno', 'nocturno') NOT NULL DEFAULT 'diurno';
 

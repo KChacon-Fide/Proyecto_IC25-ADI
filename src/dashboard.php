@@ -55,7 +55,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
             <!-- ./col -->
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-warning" style="background-color:rgb(255, 172, 5) !important;">
+                <div class="small-box bg-success" style="background-color:rgb(255, 172, 5) !important;">
                     <div class="inner">
                         <h3><?php echo $totalUsuarios['total']; ?></h3>
 
