@@ -165,16 +165,15 @@ function listar() {
         html += `<div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <div class="col-12">
-                        <img src="${row.imagen}" class="product-image" alt="Product Image">
-                    </div>
-                    <p class="my-3">${row.nombre}</p>
-                    <h2 class="mb-3">${row.precio}</h2>
+                    
+                    <p class="my-2">Producto: ${row.nombre}</p>
+                    <p class="mb-2">Precio: ${row.precio}</p>
+                    <p class="mb-2">Cantidad: ${row.cantidad}</p>
                     <div class="mt-1">
-                        <input type="number" class="form-control addCantidad mb-2" data-id="${row.id}" value="${row.cantidad}">
+                       
                         <div class="form-group">
                                 <label for="addObservacion">Observaciones</label>
-                                <textarea id="addObservacion" class="form-control addObservacion"  rows="2" data-id="${row.id}"
+                                <textarea id="addObservacion" class="form-control addObservacion"  rows="1" data-id="${row.id}"
                                     placeholder="Observaciones">${row.observacion}</textarea>
                             </div>
                         <button class="btn btn-danger eliminarPlato" type="button" data-id="${row.id}">Eliminar</button>
