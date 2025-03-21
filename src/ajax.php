@@ -139,6 +139,7 @@ if (isset($_POST['regDetalle'])) {
     $id_user = $_SESSION['idUser'];
     $id_sala = $_POST['id_sala'];
     $id_mesa = $_POST['id_mesa'];
+    $cantidad = $_POST['cantidad'];
     $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 1 AND id_sala = $id_sala AND num_mesa = $id_mesa");
     $row = mysqli_fetch_assoc($consulta);
     if (empty($row)) {
@@ -164,6 +165,7 @@ if (isset($_POST['regDetalleBebida'])) {
     $id_user = $_SESSION['idUser'];
     $id_sala = $_POST['id_sala'];
     $id_mesa = $_POST['id_mesa'];
+    $cantidad = $_POST['cantidad'];
     $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2 AND id_sala = $id_sala AND num_mesa = $id_mesa");
     $row = mysqli_fetch_assoc($consulta);
     if (empty($row)) {
@@ -171,13 +173,15 @@ if (isset($_POST['regDetalleBebida'])) {
         $result = mysqli_fetch_assoc($producto);
         $precio = $result['precio'];
         $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario, tipo, id_sala, num_mesa) VALUES (1, $precio, $id_producto, $id_user, 2, $id_sala, $id_mesa)");
+        
     } else {
         $nueva = $row['cantidad'] + 1;
         $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2 AND id_sala = $id_sala AND num_mesa = $id_mesa");
+       
     }
     if ($query) {
         // Reducir la cantidad en el inventario
-        $update_inventario = mysqli_query($conexion, "UPDATE inventario SET cantidad = cantidad - 1 WHERE id_bebida = $id_producto");
+        $update_inventario = mysqli_query($conexion, "UPDATE inventario SET cantidad = cantidad - $cantidad WHERE id_bebida = $id_producto");
         if ($update_inventario) {
             $msg = "registrado";
         } else {

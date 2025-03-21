@@ -32,9 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   $(".addDetalleBebida").click(function () {
-    let id_producto = $(this).data("id");
-    registrarDetalleBebida(id_producto);
-  });
+  let id_producto = $(this).data("id");
+  let cantidad = parseInt($("#cantidad").val()) || 1; // Si no hay valor, toma 1 por defecto
+  registrarDetalleBebida(id_producto, cantidad);
+});
 
   $("#realizar_pedido").click(function (e) {
     e.preventDefault();
@@ -236,6 +237,10 @@ function registrarDetalle(id_pro) {
 function registrarDetalleBebida(id_pro) {
   let action = "regDetalleBebida";
   let params = new URLSearchParams(document.location.search);
+  
+  // Capturamos la cantidad desde el input
+  let cantidad = parseInt($("#cantidad").val()) || 1; // Si no hay valor, toma 1 por defecto
+  
   $.ajax({
     url: "ajax.php",
     type: "POST",
@@ -244,6 +249,7 @@ function registrarDetalleBebida(id_pro) {
       id: id_pro,
       id_mesa: params.get("mesa"),
       id_sala: params.get("id_sala"),
+      cantidad: cantidad, // Pasamos la cantidad
       regDetalleBebida: action,
     },
     success: function (response) {
