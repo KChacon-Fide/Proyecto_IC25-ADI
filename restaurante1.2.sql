@@ -190,5 +190,22 @@ SELECT * FROM config;
 INSERT INTO `mesas` (`id_sala`, `num_mesa`, `capacidad`, `estado`) VALUES
 (1, 1, 4, 'DISPONIBLE');
 
-
+CREATE TABLE repo_financiero (
+    id_reporte INT PRIMARY KEY AUTO_INCREMENT,
+    Fecha DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,  
+    inventario_inicial DECIMAL(12,2) NOT NULL, 
+    compras DECIMAL(12,2) NOT NULL,
+    gastos_mes DECIMAL(12,2) NOT NULL,
+    salarios DECIMAL(12,2) NOT NULL,
+    impuestos DECIMAL(12,2) NOT NULL,
+    cuentas_por_pagar DECIMAL(12,2) NOT NULL,
+    total_salidas DECIMAL(12,2) GENERATED ALWAYS AS 
+        (inventario_inicial + compras + gastos_mes + salarios + impuestos + cuentas_por_pagar) VIRTUAL, 
+    ventas DECIMAL(12,2) NOT NULL,
+    inventario_final DECIMAL(12,2),
+    total_entradas DECIMAL(12,2) GENERATED ALWAYS AS 
+        (ventas + inventario_final) VIRTUAL,
+    utilidades DECIMAL(12,2) GENERATED ALWAYS AS 
+        (total_entradas - total_salidas) VIRTUAL
+);
 
