@@ -103,34 +103,15 @@ if (empty($_SESSION['active'])) {
                             </a>
                         </li>';
                         } ?>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-pizza-slice"></i>
-                                <p>
-                                    Ordenar
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
+                        <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     echo '<li class="nav-item">
                                         <a href="index.php" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
+                                            <i class="nav-icon fas fa-pizza-slice"></i>
                                             <p>Nueva Orden</p>
                                         </a>
                                     </li>';
                                 }
-                                if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
-                                    echo '<li class="nav-item">
-                                        <a href="lista_ventas.php" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Historial</p>
-                                        </a>
-                                    </li>';
-                                } ?>
-                            </ul>
-
-                        </li>
+                                ?>
                        
                         
 
@@ -203,6 +184,32 @@ if (empty($_SESSION['active'])) {
                                             <p>Inventario</p>
                                         </a>
                                     </li>
+                                </ul>
+                        </li>';
+                        }?>
+                        <?php if ($_SESSION['rol'] == 1) {
+                            echo'<li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>
+                                    Reportes
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                        <a href="lista_ventas.php" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Historial Orden</p> 
+                                        </a>
+                                    </li>
+                                <li class="nav-item">
+                                        <a href="financiero.php" class="nav-link"> 
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Reporte Financiero</p> 
+                                        </a>
+                                    </li>
+                                
                                 </ul>
                         </li>';
                         }?>
