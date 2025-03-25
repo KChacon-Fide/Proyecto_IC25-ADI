@@ -30,31 +30,32 @@ CREATE TABLE `mesas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 
-CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_sala` int(11) NOT NULL,
-  `num_mesa` int(11) NOT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `total` decimal(10,2) NOT NULL,
-  `observacion` text DEFAULT NULL,
-  `estado` enum('ACTIVO','FINALIZADO') NOT NULL DEFAULT 'ACTIVO',
-  `id_usuario` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_sala` (`id_sala`)
+CREATE TABLE pedidos (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  id_sala int(11) NOT NULL,
+  num_mesa int(11) NOT NULL,
+  fecha timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  total decimal(10,2) NOT NULL,
+  observacion text DEFAULT NULL,
+  estado enum('ACTIVO','FINALIZADO') NOT NULL DEFAULT 'ACTIVO',
+  id_usuario int(11) NOT NULL,
+  ImpServicio int(25),
+  PRIMARY KEY (id),
+  KEY id_sala (id_sala)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
-CREATE TABLE `detalle_pedidos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(200) NOT NULL,
-  `precio` decimal(10,2) NOT NULL,
-  `cantidad` int(11) NOT NULL,
-  `id_pedido` int(11) NOT NULL,
-  `estado` enum('PENDIENTE', 'EN PREPARACION','LISTO PARA SERVIR', 'SERVIDO') NOT NULL DEFAULT 'PENDIENTE',
-  `tipo` varchar(200) NOT NULL COMMENT '1 plato, 2 bebida',
-  `observacion` text DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_pedido` (`id_pedido`),
-  CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`)
+CREATE TABLE detalle_pedidos (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  nombre varchar(200) NOT NULL,
+  precio decimal(10,2) NOT NULL,
+  cantidad int(11) NOT NULL,
+  id_pedido int(11) NOT NULL,
+  estado enum('PENDIENTE', 'EN PREPARACION','LISTO PARA SERVIR', 'SERVIDO') NOT NULL DEFAULT 'PENDIENTE',
+  tipo varchar(200) NOT NULL COMMENT '1 plato, 2 bebida',
+  observacion text DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY id_pedido (id_pedido),
+  CONSTRAINT detalle_pedidos_ibfk_1 FOREIGN KEY (id_pedido) REFERENCES pedidos (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 

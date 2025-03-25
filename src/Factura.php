@@ -59,6 +59,18 @@ $pdf->Cell(58, 5, "---------------------------------", 0, 1, 'C');
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->Cell(30, 6, 'TOTAL:', 0);
 $pdf->Cell(28, 6, '$' . number_format($total, 0), 0, 1, 'R');
+
+// Agregar ImpServicio
+$impServicio = $pedido['ImpServicio'];
+if ($impServicio > 0) {
+    $pdf->Cell(30, 6, 'Imp. Servicio:', 0);
+    $pdf->Cell(28, 6, '$' . number_format($impServicio, 0), 0, 1, 'R');
+    $total += $impServicio;
+}
+
+$pdf->Cell(30, 6, 'TOTAL FINAL:', 0);
+$pdf->Cell(28, 6, '$' . number_format($total, 0), 0, 1, 'R');
+
 $pdf->Ln(2);
 $pdf->SetFont('Arial', '', 8);
 $pdf->Cell(58, 5, "Pago: Efectivo", 0, 1, 'C');
