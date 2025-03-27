@@ -10,60 +10,86 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     <div class="row">
         <!-- Sección de Platos y Bebidas -->
         <div class="col-md-8">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4><i class="fas fa-utensils"></i> Menú</h4>
-                </div>
-                <div class="card-body">
-                    <input type="hidden" id="id_sala" value="<?php echo $_GET['id_sala'] ?>">
-                    <input type="hidden" id="mesa" value="<?php echo $_GET['mesa'] ?>">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h4><i class="fas fa-utensils"></i> Menú</h4>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="id_sala" value="<?php echo $_GET['id_sala'] ?>">
+            <input type="hidden" id="mesa" value="<?php echo $_GET['mesa'] ?>">
 
-                    <!-- Platos -->
-                    <h4 class="text-center mb-3">Platos</h4>
-                    <div class="row">
-                        <?php
-                        include "../conexion.php";
-                        $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
-                        while ($data = mysqli_fetch_assoc($query)) { ?>
-                            <div class="col-md-4">
-                                <div class="card product-card text-center p-2">
-                                    <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                         class="product-image img-thumbnail">
-                                    <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
-                                    <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
-                                    <button class="btn btn-success btn-sm addDetalle"
-                                            data-id="<?php echo $data['id']; ?>" data-tipo="plato">
-                                        <i class="fas fa-cart-plus"></i> Agregar
-                                    </button>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
+            <!-- Buscador -->
+            <div class="mb-3">
+                <input type="text" id="buscador" class="form-control" placeholder="Buscar platos o bebidas por nombre...">
+            </div>
 
-                    <!-- Bebidas -->
-                    <h4 class="text-center mt-4 mb-3">Bebidas</h4>
-                    <div class="row">
-                        <?php
-                        $queryBebidas = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
-                        while ($data = mysqli_fetch_assoc($queryBebidas)) { ?>
-                            <div class="col-md-3"  >
-                            <div class="card product-card text-center p-2">
-                                    <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                         class="product-image img-thumbnail"
-                                         style="width: 180px; height: 150px; object-fit:contain ; border-radius: 8px;">
-                                    <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
-                                    <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
-                                    <button class="btn btn-success btn-sm addDetalleBebida"
-                                            data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
-                                        <i class="fas fa-cart-plus"></i> Agregar
-                                    </button>
-                                </div>
-                            </div>
-                        <?php } ?>
+            <!-- Platos -->
+            <h4 class="text-center mb-3">Platos</h4>
+            <div class="row" id="contenedor_platos">
+                <?php
+                include "../conexion.php";
+                $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1");
+                while ($data = mysqli_fetch_assoc($query)) { ?>
+                    <div class="col-md-4 producto-item" data-nombre="<?php echo strtolower($data['nombre']); ?>">
+                        <div class="card product-card text-center p-2">
+                            <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
+                                 class="product-image img-thumbnail">
+                            <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
+                            <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
+                            <button class="btn btn-success btn-sm addDetalle"
+                                    data-id="<?php echo $data['id']; ?>" data-tipo="plato">
+                                <i class="fas fa-cart-plus"></i> Agregar
+                            </button>
+                        </div>
                     </div>
-                </div>
+                <?php } ?>
+            </div>
+
+            <!-- Bebidas -->
+            <h4 class="text-center mt-4 mb-3">Bebidas</h4>
+            <div class="row" id="contenedor_bebidas">
+                <?php
+                $queryBebidas = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
+                while ($data = mysqli_fetch_assoc($queryBebidas)) { ?>
+                    <div class="col-md-3 producto-item" data-nombre="<?php echo strtolower($data['nombre']); ?>">
+                        <div class="card product-card text-center p-2">
+                            <img src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
+                                 class="product-image img-thumbnail"
+                                 style="width: 180px; height: 150px; object-fit:contain ; border-radius: 8px;">
+                            <h6 class="mt-2"><?php echo $data['nombre']; ?></h6>
+                            <span class="badge badge-dark price-badge" style="background-color: #1E3A8A;">₡<?php echo number_format($data['precio'], 2); ?></span>
+                            <button class="btn btn-success btn-sm addDetalleBebida"
+                                    data-id="<?php echo $data['id']; ?>" data-tipo="bebida">
+                                <i class="fas fa-cart-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buscador = document.getElementById("buscador");
+    const productos = document.querySelectorAll(".producto-item");
+
+    buscador.addEventListener("input", function () {
+        const filtro = buscador.value.toLowerCase();
+        productos.forEach(producto => {
+            const nombre = producto.getAttribute("data-nombre");
+            if (nombre.includes(filtro)) {
+                producto.style.display = "block";
+            } else {
+                producto.style.display = "none";
+            }
+        });
+    });
+});
+
+</script>
+    <!-- Sección de pedido -->
         <div class="col-md-4">
             <div class="card shadow-lg">
                 <div class="card-header text-white text-center" style="background-color: #007bff;">
@@ -85,6 +111,13 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         </div>
     </div>
 </div>
+<style>
+    #detalle_pedido {
+        max-height: 800px; /* Limita la altura máxima del contenedor */
+        overflow-y: auto; /* Habilita el scroll vertical */
+           }
+           
+</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
