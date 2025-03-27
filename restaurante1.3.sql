@@ -1,5 +1,7 @@
+/*Crear el Databasse*/
 create database restaurante;
 
+/*Creacion de todas las tablas necesarias*/
 CREATE TABLE `config` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
@@ -69,25 +71,6 @@ CREATE TABLE `platos` (
   `estado` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
-CREATE TABLE `salas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `mesas` int(11) NOT NULL,
-  `estado` int(11) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
-CREATE TABLE `mesas` (
-  `id_mesa` INT AUTO_INCREMENT PRIMARY KEY,
-  `id_sala` INT NOT NULL,
-  `num_mesa` INT NOT NULL,
-  `capacidad` INT NOT NULL,
-  `estado` ENUM('DISPONIBLE', 'OCUPADA', 'DESACTIVADA') DEFAULT 'DISPONIBLE',
-  FOREIGN KEY (`id_sala`) REFERENCES `salas`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
-drop table ordenes_listas;
 
 CREATE TABLE `ordenes_listas` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -171,9 +154,7 @@ CREATE TABLE repo_financiero (
 /*Ejecutar este alter que hace falta para la tabla de Users*/
 ALTER TABLE usuarios ADD COLUMN turno ENUM('diurno', 'nocturno') NOT NULL DEFAULT 'diurno';
 
-
-
-
+/*Datos de prueba*/
 INSERT INTO `config` (`id`, `nombre`, `telefono`, `email`, `direccion`, `mensaje`) VALUES
 (1, 'Restaurante San Isidro', '89377531', 'mespinozacam@yahoo.es', 'Puriscal - San José', '¡Realizado con Exito!');
 
