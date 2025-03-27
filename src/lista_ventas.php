@@ -4,7 +4,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     require_once "../conexion.php";
     $id_user = $_SESSION['idUser'];
 
-    $limit = 40;
+    $limit = 10;
     $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
     $offset = ($page - 1) * $limit;
 
@@ -25,7 +25,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">
                         <tr>
-                            <th>#</th>
+                            
                             <th>Sala</th>
                             <th>Mesa</th>
                             <th>Fecha</th>
@@ -41,7 +41,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                 : '<span class="badge badge-success p-2">Completado</span>';
                             ?>
                             <tr>
-                                <td class="text-center"><?php echo $row['id']; ?></td>
+                               
                                 <td class="text-center font-weight-bold"><?php echo strtoupper($row['sala']); ?></td>
                                 <td class="text-center"><?php echo $row['num_mesa']; ?></td>
                                 <td class="text-center"><?php echo $row['fecha']; ?></td>
@@ -100,15 +100,25 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             text-transform: uppercase;
         }
 
+        
+        .table tbody  {
+            background-color:  rgba(77, 100, 165, 0.1);
+            
+
+        }
+        .table th{
+            border: 0.5px solid #1E3A8A;
+        }
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
-        }
+            
 
-        .table td,
-        .table th {
-            vertical-align: middle;
-            padding: 12px;
         }
+        .table td {
+            font-size: 14px;
+            border: none;
+        }
+   
 
         .badge {
             font-size: 14px;

@@ -52,27 +52,27 @@ include_once "includes/header.php";
     <div class="card-header bg-primary text-white">
         <h4 class="mb-0"><i class="fas fa-door-open"></i> Gestión de Salas</h4>
     </div>
-    <div class="card-body">
-        <form action="" method="post">
+    <div class="card-body text-center">
+        <form action="" method="post" >
             <?php echo isset($alert) ? $alert : ''; ?>
             <div class="row">
-                <div class="col-md-5">
+                <div class="col-md-2 ">
                     <div class="form-group">
                         <input type="hidden" id="id" name="id">
                         <label for="nombre" class="font-weight-bold">Nombre de la Sala</label>
                         <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese nombre">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2 ">
                     <div class="form-group">
                         <label for="mesas" class="font-weight-bold">Cantidad de Mesas</label>
                         <input type="number" name="mesas" id="mesas" class="form-control" placeholder="Número de mesas">
                     </div>
                 </div>
-                <div class="col-md-4 text-center">
+                <div class="col-md-2 ">
                     <label for="">Acciones</label> <br>
                     <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
-                    <input type="button" value="Nuevo" onclick="limpiar()" class="btn btn-success">
+                    
                 </div>
             </div>
         </form>
@@ -84,7 +84,7 @@ include_once "includes/header.php";
             <table class="table table-bordered text-center" style="border: 0.5px solid #1E3A8A;">
                 <thead style="background-color: #1E3A8A; color: white;">
                     <tr>
-                        <th style="border: 0.5px solid #1E3A8A;">#</th>
+                       
                         <th style="border: 0.5px solid #1E3A8A;">Nombre</th>
                         <th style="border: 0.5px solid #1E3A8A;">Mesas</th>
                         <th style="border: 0.5px solid #1E3A8A;">Acciones</th>
@@ -95,14 +95,14 @@ include_once "includes/header.php";
                     $query = mysqli_query($conexion, "SELECT * FROM salas WHERE estado = 1");
                     while ($data = mysqli_fetch_assoc($query)) { ?>
                         <tr>
-                            <td style="border: 0.5px solid #1E3A8A;"><?php echo $data['id']; ?></td>
-                            <td class="font-weight-bold" style="border: 0.5px solid #1E3A8A;">
+                            
+                            <td class="font-weight-bold" >
                                 <?php echo strtoupper($data['nombre']); ?>
                             </td>
-                            <td class="text-success font-weight-bold" style="border: 0.5px solid #1E3A8A;">
+                            <td class=" font-weight-bold" >
                                 <?php echo $data['mesas']; ?>
                             </td>
-                            <td style="border: 0.5px solid #1E3A8A;">
+                            <td >
                                 <a href="#"
                                     onclick="editarSala(<?php echo $data['id']; ?>, '<?php echo $data['nombre']; ?>', '<?php echo $data['mesas']; ?>')"
                                     class="btn btn-warning">
@@ -123,10 +123,24 @@ include_once "includes/header.php";
     </div>
 </div>
 <style>
-    .table tbody tr:hover {
-        background: rgba(30, 58, 138, 0.1);
-    }
-</style>
+        .table tbody  {
+            background-color:  rgba(77, 100, 165, 0.1);
+            
+
+        }
+        .table th{
+            border: 0.5px solid #1E3A8A;
+        }
+        .table tbody tr:hover {
+            background: rgba(30, 58, 138, 0.1);
+            
+
+        }
+        .table td {
+            font-size: 14px;
+            border: none;
+        }
+    </style>
 <script>
     function editarSala(id, nombre, mesas) {
         document.getElementById("id").value = id;

@@ -47,6 +47,17 @@ class PDF extends FPDF
     }
 }
 
+// Recibir las fechas del formulario
+$fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+$fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+
+// Validar que las fechas estén definidas
+if ($fecha_inicio && $fecha_fin) {
+    $query = mysqli_query($conexion, "SELECT * FROM repo_financiero WHERE Fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'");
+} else {
+    die('Error: Debe proporcionar un rango de fechas válido.');
+}
+
 // Creación del objeto de la clase heredada con orientación horizontal
 $pdf = new PDF('L', 'mm', 'A4');
 $pdf->AddPage();
@@ -56,7 +67,6 @@ $pdf->SetFont('Arial', '', 8);
 $header = array('Fecha', 'Inv Inicial', 'Compras', 'Gastos', 'Salarios', 'Impuestos', 'Cuentas x Pagar', 'Ttl Salidas', 'Ventas', 'Inv Final', 'Ttl Entradas', 'Utilidades');
 
 // Carga de datos
-$query = mysqli_query($conexion, "SELECT * FROM repo_financiero");
 $data = array();
 $total_utilidades = 0;
 while ($row = mysqli_fetch_assoc($query)) {

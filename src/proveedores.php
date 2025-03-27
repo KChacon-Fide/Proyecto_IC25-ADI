@@ -2,6 +2,19 @@
 session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     include "../conexion.php";
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $items_per_page = 5; // Número de proveedores por página
+    $offset = ($page - 1) * $items_per_page;
+
+    // Contar el total de registros
+    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM proveedores");
+    $total_result = mysqli_fetch_assoc($total_query);
+    $total_items = $total_result['total'];
+    $total_pages = ceil($total_items / $items_per_page);
+
+    // Modificar la consulta para incluir paginación
+    $query = mysqli_query($conexion, "SELECT * FROM proveedores LIMIT $items_per_page OFFSET $offset");
+
     if (!empty($_POST)) {
         $alert = "";
         $id = $_POST['id'];
@@ -83,7 +96,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     <div class="col-md-3">
                         <label for="">Acciones</label> <br>
                         <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
-                        <input type="button" value="Limpiar" onclick="limpiar()" class="btn btn-success">
+                        
                     </div>
                 </div>
             </form>
@@ -93,32 +106,25 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     <div class="card shadow-lg">
         <div class="card-body" style="max-height: 600px; overflow-y: auto;">
             <div class="table-responsive">
-                <table class="table table-bordered table-center" id="tbl" style="border: 0.5px solid #1E3A8A;">
+                <table class="table table-bordered table-center text-center"  style="border: 0.5px solid #1E3A8A;">
                     <thead style="background-color: #1E3A8A; color: white;">
                         <tr>
-                            <th style="border: 0.5px solid #1E3A8A;">#</th>
+                            
                             <th style="border: 0.5px solid #1E3A8A;">Proveedor</th>
                             <th style="border: 0.5px solid #1E3A8A;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $query = mysqli_query($conexion, "SELECT * FROM proveedores");
                         while ($data = mysqli_fetch_assoc($query)) { ?>
                             <tr>
-                                <td style="border: 0.5px solid #1E3A8A;"><?php echo $data['id_proveedor']; ?></td>
-                                <td class="font-weight-bold" style="border: 0.5px solid #1E3A8A;">
+                                <td class="font-weight-bold">
                                     <?php echo strtoupper($data['nombre']); ?>
                                 </td>
-                                <td style="border: 0.5px solid #1E3A8A;">
-                                <button class="btn btn-warning" onclick="editarProveedor(<?php echo $data['id_proveedor']; ?>, '<?php echo $data['nombre']; ?>')">
+                                <td>
+                                    <button class="btn btn-warning" onclick="editarProveedor(<?php echo $data['id_proveedor']; ?>, '<?php echo $data['nombre']; ?>')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="EliminarProveedor.php?id=<?php echo $data['id_proveedor']; ?>&accion=proveedores" method="post"
-                                        class="d-inline">
-                                        <button class="btn btn-danger" type="submit">
-                                            <i class='fas fa-trash-alt'></i></button>
-                                    </form>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -126,11 +132,34 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 </table>
             </div>
         </div>
+        <div class="text-center mt-3">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <?php if ($page > 1): ?>
+                        <li class="page-item"><a class="page-link" href="?page=<?php echo $page - 1; ?>">Anterior</a></li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $total_pages): ?>
+                        <li class="page-item"><a class="page-link" href="?page=<?php echo $page + 1; ?>">Siguiente</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+        </div>
     </div>
 
     <style>
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
+        }
+        .table td {
+            font-size: 14px;
+            border: none;
         }
     </style>
     <script>

@@ -3,6 +3,19 @@ session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     include "../conexion.php";
 
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $items_per_page = 5; // Número de artículos por página
+    $offset = ($page - 1) * $items_per_page;
+    
+    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM bebidas WHERE estado = 1");
+    $total_result = mysqli_fetch_assoc($total_query);
+    $total_items = $total_result['total'];
+    $total_pages = ceil($total_items / $items_per_page);
+
+    // Modificar la consulta para incluir paginación
+    $query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1 LIMIT $items_per_page OFFSET $offset");
+    
+
     if (!empty($_POST)) {
         $alert = "";
         $id = $_POST['id'];
@@ -84,7 +97,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     <div class="col-md-3 form-group">
                         <label for="">Acciones</label> <br>
                         <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
-                        <input type="button" value="Nuevo" onclick="limpiar()" class="btn btn-success">
+                        
                     </div>
                 </div>
             </form>
@@ -94,10 +107,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         <div class="card-body" style="max-height: 600px; overflow-y: auto;">
 
             <div class="table-responsive">
-                <table class="table table-bordered text-center" style="border: 0.5px solid #1E3A8A;">
-                    <thead style="background-color: #1E3A8A; color: white;">
+                <table class="table table-bordered text-center" >
+                    <thead style="background-color: #1E3A8A; color: white; border: 0.5px solid #1E3A8A;">
                         <tr>
-                            <th style="border: 0.5px solid #1E3A8A;">#</th>
+                            
                             <th style="border: 0.5px solid #1E3A8A;">Bebida</th>
                             <th style="border: 0.5px solid #1E3A8A;">Precio</th>
                             <th style="border: 0.5px solid #1E3A8A;">Imagen</th>
@@ -106,22 +119,23 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     </thead>
                     <tbody>
                         <?php
-                        $query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
+                        // Usar la consulta con paginación
+                        $query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1 LIMIT $items_per_page OFFSET $offset");
                         while ($data = mysqli_fetch_assoc($query)) { ?>
                             <tr>
-                                <td style="border: 0.5px solid #1E3A8A;"><?php echo $data['id']; ?></td>
-                                <td class="font-weight-bold" style="border: 0.5px solid #1E3A8A;">
+                                <td class="font-weight-bold">
                                     <?php echo strtoupper($data['nombre']); ?>
                                 </td>
-                                <td class="text-success font-weight-bold" style="border: 0.5px solid #1E3A8A;">
-                                    ₡<?php echo number_format($data['precio'], 0, '', '.'); ?></td>
-                                <td style="border: 0.5px solid #1E3A8A;">
+                                <td class=" font-weight-bold">
+                                    ₡<?php echo number_format($data['precio'], 0, '', '.'); ?>
+                                </td>
+                                <td>
                                     <img class="img-thumbnail"
                                         src="<?php echo ($data['imagen'] == null) ? '../assets/img/default.png' : $data['imagen']; ?>"
-                                        alt="" width="80">
+                                        alt="" width="50">
                                 </td>
-                                <td style="border: 0.5px solid #1E3A8A;">
-                                    <a href="#"
+                                <td>
+                                    <a
                                         onclick="editarBebida(<?php echo $data['id']; ?>, '<?php echo $data['nombre']; ?>', '<?php echo $data['precio']; ?>', '<?php echo $data['imagen']; ?>')"
                                         class="btn btn-warning">
                                         <i class="fas fa-edit"></i>
@@ -139,11 +153,46 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 </table>
             </div>
         </div>
+        <div class="text-center mt-3">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php if ($page > 1): ?>
+                    <li class="page-item"><a class="page-link" href="?page=<?php echo $page - 1; ?>">Anterior</a></li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($page < $total_pages): ?>
+                    <li class="page-item"><a class="page-link" href="?page=<?php echo $page + 1; ?>">Siguiente</a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </div>
-    <style>
+    </div>
+    <?php
+        ?>
+   
+   <style>
+        .table tbody  {
+            background-color:  rgba(77, 100, 165, 0.1);
+            
+
+        }
+        .table th{
+            border: 0.5px solid #1E3A8A;
+        }
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
+            
 
+        }
+        .table td {
+            font-size: 14px;
+            border: none;
         }
     </style>
     <script>
