@@ -40,6 +40,7 @@ CREATE TABLE pedidos (
   estado enum('ACTIVO','FINALIZADO') NOT NULL DEFAULT 'ACTIVO',
   id_usuario int(11) NOT NULL,
   ImpServicio int(25),
+  tipoPago ENUM('efectivo', 'tarjeta') NOT NULL,
   PRIMARY KEY (id),
   KEY id_sala (id_sala)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
@@ -57,8 +58,6 @@ CREATE TABLE detalle_pedidos (
   KEY id_pedido (id_pedido),
   CONSTRAINT detalle_pedidos_ibfk_1 FOREIGN KEY (id_pedido) REFERENCES pedidos (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
-
-
 
 
 CREATE TABLE `platos` (

@@ -42,21 +42,32 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             <h4><strong>Mesa:</strong> <?php echo $mesa; ?></h4>
             <h5><strong>Fecha:</strong> <?php echo $pedido['fecha']; ?></h5>
             <h4 class="text-success"><strong>Total:</strong> ₡<?php echo number_format($pedido['total'], 0); ?></h4>
-            
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodEfectivo" value="efectivo">
+                <label class="form-check-label" for="paymentMethodEfectivo">
+                    Efectivo
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodTarjeta" value="tarjeta" checked>
+                <label class="form-check-label" for="paymentMethodTarjeta">
+                    Tarjeta
+                </label>
+            </div>
             
             <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="flexCheckDefault" onclick="toggleImpuesto()">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Aplicar Impuesto al Servicio (10%)
-                    </label>
-                </div>
+                <input class="form-check-input" type="checkbox" id="flexCheckDefault" onclick="toggleImpuesto()">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Aplicar Impuesto al Servicio (10%)
+                </label>
+            </div>
 
-                <div class="mt-4 text-center" id="impuestoInfo" style="display: none;">
-                    <h4 class="text-info"><strong>Impuesto al Servicio (10%):</strong> ₡<span id="impuestoServicio"></span></h4>
-                    <h4 class="text-success"><strong>Total con Impuesto:</strong> ₡<span id="totalConImpuesto"></span></h4>
-                    <hr>
-                </div>
+            <div class="mt-4 text-center" id="impuestoInfo" style="display: none;">
+                <h4 class="text-info"><strong>Impuesto al Servicio (10%):</strong> ₡<span id="impuestoServicio"></span></h4>
+                <h4 class="text-success"><strong>Total con Impuesto:</strong> ₡<span id="totalConImpuesto"></span></h4>
                 <hr>
+            </div>
+            <hr>
         </div>
 
         <div class="card shadow-lg">
@@ -88,15 +99,15 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                     </table>
                 </div>
 
-
                 <div class="mt-4 text-center">
                     <form method="POST">
                         <input type="hidden" name="finalizar_pedido" value="1">
                         <input type="hidden" name="aplicar_impuesto" id="aplicar_impuesto" value="<?php echo $aplicar_impuesto ? '1' : '0'; ?>">
                         <input type="hidden" name="total_con_impuesto" id="total_con_impuesto" value="<?php echo $pedido['total']; ?>">
                         <input type="hidden" name="imp_servicio" id="imp_servicio" value="0">
-                        <button type="summit" class="btn btn-success btn-lg" >
-                        <i class="fas fa-check-circle"></i> Confirmar / Finalizar Pedido
+                        <input type="hidden" name="tipo_pago" id="tipo_pago" value="tarjeta">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check-circle"></i> Confirmar / Finalizar Pedido
                         </button>
                     </form>
                     <br>
@@ -105,7 +116,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         </div>
     </div>
 </div>
-
 
 <style>
     .table tbody tr:hover {
@@ -140,9 +150,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         }
     }
 
-    document.getElementById('confirmarFinalizarPedido').addEventListener('click', function() {
-        document.getElementById('finalizarPedidoForm').submit();
-        window.open('Factura.php?id_pedido=<?php echo $id_pedido; ?>', '_blank');
+    document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
+        elem.addEventListener("change", function(event) {
+            var tipoPagoInput = document.getElementById('tipo_pago');
+            tipoPagoInput.value = event.target.value;
+        });
     });
 </script>
 
@@ -151,8 +163,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['finalizar_pedido'])) {
     $aplicar_impuesto = isset($_POST['aplicar_impuesto']) && $_POST['aplicar_impuesto'] == '1';
     $total_con_impuesto = $_POST['total_con_impuesto'];
     $imp_servicio = $_POST['imp_servicio'];
+    $tipo_pago = $_POST['tipo_pago'];
 
-    $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio' WHERE id = '$id_pedido'");
+    $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago' WHERE id = '$id_pedido'");
 
     if ($update) {
         $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE' WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
