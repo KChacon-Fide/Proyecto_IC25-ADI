@@ -37,50 +37,80 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     <div class="card-header bg-primary text-white text-center">
         <h4 class="mb-0"><i class="fas fa-receipt"></i> Resumen del Pedido</h4>
     </div>
-    <div class="card-body">
-        <div class="text-center">
-            <h4><strong>Mesa:</strong> <?php echo $mesa; ?></h4>
-            <h5><strong>Fecha:</strong> <?php echo $pedido['fecha']; ?></h5>
-            <h4 class="text-success"><strong>Total:</strong> ₡<?php echo number_format($pedido['total'], 0); ?></h4>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodEfectivo" value="efectivo">
-                <label class="form-check-label" for="paymentMethodEfectivo">
-                    Efectivo
-                </label>
+    <<div class="card-body">
+    <div class="row">
+        <!-- Información de la mesa -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4" style="height: 100%;">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0"><i class="fas fa-utensils"></i> Información de la Mesa</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h4><strong>Mesa:</strong> <?php echo $mesa; ?></h4>
+                    <h5><strong>Fecha:</strong> <?php echo $pedido['fecha']; ?></h5>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodTarjeta" value="tarjeta" checked>
-                <label class="form-check-label" for="paymentMethodTarjeta">
-                    Tarjeta
-                </label>
-            </div>
-            
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexCheckDefault" onclick="toggleImpuesto()">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Aplicar Impuesto al Servicio (10%)
-                </label>
-            </div>
-
-            <div class="mt-4 text-center" id="impuestoInfo" style="display: none;">
-                <h4 class="text-info"><strong>Impuesto al Servicio (10%):</strong> ₡<span id="impuestoServicio"></span></h4>
-                <h4 class="text-success"><strong>Total con Impuesto:</strong> ₡<span id="totalConImpuesto"></span></h4>
-                <hr>
-            </div>
-            <hr>
         </div>
 
+        <!-- Total del pedido -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4" style="height: 100%;">
+                <div class="card-header bg-success text-white text-center">
+                    <h5 class="mb-0"><i class="fas fa-money-bill-wave"></i> Total del Pedido</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h4 class="text-success"><strong>Total:</strong> ₡<?php echo number_format($pedido['total'], 0); ?></h4>
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault" onclick="toggleImpuesto()">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Aplicar Impuesto al Servicio (10%)
+                        </label>
+                    </div>
+                    <div class="mt-3" id="impuestoInfo" style="display: none;">
+                        <h5 class="text-info"><strong>Impuesto al Servicio:</strong> ₡<span id="impuestoServicio"></span></h5>
+                        <h5 class="text-success"><strong>Total con Impuesto:</strong> ₡<span id="totalConImpuesto"></span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métodos de pago -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4" style="height: 100%;">
+                <div class="card-header  text-white text-center" style="background-color: #1E3A8A;">
+                    <h5 class="mb-0"><i class="fas fa-credit-card"></i> Método de Pago</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodEfectivo" value="efectivo">
+                        <label class="form-check-label" for="paymentMethodEfectivo">
+                            Efectivo
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="paymentMethodTarjeta" value="tarjeta" checked>
+                        <label class="form-check-label" for="paymentMethodTarjeta">
+                            Tarjeta
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         <div class="card shadow-lg">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-center" id="tbl"
+                    <table class="table table-bordered table-center" 
                         style="border-collapse: collapse; border: 0.5px solid #1E3A8A; text-align: center;">
                         <thead style="background-color: #1E3A8A; color: white;">
                             <tr>
-                                <th style="border-bottom: 0.5px solid #1E3A8A; text-align: center;">Nombre</th>
-                                <th style="border-bottom: 0.5px solid #1E3A8A; text-align: center;">Cantidad</th>
-                                <th style="border-bottom: 0.5px solid #1E3A8A; text-align: center;">Precio</th>
-                                <th style="border-bottom: 0.5px solid #1E3A8A; text-align: center;">Subtotal</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+                                <th>Seleccionar</th>
+                                <th>Cantidad a Pagar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,10 +118,16 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                             while ($detalle = mysqli_fetch_assoc($queryDetalle)) {
                                 $subtotal = $detalle['cantidad'] * $detalle['precio'];
                                 echo "<tr>
-                                    <td style='border-bottom: 0.5px solid #1E3A8A; text-align: center;'>{$detalle['nombre']}</td>
-                                    <td style='border-bottom: 0.5px solid #1E3A8A; text-align: center;'>{$detalle['cantidad']}</td>
-                                    <td style='border-bottom: 0.5px solid #1E3A8A; text-align: center;'>₡{$detalle['precio']}</td>
-                                    <td style='border-bottom: 0.5px solid #1E3A8A; text-align: center;'>₡{$subtotal}</td>
+                                    <td>{$detalle['nombre']}</td>
+                                    <td>{$detalle['cantidad']}</td>
+                                    <td>₡{$detalle['precio']}</td>
+                                    <td>₡{$subtotal}</td>
+                                    <td>
+                                        <input type='checkbox' class='detalle-checkbox' data-id='{$detalle['id']}' data-precio='{$detalle['precio']}'>
+                                    </td>
+                                    <td>
+                                        <input type='number' class='cantidad-a-pagar' data-id='{$detalle['id']}' min='1' max='{$detalle['cantidad']}' value='1'>
+                                    </td>
                                 </tr>";
                             }
                             ?>
@@ -106,11 +142,15 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                         <input type="hidden" name="total_con_impuesto" id="total_con_impuesto" value="<?php echo $pedido['total']; ?>">
                         <input type="hidden" name="imp_servicio" id="imp_servicio" value="0">
                         <input type="hidden" name="tipo_pago" id="tipo_pago" value="tarjeta">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="DividirFactura()">
+                        <i class="fas fa-file-invoice"></i> Dividir Factura
+                    </button>
                         <button type="submit" class="btn btn-success btn-lg">
                             <i class="fas fa-check-circle"></i> Confirmar / Finalizar Pedido
                         </button>
                     </form>
                     <br>
+                    
                 </div>
             </div>
         </div>
@@ -118,13 +158,83 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
 </div>
 
 <style>
-    .table tbody tr:hover {
-        background: rgba(30, 58, 138, 0.1);
-    }
+    /* Estilos personalizados */
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function DividirFactura() {
+        const checkboxes = document.querySelectorAll('.detalle-checkbox:checked');
+        let itemsSeleccionados = [];
+
+        // Obtener los elementos seleccionados
+        checkboxes.forEach(checkbox => {
+            const id = checkbox.dataset.id;
+            const precio = parseFloat(checkbox.dataset.precio);
+            const cantidadInput = document.querySelector(`.cantidad-a-pagar[data-id="${id}"]`);
+            const cantidad = parseInt(cantidadInput.value);
+
+            if (cantidad > 0) {
+                itemsSeleccionados.push({ id, cantidad, precio });
+            }
+        });
+
+        if (itemsSeleccionados.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No hay elementos seleccionados',
+                text: 'Por favor, seleccione al menos un elemento para generar la factura.',
+            });
+            return;
+        }
+
+        // Obtener el estado del impuesto y su valor
+        const aplicarImpuesto = document.getElementById('aplicar_impuesto').value === '1';
+        const impServicio = parseFloat(document.getElementById('imp_servicio').value);
+
+        // Preparar los datos para enviar al servidor
+        const datos = {
+            items: itemsSeleccionados,
+            aplicarImpuesto: aplicarImpuesto,
+            impServicio: impServicio
+        };
+
+        console.log('Datos enviados al servidor:', datos);
+
+        // Enviar los datos al servidor
+        fetch('dividir_factura.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Factura Generada',
+                    html: `<a href="Factura_Seleccionada.pdf" class="btn btn-primary btn-lg" target="_blank">
+                                <i class="fas fa-file-pdf"></i> Descargar Factura
+                           </a>`,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'No se pudo generar la factura.',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ocurrió un error al procesar la solicitud.',
+            });
+        });
+    }
+
     function toggleImpuesto() {
         var checkbox = document.getElementById('flexCheckDefault');
         var aplicarImpuestoInput = document.getElementById('aplicar_impuesto');

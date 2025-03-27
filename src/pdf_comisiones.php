@@ -34,8 +34,8 @@ $pdf->Ln(10);
 // Encabezados de la tabla
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->Cell(60, 10, 'Mesero', 1, 0, 'C');
-$pdf->Cell(60, 10, 'Total Pedidos (₡)', 1, 0, 'C');
-$pdf->Cell(60, 10, 'Ingresos Servicio (₡)', 1, 1, 'C');
+$pdf->Cell(60, 10, 'Total Pedidos ($)', 1, 0, 'C');
+$pdf->Cell(60, 10, 'Ingresos Servicio ($)', 1, 1, 'C');
 
 // Datos de la tabla
 $pdf->SetFont('Arial', '', 12);
