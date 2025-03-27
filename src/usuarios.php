@@ -138,8 +138,8 @@ include "includes/header.php";
 <div class="card shadow-lg">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered text-center" style="border: 2px solid #1E3A8A;">
-                <thead style="background-color: #1E3A8A; color: white;">
+            <table class="table table-bordered text-center">
+                <thead style="background-color: #1E3A8A; color: white;border: 2px solid #1E3A8A;">
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
@@ -176,4 +176,23 @@ include "includes/header.php";
         </div>
     </div>
 </div>
+<style>
+        .table tbody  {
+            background-color:  rgba(77, 100, 165, 0.1);
+            
+
+        }
+        .table th{
+            border: 0.5px solid #1E3A8A;
+        }
+        .table tbody tr:hover {
+            background: rgba(30, 58, 138, 0.1);
+            
+
+        }
+        .table td {
+            font-size: 14px;
+            border: none;
+        }
+    </style>
 <?php include_once "includes/footer.php"; ?>

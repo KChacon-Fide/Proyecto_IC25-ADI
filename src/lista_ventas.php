@@ -12,15 +12,44 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     $total_pedidos = mysqli_fetch_assoc($total_pedidos_query)['total'];
     $total_pages = ceil($total_pedidos / $limit);
 
-    $query = mysqli_query($conexion, "SELECT p.*, s.nombre AS sala, u.nombre FROM pedidos p INNER JOIN salas s ON p.id_sala = s.id INNER JOIN usuarios u ON p.id_usuario = u.id LIMIT $limit OFFSET $offset");
+    $usuario_seleccionado = isset($_GET['usuario']) ? $_GET['usuario'] : '';
 
+    // Modificar la consulta para filtrar por usuario si se seleccionó uno
+    $where_clause = $usuario_seleccionado ? "WHERE p.id_usuario = '$usuario_seleccionado'" : '';
+
+    $query = mysqli_query($conexion, "
+        SELECT p.*, s.nombre AS sala, u.nombre 
+        FROM pedidos p 
+        INNER JOIN salas s ON p.id_sala = s.id 
+        INNER JOIN usuarios u ON p.id_usuario = u.id 
+        $where_clause 
+        LIMIT $limit OFFSET $offset
+    ");
     include_once "includes/header.php";
     ?>
     <div class="card shadow-lg rounded">
         <div class="card-header bg-primary text-white d-flex align-items-center">
             <h4 class="mb-0"><i class="fas fa-door-open"></i> Historial de Órdenes</h4>
         </div>
+        
         <div class="card-body">
+        <form method="GET" class="mb-4">
+            <div class="form-group">
+                <label for="usuario">Filtrar por Usuario:</label>
+                <select id="usuario" name="usuario" class="form-control">
+                    <option value="">Todos</option>
+                    <?php
+                    // Obtener la lista de usuarios
+                    $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios");
+                    while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
+                        $selected = (isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id']) ? 'selected' : '';
+                        echo "<option value='{$usuario['id']}' $selected>{$usuario['nombre']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">

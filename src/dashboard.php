@@ -88,13 +88,13 @@ $totalVentas = mysqli_fetch_assoc($query5);
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header border-0">
+                <div class="card ">
+                    <div class="card-header border-0 ">
                         <div class="d-flex justify-content-between">
                             <h3 class="card-title">Ventas</h3>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body background-color:  rgba(77, 100, 165, 0.1);">
                         <div class="d-flex">
                             <p class="d-flex flex-column">
                                 <span class="text-bold text-lg">₡<?php echo $totalVentas['total']; ?></span>

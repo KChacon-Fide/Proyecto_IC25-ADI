@@ -210,9 +210,9 @@ if (empty($_SESSION['active'])) {
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="comisiones.php" class="nav-link"> 
+                                        <a href="ImpServicio.php" class="nav-link"> 
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Comisiones</p> 
+                                            <p>Imp Servicios</p> 
                                         </a>
                                     </li>
                                 

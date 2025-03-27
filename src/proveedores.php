@@ -154,8 +154,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     </div>
 
     <style>
+        .table tbody  {
+            background-color:  rgba(77, 100, 165, 0.1);
+            
+
+        }
+        .table th{
+            border: 0.5px solid #1E3A8A;
+        }
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
+            
+
         }
         .table td {
             font-size: 14px;
