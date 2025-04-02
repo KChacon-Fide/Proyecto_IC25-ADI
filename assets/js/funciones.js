@@ -26,11 +26,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  $(".addDetalle").click(function () {
+  $(document).on("click", ".addDetalle", function () {
     let id_producto = $(this).data("id");
     registrarDetalle(id_producto);
   });
-
+  
   $(".addDetalleBebida").click(function () {
   let id_producto = $(this).data("id");
   let cantidad = parseInt($("#cantidad").val()) || 1; // Si no hay valor, toma 1 por defecto
@@ -205,6 +205,7 @@ function listar() {
 function registrarDetalle(id_pro) {
   let action = "regDetalle";
   let params = new URLSearchParams(document.location.search);
+  let cantidad = 1;
   $.ajax({
     url: "ajax.php",
     type: "POST",
@@ -213,25 +214,35 @@ function registrarDetalle(id_pro) {
       id: id_pro,
       id_mesa: params.get("mesa"),
       id_sala: params.get("id_sala"),
-      regDetalle: action,
+      cantidad: cantidad, // <-- ¡Asegurate de incluir esta línea!
+      regDetalle: action
     },
     success: function (response) {
       if (response == "registrado") {
         listar();
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Producto agregado",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "No se pudo agregar el producto",
+          showConfirmButton: false,
+          timer: 2000
+        });
       }
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Producto agregado",
-        showConfirmButton: false,
-        timer: 2000,
-      });
     },
     error: function (error) {
       console.log(error);
-    },
+    }
   });
 }
+
+
 
 function registrarDetalleBebida(id_pro) {
   let action = "regDetalleBebida";

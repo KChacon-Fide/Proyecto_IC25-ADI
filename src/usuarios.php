@@ -121,10 +121,17 @@ include "includes/header.php";
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="pass" class="font-weight-bold">Contraseña</label>
-                            <input type="password" class="form-control" placeholder="Ingrese Contraseña" name="pass"
-                                id="pass">
+                            <div class="input-group">
+                                <input type="password" class="form-control" placeholder="Ingrese Contraseña" name="pass"
+                                    id="pass" readonly>
+                                <button class="btn btn-secondary" type="button" style="background-color: #1E3A8A;"
+                                    onclick="togglePassword()">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
+
                 <?php } ?>
             </div>
             <input type="submit" value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
@@ -177,22 +184,62 @@ include "includes/header.php";
     </div>
 </div>
 <style>
-        .table tbody  {
-            background-color:  rgba(77, 100, 165, 0.1);
-            
+    .table tbody {
+        background-color: rgba(77, 100, 165, 0.1);
+    }
 
-        }
-        .table th{
-            border: 0.5px solid #1E3A8A;
-        }
-        .table tbody tr:hover {
-            background: rgba(30, 58, 138, 0.1);
-            
+    .table th {
+        border: 0.5px solid #1E3A8A;
+    }
 
+    .table tbody tr:hover {
+        background: rgba(30, 58, 138, 0.1);
+    }
+
+    .table td {
+        font-size: 14px;
+        border: none;
+    }
+</style>
+<script>
+    function generarContrasenaSegura(longitud = 16) {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}[]:;<>,.?~';
+        let contrasena = '';
+        while (true) {
+            contrasena = Array.from({ length: longitud }, () =>
+                caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+            ).join('');
+
+
+            if (/[a-z]/.test(contrasena) && /[A-Z]/.test(contrasena) &&
+                /\d/.test(contrasena) && /[!@#$%^&*()_+{}\[\]:;<>,.?~]/.test(contrasena)) {
+                break;
+            }
         }
-        .table td {
-            font-size: 14px;
-            border: none;
+        return contrasena;
+    }
+
+    function togglePassword() {
+        const passField = document.getElementById("pass");
+        const icon = document.getElementById("toggleIcon");
+        if (passField.type === "password") {
+            passField.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passField.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
         }
-    </style>
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const passField = document.getElementById("pass");
+        if (passField) {
+            passField.value = generarContrasenaSegura();
+        }
+    });
+</script>
+
 <?php include_once "includes/footer.php"; ?>

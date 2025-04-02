@@ -119,7 +119,7 @@ if (empty($_SESSION['active'])) {
 
                         <?php if ($_SESSION['rol'] == 1) {
                             echo '
-                            <li class="nav-item">
+                            <li class="nav-item" data-key="submenu-ajustes">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-user-cog"></i>
                                     <p>
@@ -144,7 +144,8 @@ if (empty($_SESSION['active'])) {
                             </li>';
                         } ?>
                         <?php if ($_SESSION['rol'] == 1) {
-                            echo'<li class="nav-item">
+                            echo'
+                            <li class="nav-item" data-key="submenu-inventario">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-box"></i>
                                 <p>
@@ -188,7 +189,8 @@ if (empty($_SESSION['active'])) {
                         </li>';
                         }?>
                         <?php if ($_SESSION['rol'] == 1) {
-                            echo'<li class="nav-item">
+                            echo'
+                            <li class="nav-item" data-key="submenu-reportes">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-file-alt"></i>
                                 <p>

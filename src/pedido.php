@@ -112,97 +112,92 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </div>
 <style>
-    #detalle_pedido {
-        max-height: 800px; /* Limita la altura máxima del contenedor */
-        overflow-y: auto; /* Habilita el scroll vertical */
-           }
-           
+#detalle_pedido {
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+
+.product-card {
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.product-card img.product-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.product-card h6 {
+    font-size: 16px;
+    margin: 0 0 4px;
+    min-height: 30px;
+}
+
+.price-badge {
+    font-size: 14px;
+    padding: 5px;
+    margin-bottom: 6px;
+    display: block;
+    background-color: #1E3A8A;
+    color: #fff;
+}
+
+
+#contenedor_bebidas .product-card {
+    height: 280px;
+}
+
+#contenedor_bebidas img.product-image {
+    height: 120px;
+    object-fit: contain;
+}
+#contenedor_bebidas .product-card {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 8px 12px 8px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+#contenedor_bebidas img.product-image {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    margin: 0 auto 5px auto;
+    display: block;
+}
+
+#contenedor_bebidas .product-image {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+
+#contenedor_bebidas .btn-success {
+    font-size: 14px;
+    padding: 5px 10px;
+    width: 100%;
+    background-color: #28A745 !important;
+    border: none;
+}
 </style>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    let pedido = [];
-
-    document.querySelectorAll(".addDetalle, .addDetalleBebida").forEach(button => {
-        button.addEventListener("click", function () {
-            const id = this.getAttribute("data-id");
-            const tipo = this.getAttribute("data-tipo");
-            const nombre = this.closest(".product-card").querySelector("h6").textContent;
-            const precio = parseFloat(this.closest(".product-card").querySelector(".price-badge").textContent.replace("₡", ""));
-
-            let productoExistente = pedido.find(p => p.id == id && p.tipo == tipo);
-            if (productoExistente) {
-                productoExistente.cantidad++;
-            } else {
-                pedido.push({id, nombre, precio, tipo, cantidad: 1, descripcion: ""});
-            }
-
-            actualizarPedido();
-        });
-    });
-
-    function actualizarPedido() {
-        let detalleHTML = "";
-        let total = 0;
-        pedido.forEach((producto, index) => {
-            let subtotal = producto.precio * producto.cantidad;
-            total += subtotal;
-            detalleHTML += `
-                <div class="pedido-item">
-                    <div>${producto.nombre}</div>
-                    <div>${producto.cantidad}</div>
-                    <div>₡${subtotal.toFixed(2)}</div>
-                    <button class="btn btn-info btn-sm edit-desc" data-index="${index}"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-danger btn-sm remove-product" data-index="${index}"><i class="fas fa-minus"></i></button>
-                    <button class="btn btn-success btn-sm add-product" data-index="${index}"><i class="fas fa-plus"></i></button>
-                </div>
-            `;
-        });
-
-        detalleHTML += <h5>Total: ₡${total.toFixed(2)}</h5>;
-        document.getElementById("detalle_pedido").innerHTML = detalleHTML;
-
-        document.querySelectorAll(".remove-product").forEach(button => {
-            button.addEventListener("click", function () {
-                let index = this.getAttribute("data-index");
-                if (pedido[index].cantidad > 1) {
-                    pedido[index].cantidad--;
-                } else {
-                    pedido.splice(index, 1);
-                }
-                actualizarPedido();
-            });
-        });
-
-        document.querySelectorAll(".add-product").forEach(button => {
-            button.addEventListener("click", function () {
-                let index = this.getAttribute("data-index");
-                pedido[index].cantidad++;
-                actualizarPedido();
-            });
-        });
-
-        document.querySelectorAll(".edit-desc").forEach(button => {
-            button.addEventListener("click", function () {
-                let index = this.getAttribute("data-index");
-                let nuevaDesc = prompt("Ingrese una descripción para este producto:", pedido[index].descripcion);
-                if (nuevaDesc !== null) {
-                    pedido[index].descripcion = nuevaDesc;
-                }
-                actualizarPedido();
-            });
-        });
-    }
-
-    document.getElementById("realizar_pedido").addEventListener("click", function (event) {
-        event.preventDefault();
-        // Aquí puedes agregar la lógica para procesar el pedido sin redirigir a otra página
-        console.log("Pedido procesado:", pedido);
-        alert("Pedido procesado con éxito.");
-        // Eliminar cualquier lógica de redirección
-    });
-});
-</script>
 
 <?php include_once "includes/footer.php";
 } else {

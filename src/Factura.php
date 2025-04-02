@@ -17,7 +17,7 @@ if (!$pedido) {
 $queryDetalle = mysqli_query($conexion, "SELECT * FROM detalle_pedidos WHERE id_pedido = '$id_pedido'");
 $lineHeight = 6;
 $numRows = mysqli_num_rows($queryDetalle);
-$ticketHeight = 130 + ($numRows * $lineHeight) + 60; // Ajustado para incluir espacios correctos
+$ticketHeight = 130 + ($numRows * $lineHeight) + 60;
 
 $pdf = new FPDF('P', 'mm', array(80, $ticketHeight));
 $pdf->AddPage();
@@ -49,8 +49,8 @@ while ($detalle = mysqli_fetch_assoc($queryDetalle)) {
     $subtotal = $detalle['cantidad'] * $detalle['precio'];
     $pdf->Cell(25, 5, utf8_decode($detalle['nombre']), 0);
     $pdf->Cell(10, 5, $detalle['cantidad'], 0, 0, 'C');
-    $pdf->Cell(10, 5, '$' . number_format($detalle['precio'], 0), 0, 0, 'C');
-    $pdf->Cell(13, 5, '$' . number_format($subtotal, 0), 0, 1, 'C');
+    $pdf->Cell(10, 5, '' . number_format($detalle['precio'], 0), 0, 0, 'C');
+    $pdf->Cell(13, 5, '' . number_format($subtotal, 0), 0, 1, 'C');
     $total += $subtotal;
 }
 
@@ -58,18 +58,17 @@ $pdf->Cell(58, 5, "---------------------------------", 0, 1, 'C');
 
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->Cell(30, 6, 'TOTAL:', 0);
-$pdf->Cell(28, 6, '$' . number_format($total, 0), 0, 1, 'R');
+$pdf->Cell(28, 6, '' . number_format($total, 0), 0, 1, 'R');
 
-// Agregar ImpServicio
 $impServicio = $pedido['ImpServicio'];
 if ($impServicio > 0) {
     $pdf->Cell(30, 6, 'Imp. Servicio:', 0);
-    $pdf->Cell(28, 6, '$' . number_format($impServicio, 0), 0, 1, 'R');
+    $pdf->Cell(28, 6, '' . number_format($impServicio, 0), 0, 1, 'R');
     $total += $impServicio;
 }
 
 $pdf->Cell(30, 6, 'TOTAL FINAL:', 0);
-$pdf->Cell(28, 6, '$' . number_format($total, 0), 0, 1, 'R');
+$pdf->Cell(28, 6, '' . number_format($total, 0), 0, 1, 'R');
 
 $pdf->Ln(2);
 $pdf->SetFont('Arial', '', 8);

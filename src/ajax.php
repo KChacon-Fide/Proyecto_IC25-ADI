@@ -72,8 +72,8 @@ if (isset($_GET['detalle'])) {
     $id_user = $_SESSION['idUser'];
     $mesa = $_GET['mesa'];
 
-    $observacion = ""; // la observacion se movio del pedido a detallePedido
-    // $_GET['observacion'];
+    $observacion = "";
+
     $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.tipo = 1 AND d.id_usuario = $id_user AND d.id_sala = $id_sala AND d.num_mesa = $mesa 
                                             UNION ALL SELECT d.*, b.nombre FROM temp_pedidos d INNER JOIN bebidas b ON d.id_producto = b.id WHERE d.tipo = 2 AND d.id_usuario = $id_user AND d.id_sala = $id_sala AND d.num_mesa = $mesa ");
     $total = 0;
@@ -83,7 +83,7 @@ if (isset($_GET['detalle'])) {
     $insertar = mysqli_query($conexion, "INSERT INTO pedidos (id_sala, num_mesa, total, observacion, id_usuario) VALUES ($id_sala, $mesa, '$total', '$observacion', $id_user)");
     $id_pedido = mysqli_insert_id($conexion);
     if ($insertar == 1) {
-        //$insertarDet = 0;
+
         $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.tipo = 1 AND d.id_usuario = $id_user 
                                             UNION ALL SELECT d.*, b.nombre FROM temp_pedidos d INNER JOIN bebidas b ON d.id_producto = b.id WHERE d.tipo = 2 AND d.id_usuario = $id_user ");
         while ($dato = mysqli_fetch_assoc($consulta)) {
@@ -139,7 +139,7 @@ if (isset($_POST['regDetalle'])) {
     $id_user = $_SESSION['idUser'];
     $id_sala = $_POST['id_sala'];
     $id_mesa = $_POST['id_mesa'];
-    $cantidad = $_POST['cantidad'];
+    $cantidad = isset($_POST['cantidad']) ? $_POST['cantidad'] : 1;
     $consulta = mysqli_query($conexion, "SELECT * FROM temp_pedidos WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 1 AND id_sala = $id_sala AND num_mesa = $id_mesa");
     $row = mysqli_fetch_assoc($consulta);
     if (empty($row)) {
@@ -173,14 +173,14 @@ if (isset($_POST['regDetalleBebida'])) {
         $result = mysqli_fetch_assoc($producto);
         $precio = $result['precio'];
         $query = mysqli_query($conexion, "INSERT INTO temp_pedidos (cantidad, precio, id_producto, id_usuario, tipo, id_sala, num_mesa) VALUES (1, $precio, $id_producto, $id_user, 2, $id_sala, $id_mesa)");
-        
+
     } else {
         $nueva = $row['cantidad'] + 1;
         $query = mysqli_query($conexion, "UPDATE temp_pedidos SET cantidad = $nueva WHERE id_producto = $id_producto AND id_usuario = $id_user AND tipo = 2 AND id_sala = $id_sala AND num_mesa = $id_mesa");
-       
+
     }
     if ($query) {
-        // Reducir la cantidad en el inventario
+
         $update_inventario = mysqli_query($conexion, "UPDATE inventario SET cantidad = cantidad - $cantidad WHERE id_bebida = $id_producto");
         if ($update_inventario) {
             $msg = "registrado";

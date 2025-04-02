@@ -15,6 +15,7 @@ $query5 = mysqli_query($conexion, "SELECT SUM(total) AS total FROM pedidos");
 $totalVentas = mysqli_fetch_assoc($query5);
 ?>
 <link rel="stylesheet" href="../assets/dist/css/dashboard.css">
+<link rel="stylesheet" href="../assets/dist/css/calculator.css">
 <div class="card">
     <div class="card-header text-center">
         Panel
@@ -112,6 +113,36 @@ $totalVentas = mysqli_fetch_assoc($query5);
         </div>
     </div>
 </div>
+
 <?php include_once "includes/footer.php"; ?>
 
-<script src="../assets/js/dashboard.js"></script>
+<div id="calc-bubble" onclick="toggleCalc()">
+    <i class="fas fa-calculator"></i>
+</div>
+<div id="calculator">
+    <input type="text" id="calc-display" readonly>
+    <div class="calc-buttons">
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('+')">+</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('-')">-</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('*')">*</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="append('/')">/</button>
+
+        <button class="calc-equal" onclick="calculate()">=</button>
+    </div>
+    <script src="../assets/js/calculator.js"></script>
+    <script src="../assets/js/dashboard.js"></script>

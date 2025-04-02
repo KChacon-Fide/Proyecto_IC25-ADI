@@ -3,24 +3,18 @@ session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     require_once "../conexion.php";
 
-    // Validar la fecha seleccionada (por defecto, la fecha actual)
     $fecha_seleccionada = isset($_POST['fecha']) ? $_POST['fecha'] : date('Y-m-d');
 
-    // Validar el usuario seleccionado
     $usuario_seleccionado = isset($_POST['usuario']) ? $_POST['usuario'] : '';
 
-    // Si se presionó el botón "Generar PDF", redirigir a pdf_comisiones.php
     if (isset($_POST['generar_pdf'])) {
         header("Location: pdf_comisiones.php?fecha=$fecha_seleccionada&usuario=$usuario_seleccionado");
         exit;
     }
-
-    // Modificar la consulta para filtrar por usuario si se seleccionó uno
     $where_clause = "WHERE DATE(p.fecha) = '$fecha_seleccionada'";
     if ($usuario_seleccionado) {
         $where_clause .= " AND p.id_usuario = '$usuario_seleccionado'";
     }
-
     $query_ingresos = mysqli_query($conexion, "
         SELECT 
             u.nombre AS mesero, 
@@ -31,8 +25,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         $where_clause
         GROUP BY u.id
     ");
-
-    // Almacenar los resultados
     $resultados = [];
     while ($row = mysqli_fetch_assoc($query_ingresos)) {
         $resultados[] = [
@@ -43,24 +35,24 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     }
 
     include_once "includes/header.php";
-?>
+    ?>
+
     <div class="card shadow-lg rounded">
         <div class="card-header bg-primary text-white d-flex align-items-center">
             <h4 class="mb-0"><i class="fas fa-calendar-alt"></i> Ingresos por Fecha</h4>
         </div>
         <div class="card-body">
-            <!-- Formulario para seleccionar la fecha y filtrar por usuario -->
             <form method="POST" class="mb-4">
                 <div class="form-group">
                     <label for="fecha">Seleccionar Fecha:</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control" value="<?php echo $fecha_seleccionada; ?>" required>
+                    <input type="date" id="fecha" name="fecha" class="form-control"
+                        value="<?php echo $fecha_seleccionada; ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="usuario">Filtrar por Usuario:</label>
                     <select id="usuario" name="usuario" class="form-control">
                         <option value="">Todos</option>
                         <?php
-                        // Obtener la lista de usuarios
                         $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios");
                         while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
                             $selected = ($usuario_seleccionado == $usuario['id']) ? 'selected' : '';
@@ -69,10 +61,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                         ?>
                     </select>
                 </div>
-                <button type="submit" name="consultar" class="btn btn-primary">Consultar</button>
+                <button type="submit" name="consultar" class="btn btn-primary"
+                    style="background-color: #1E3A8A;">Consultar</button>
                 <button type="submit" name="generar_pdf" class="btn btn-danger">Generar PDF</button>
             </form>
-            <!-- Tabla de resultados -->
             <div class="table-responsive">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">
@@ -148,3 +140,36 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     header('Location: permisos.php');
 }
 ?>
+<!-- Botón-->
+<div id="calc-bubble" onclick="toggleCalc()">
+    <i class="fas fa-calculator"></i>
+</div>
+
+<!-- Calculadora-->
+<div id="calculator">
+    <input type="text" id="calc-display" readonly>
+    <div class="calc-buttons">
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('+')">+</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('-')">-</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('*')">*</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="append('/')">/</button>
+
+        <button class="calc-equal" onclick="calculate()">=</button>
+    </div>
+    <script src="../assets/js/calculator.js"></script>
+    <link rel="stylesheet" href="../assets/dist/css/calculator.css">

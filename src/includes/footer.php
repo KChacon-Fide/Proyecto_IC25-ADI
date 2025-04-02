@@ -32,5 +32,35 @@
 <script src="../assets/js/sweetalert2.all.min.js"></script>
 <script src="../assets/js/funciones.js"></script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const submenuKeys = ["submenu-ajustes", "submenu-inventario", "submenu-reportes"];
+        submenuKeys.forEach(key => {
+            const saved = localStorage.getItem(key);
+            if (saved === "open") {
+                const parent = document.querySelector(`[data-key='${key}']`);
+                if (parent) {
+                    parent.classList.add("menu-open");
+                    const link = parent.querySelector(".nav-link");
+                    if (link) link.classList.add("active");
+                }
+            }
+        });
+        submenuKeys.forEach(key => {
+            const parent = document.querySelector(`[data-key='${key}']`);
+            if (parent) {
+                const link = parent.querySelector(".nav-link");
+                link.addEventListener("click", function () {
+                    if (parent.classList.contains("menu-open")) {
+                        localStorage.removeItem(key);
+                    } else {
+                        localStorage.setItem(key, "open");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 
 </html>

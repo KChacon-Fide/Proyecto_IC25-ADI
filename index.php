@@ -14,13 +14,18 @@ if (!empty($_SESSION['active'])) {
                     </div>';
     } else {
       require_once "conexion.php";
-      $user = mysqli_real_escape_string($conexion, $_POST['correo']);
-      $pass = md5(mysqli_real_escape_string($conexion, $_POST['pass']));
-      $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$user' AND pass = '$pass' AND estado = 1");
+      $user = $_POST['correo'];
+      $pass = md5($_POST['pass']);
+
+      $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE correo = ? AND pass = ? AND estado = 1");
+      $stmt->bind_param("ss", $user, $pass);
+      $stmt->execute();
+      $query = $stmt->get_result();
       mysqli_close($conexion);
-      $resultado = mysqli_num_rows($query);
+
+      $resultado = $query->num_rows;
       if ($resultado > 0) {
-        $dato = mysqli_fetch_array($query);
+        $dato = $query->fetch_array();
         $_SESSION['active'] = true;
         $_SESSION['idUser'] = $dato['id'];
         $_SESSION['nombre'] = $dato['nombre'];
@@ -44,6 +49,7 @@ if (!empty($_SESSION['active'])) {
   }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +79,7 @@ if (!empty($_SESSION['active'])) {
     <!-- /.login-logo -->
     <div class="card">
       <div class="card-body login-card-body">
-        <p class="login-box-msg">Inicia sesión para iniciar tu sesión</p>
+        <p class="login-box-msg">Inicia sesión para ingresar</p>
 
         <form action="" method="post" autocomplete="off">
           <?php echo (isset($alert)) ? $alert : ''; ?>
