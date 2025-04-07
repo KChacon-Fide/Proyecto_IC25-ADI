@@ -89,6 +89,7 @@ if (isset($_GET['detalle'])) {
         $row = mysqli_fetch_assoc($pedido);
         $id_pedido = $row['idPedido'];
         $insertar = 1;
+        $actualizar = mysqli_query($conexion, "UPDATE pedidos SET total = $total + total WHERE id = $id_pedido"); 
     }else{
         
         $insertar = mysqli_query($conexion, "INSERT INTO pedidos (id_sala, num_mesa, total, observacion, id_usuario) VALUES ($id_sala, $mesa, '$total', '$observacion', $id_user)");
