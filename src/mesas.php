@@ -110,10 +110,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                             echo '<a class="btn btn-outline-success w-50" href="finalizar.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-check-circle"></i> Finalizar</a>';
                                         }
                                         ?>
-                                        <a class="btn btn-outline-info w-50" href="#" data-toggle="modal"
+                                        <!--<a class="btn btn-outline-info w-50" href="#" data-toggle="modal"
                                             data-target="#cambiarMesaModal" onclick="setMesaId(<?php echo $data['id_mesa']; ?>)">
-                                            <i class="fas fa-exchange-alt"> </i> <!--Cambiar -->
-                                        </a>
+                                            <i class="fas fa-exchange-alt"> </i>  --Cambiar --
+                                        </a> -->
                                     </div>
 
                                     <?php if ($_SESSION['rol'] == 1) { ?>
@@ -142,7 +142,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     </div>
 
     <!-- MODAL PARA CAMBIO DE MESA -->
-    <div class="modal fade" id="cambiarMesaModal" tabindex="-1" role="dialog">
+    <!--<div class="modal fade" id="cambiarMesaModal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="cambiar_mesa.php" method="POST">
@@ -171,7 +171,9 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
+
+
     <!-- Modal para agregar mesas (solo para Administradores) -->
     <?php if ($_SESSION['rol'] == 1) { ?>
         <div class="modal fade" id="agregarMesasModal" tabindex="-1" role="dialog" aria-labelledby="agregarMesasModalLabel"
