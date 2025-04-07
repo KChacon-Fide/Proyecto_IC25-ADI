@@ -79,8 +79,9 @@ if (isset($_GET['detalle'])) {
     $total = 0;
     while ($row = mysqli_fetch_assoc($consulta)) {
         $total += $row['cantidad'] * $row['precio'];
-    }
-    $pedido = mysqli_query($conexion, "SELECT id as idPedido FROM pedidos WHERE id_sala = $id_sala AND num_mesa = $mesa AND id_usuario = $id_user AND estado = 'ACTIVO'"); //Verificar si existe Pedido
+    }                   
+                                                                                                                                //id_usuario = $id_user
+    $pedido = mysqli_query($conexion, "SELECT id as idPedido FROM pedidos WHERE id_sala = $id_sala AND num_mesa = $mesa  AND estado = 'ACTIVO'"); //Verificar si existe Pedido
     $existe_pedido = mysqli_num_rows($pedido) > 0 ? true : false;
     
     
@@ -89,6 +90,7 @@ if (isset($_GET['detalle'])) {
         $id_pedido = $row['idPedido'];
         $insertar = 1;
     }else{
+        
         $insertar = mysqli_query($conexion, "INSERT INTO pedidos (id_sala, num_mesa, total, observacion, id_usuario) VALUES ($id_sala, $mesa, '$total', '$observacion', $id_user)");
         $id_pedido = mysqli_insert_id($conexion);
     }
@@ -133,7 +135,8 @@ if (isset($_GET['detalle'])) {
     $id_sala = $_GET['id_sala'];
     $id_user = $_SESSION['idUser'];
     $mesa = $_GET['mesa'];
-    $insertar = mysqli_query($conexion, "UPDATE pedidos SET estado='FINALIZADO' WHERE id_sala=$id_sala AND num_mesa=$mesa AND estado='PENDIENTE' AND id_usuario=$id_user");
+                                                                                                                                                            //id_usuario = $id_user
+    $insertar = mysqli_query($conexion, "UPDATE pedidos SET estado='FINALIZADO' WHERE id_sala=$id_sala AND num_mesa=$mesa AND estado='PENDIENTE'");
     if ($insertar) {
         $sala = mysqli_query($conexion, "SELECT * FROM salas WHERE id = $id_sala");
         $resultSala = mysqli_fetch_assoc($sala);
