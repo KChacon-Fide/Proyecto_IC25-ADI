@@ -104,6 +104,7 @@ if (empty($_SESSION['active'])) {
                         </li>';
                         } ?>
                         <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
+
                                     echo '<li class="nav-item">
                                         <a href="index.php" class="nav-link">
                                             <i class="nav-icon fas fa-pizza-slice"></i>
@@ -220,28 +221,34 @@ if (empty($_SESSION['active'])) {
                                 
                                 </ul>
                         </li>';
-                        }?>
+                    }?>
 
-
-                        <li class="nav-item">
+                    <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2 || $_SESSION['rol'] == 3) {
+                        echo'<li class="nav-item">
                             <a href="cocina.php" class="nav-link">
-                                <i class="nav-icon fas fa-utensils"></i>
-                                <p>Pedidos Cocina</p>
+                            <i class="nav-icon fas fa-utensils"></i>
+                            <p>Pedidos Cocina</p>
                             </a>
-                        </li>
-                        
-                        <li class="nav-item">
+                        </li>';
+                    }?>
+
+                    <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3 || $_SESSION['rol'] == 4) {
+                        echo'<li class="nav-item">
                             <a href="bar.php" class="nav-link">
                                 <i class="nav-icon fas fa-cocktail"></i>
                                 <p>Pedidos Bar</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                        </li>';
+                    }?>
+
+                    <?php if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
+                        echo'<li class="nav-item">
                             <a href="mesero.php" class="nav-link">
                                 <i class="nav-icon fas fa-check-circle"></i>
                                 <p>Pedidos Mesero</p>
                             </a>
-                        </li>
+                        </li>';
+                    }?>    
 
                         <li class="nav-item">
                             <a href="salir.php" class="nav-link">

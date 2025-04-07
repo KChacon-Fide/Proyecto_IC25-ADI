@@ -105,6 +105,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         if (!$isPendiente) {
                                             echo '<a class="btn btn-outline-info w-50" href="pedido.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-concierge-bell"></i> <!--Atender --> </a>';
                                         } else {
+                                            echo '<a class="btn btn-outline-info w-50" href="pedido.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-concierge-bell"></i> <!--Atender --> </a>';
 
                                             echo '<a class="btn btn-outline-success w-50" href="finalizar.php?id_sala=' . $id . '&mesa=' . $data['num_mesa'] . '"><i class="fas fa-check-circle"></i> Finalizar</a>';
                                         }

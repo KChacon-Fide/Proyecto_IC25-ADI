@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+
+
 include_once "includes/header.php";
 include "../conexion.php";
 $query1 = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM salas WHERE estado = 1");
@@ -16,7 +19,7 @@ $totalVentas = mysqli_fetch_assoc($query5);
 ?>
 <link rel="stylesheet" href="../assets/dist/css/dashboard.css">
 <link rel="stylesheet" href="../assets/dist/css/calculator.css">
-<div class="card">
+<div class="card" id="panel">
     <div class="card-header text-center">
         Panel
     </div>
@@ -114,6 +117,22 @@ $totalVentas = mysqli_fetch_assoc($query5);
     </div>
 </div>
 
+<?php 
+ if ($_SESSION['rol'] == 2) {
+     echo "<script>
+        document.getElementById('panel').innerHTML = \"<img src='../assets/img/cocinero.jpg' style='width: 100%; height: 100%; object-fit: contain;'>\";
+     </script>";
+ } 
+
+if ($_SESSION['rol'] == 4) {
+    echo "<script>
+       document.getElementById('panel').innerHTML = \"<img src='../assets/img/bartender.jpg' style='width: 100%; height: 100%; object-fit: contain;'>\";
+    </script>";
+} 
+
+
+?>
+
 <?php include_once "includes/footer.php"; ?>
 
 <div id="calc-bubble" onclick="toggleCalc()">
@@ -144,5 +163,6 @@ $totalVentas = mysqli_fetch_assoc($query5);
 
         <button class="calc-equal" onclick="calculate()">=</button>
     </div>
+
     <script src="../assets/js/calculator.js"></script>
     <script src="../assets/js/dashboard.js"></script>

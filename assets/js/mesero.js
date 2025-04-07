@@ -138,20 +138,44 @@ function obtenerDisenoDetallePedido(index, nombrePlato, cantidadPlato, observaci
             <span class="m-1 badge bg-secondary">x${cantidadPlato}</span>
             <strong>${nombrePlato}</strong>
              <span class="position-absolute top-0 end-0">
-                <div class="dropdown">
-                    <a class="btn ${botonSegunEstado(estadoPlato, estadoPlato)} dropdown-toggle cambiarEstadoPlato" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ${estadoPlato}
-                    </a>
-
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item cambiarEstadoPendiente" data-id="${idDetallePedido}">Pendiente</a></li>
-                        <li><a class="dropdown-item cambiarEstadoEnPreparacion" data-id="${idDetallePedido}">En Preparación</a></li>
-                        <li><a class="dropdown-item cambiarEstadoListo" data-id="${idDetallePedido}">Lista para Servir</a></li>
-                        <li><a class="dropdown-item cambiarEstadoServido" data-id="${idDetallePedido}">Servido</a></li>
-                    </ul>
-                </div>
+                <button 
+                    class="btn ${botonSegunEstado("PENDIENTE", estadoPlato)} cambiarEstadoPendiente botones-cambiar-estado" 
+                    data-toggle="tooltip" 
+                    data-placement="bottom" 
+                    title="${toolTipSegunEstado("PENDIENTE", estadoPlato)}" 
+                    type="button" 
+                    data-id="${idDetallePedido}">
+                    ${iconoSegunEstado("PENDIENTE")}
+                </button>
+                <button 
+                    class="btn ${botonSegunEstado("EN PREPARACION", estadoPlato)} cambiarEstadoEnPreparacion botones-cambiar-estado" 
+                    data-toggle="tooltip" 
+                    data-placement="bottom" 
+                    title="${toolTipSegunEstado("EN PREPARACION", estadoPlato)}" 
+                    type="button" 
+                    data-id="${idDetallePedido}">
+                    ${iconoSegunEstado("EN PREPARACION")}
+                </button>
+                <button 
+                    class="btn ${botonSegunEstado("LISTO PARA SERVIR", estadoPlato)} cambiarEstadoListo botones-cambiar-estado" 
+                    data-toggle="tooltip" 
+                    data-placement="bottom" 
+                    title="${toolTipSegunEstado("LISTO PARA SERVIR", estadoPlato)}" 
+                    type="button" 
+                    data-id="${idDetallePedido}">
+                    ${iconoSegunEstado("LISTO PARA SERVIR")}
+                </button>
+                <button 
+                    class="btn ${botonSegunEstado("SERVIDO", estadoPlato)} cambiarEstadoServido botones-cambiar-estado" 
+                    data-toggle="tooltip" 
+                    data-placement="bottom" 
+                    title="${toolTipSegunEstado("SERVIDO", estadoPlato)}" 
+                    type="button" 
+                    data-id="${idDetallePedido}">
+                    ${iconoSegunEstado("SERVIDO")}
+                </button>
+            </span>
             </div>
-        </span>
         <div>
             <small>${observacionesPedido}</small>
         </div>

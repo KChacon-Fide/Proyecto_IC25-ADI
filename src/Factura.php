@@ -13,7 +13,8 @@ $pedido = mysqli_fetch_assoc($queryPedido);
 if (!$pedido) {
     die("El pedido no existe.");
 }
-
+// combinando los nombres de los platillos
+//$queryDetalle = mysqli_query($conexion, "SELECT nombre, SUM(cantidad) as cantidad, MAX(precio) as precio from detalle_pedidos WHERE id_pedido = '$id_pedido' GROUP BY nombre");
 $queryDetalle = mysqli_query($conexion, "SELECT * FROM detalle_pedidos WHERE id_pedido = '$id_pedido'");
 $lineHeight = 6;
 $numRows = mysqli_num_rows($queryDetalle);

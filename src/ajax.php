@@ -80,8 +80,19 @@ if (isset($_GET['detalle'])) {
     while ($row = mysqli_fetch_assoc($consulta)) {
         $total += $row['cantidad'] * $row['precio'];
     }
-    $insertar = mysqli_query($conexion, "INSERT INTO pedidos (id_sala, num_mesa, total, observacion, id_usuario) VALUES ($id_sala, $mesa, '$total', '$observacion', $id_user)");
-    $id_pedido = mysqli_insert_id($conexion);
+    $pedido = mysqli_query($conexion, "SELECT id as idPedido FROM pedidos WHERE id_sala = $id_sala AND num_mesa = $mesa AND id_usuario = $id_user AND estado = 'ACTIVO'"); //Verificar si existe Pedido
+    $existe_pedido = mysqli_num_rows($pedido) > 0 ? true : false;
+    
+    
+    if ($existe_pedido == true) {
+        $row = mysqli_fetch_assoc($pedido);
+        $id_pedido = $row['idPedido'];
+        $insertar = 1;
+    }else{
+        $insertar = mysqli_query($conexion, "INSERT INTO pedidos (id_sala, num_mesa, total, observacion, id_usuario) VALUES ($id_sala, $mesa, '$total', '$observacion', $id_user)");
+        $id_pedido = mysqli_insert_id($conexion);
+    }
+
     if ($insertar == 1) {
 
         $consulta = mysqli_query($conexion, "SELECT d.*, p.nombre FROM temp_pedidos d INNER JOIN platos p ON d.id_producto = p.id WHERE d.tipo = 1 AND d.id_usuario = $id_user 

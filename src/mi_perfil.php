@@ -1,6 +1,5 @@
 <?php
 session_start();
-if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     include_once "includes/header.php";
     ?>
     <div class="card">
@@ -78,7 +77,5 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         </div>
     </div>
     <?php include_once "includes/footer.php";
-} else {
-    header('Location: permisos.php');
-}
+
 ?>

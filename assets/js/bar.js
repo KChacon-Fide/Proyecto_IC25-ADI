@@ -13,20 +13,21 @@ async function cargarPedidos() {
         let params = new URLSearchParams(document.location.search);
         let vista = params.get("Vista");
 
-        if (vista == undefined) vista = "TODOS";
+        if (vista == undefined) vista = "PENDIENTE";
         vista = vista.toUpperCase().replaceAll("_", " ");
 
-
+        // boton de TODOS
+        // <button class="btn ${botonSegunEstado("TODOS", vista)}" id = "btnTodos">Todos</button>
         $("#botonesFiltro").html(`
-            <button class="btn ${botonSegunEstado("TODOS", vista)}" id = "btnTodos">Todos</button>
+           
             <button class="btn ${botonSegunEstado("PENDIENTE", vista)}" id = "btnPendientes" >Pendientes</button>
             <button class="btn ${botonSegunEstado("EN PREPARACION", vista)}" id = "btnEnPreparacion" >En Preparación</button>
             <button class="btn ${botonSegunEstado("LISTO PARA SERVIR", vista)}" id = "btnListoParaServir">Listo para Servir</button>
         `);
 
-        $("#btnTodos").click(function () {
-            window.location.href = "bar.php?Vista=TODOS";
-        });
+        // $("#btnTodos").click(function () {
+        //     window.location.href = "bar.php?Vista=TODOS";
+        // });
         $("#btnPendientes").click(function () {
             window.location.href = "bar.php?Vista=PENDIENTE";
         });
