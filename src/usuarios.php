@@ -117,27 +117,48 @@ include "includes/header.php";
                         </select>
                     </div>
                 </div>
-                <?php if (empty($data['id'])) { ?>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="pass" class="font-weight-bold">Contraseña</label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" placeholder="Ingrese Contraseña" name="pass"
-                                    id="pass" readonly>
-                                <button class="btn btn-secondary" type="button" style="background-color: #1E3A8A;"
-                                    onclick="togglePassword()">
-                                    <i class="fas fa-eye" id="toggleIcon"></i>
-                                </button>
-                            </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="pass" class="font-weight-bold">Contraseña</label>
+                        <div class="input-group">
+                            <button class="btn btn-primary" type="button" onclick="generarPassword()"
+                                style="margin-right: 4px; background-color: #1E3A8A;">
+                                <i class="fas fa-random"></i>
+                            </button>
+                            <input type="password" class="form-control px-2" placeholder="Ingrese Contraseña"
+                                name="pass" id="pass">
+                            <button class="btn btn-primary" type="button" onclick="togglePassword()"
+                                style="margin-left: 4px;">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
                         </div>
                     </div>
+                    <div class="d-flex mt-3" style="gap: 10px;">
+                        <input type="submit" id="btnRegistrar"
+                            value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
+                            class="btn btn-primary" style="background-color: #1E3A8A; display: none;">
+                        <a href="usuarios.php" class="btn btn-danger"> <i class="fas fa-trash-alt"></i></a>
+                    </div>
 
-                <?php } ?>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="d-block font-weight-bold" style="visibility: hidden;">Validaciones</label>
+                        <ul id="password-requisitos" class="small mb-0 pl-3" style="margin-top: 0.5px;">
+                            <li id="longitud" class="text-danger">Mínimo 12 caracteres</li>
+                            <li id="minuscula" class="text-danger">Una letra minúscula (a-z)</li>
+                            <li id="mayuscula" class="text-danger">Una letra mayúscula (A-Z)</li>
+                            <li id="numero" class="text-danger">Un número (0-9)</li>
+                            <li id="especial" class="text-danger">Un carácter especial (!@#$...)</li>
+                        </ul>
+                    </div>
+                </div>
+
+
             </div>
-            <input type="submit" value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
-                class="btn btn-primary" style="background-color: #1E3A8A;">
-            <a href="usuarios.php" class="btn btn-danger"> <i class="fas fa-trash-alt"></i>
-            </a>
+
         </form>
     </div>
 </div>
@@ -210,9 +231,7 @@ include "includes/header.php";
                 caracteres.charAt(Math.floor(Math.random() * caracteres.length))
             ).join('');
 
-
-            if (/[a-z]/.test(contrasena) && /[A-Z]/.test(contrasena) &&
-                /\d/.test(contrasena) && /[!@#$%^&*()_+{}\[\]:;<>,.?~]/.test(contrasena)) {
+            if (validarTodosLosRequisitos(contrasena)) {
                 break;
             }
         }
@@ -233,13 +252,91 @@ include "includes/header.php";
         }
     }
 
+    function generarPassword() {
+        const passField = document.getElementById("pass");
+        if (passField) {
+            const nueva = generarContrasenaSegura();
+            passField.value = nueva;
+            validarRequisitos(nueva);
+            actualizarVisibilidadBoton(nueva, true);
+        }
+    }
+
+    // Requisitos visuales en la lista
+    const requisitos = {
+        longitud: document.getElementById("longitud"),
+        minuscula: document.getElementById("minuscula"),
+        mayuscula: document.getElementById("mayuscula"),
+        numero: document.getElementById("numero"),
+        especial: document.getElementById("especial")
+    };
+
+    function validarRequisitos(password) {
+        requisitos.longitud.classList.toggle("text-success", password.length >= 12);
+        requisitos.minuscula.classList.toggle("text-success", /[a-z]/.test(password));
+        requisitos.mayuscula.classList.toggle("text-success", /[A-Z]/.test(password));
+        requisitos.numero.classList.toggle("text-success", /\d/.test(password));
+        requisitos.especial.classList.toggle("text-success", /[!@#$%^&*()_+{}\[\]:;<>,.?~]/.test(password));
+
+        for (let key in requisitos) {
+            if (requisitos[key].classList.contains("text-success")) {
+                requisitos[key].classList.remove("text-danger");
+            } else {
+                requisitos[key].classList.add("text-danger");
+            }
+        }
+    }
+
+    function validarTodosLosRequisitos(password) {
+        return (
+            password.length >= 12 &&
+            /[a-z]/.test(password) &&
+            /[A-Z]/.test(password) &&
+            /\d/.test(password) &&
+            /[!@#$%^&*()_+{}\[\]:;<>,.?~]/.test(password)
+        );
+    }
+
+    function actualizarVisibilidadBoton(password, generadoAutomaticamente = false) {
+        const boton = document.getElementById("btnRegistrar");
+
+        if (!boton) return;
+
+        if (generadoAutomaticamente) {
+            boton.style.display = "inline-block";
+            return;
+        }
+
+        if (validarTodosLosRequisitos(password)) {
+            boton.style.display = "inline-block";
+        } else {
+            boton.style.display = "none";
+        }
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         const passField = document.getElementById("pass");
+        const boton = document.getElementById("btnRegistrar");
+
         if (passField) {
-            passField.value = generarContrasenaSegura();
+            validarRequisitos(passField.value);
+
+            // Mostrar el botón si ya tiene valor (modo edición)
+            if (passField.value !== "") {
+                boton.style.display = "inline-block";
+            } else {
+                boton.style.display = "none";
+            }
+
+            // Validar en cada cambio
+            passField.addEventListener("input", function () {
+                validarRequisitos(this.value);
+                actualizarVisibilidadBoton(this.value, false);
+            });
         }
     });
 </script>
+
+
 
 <?php include_once "includes/footer.php"; ?>
