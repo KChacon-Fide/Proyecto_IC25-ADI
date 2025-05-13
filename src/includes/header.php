@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$tiempo_expiracion = 40; // Tiempo inicial de inactividad (40 segundos)
+$tiempo_expiracion = 480; // Tiempo inicial de inactividad (40 segundos)
 $tiempo_modal = 20;      // Tiempo para responder en el modal (20 segundos)
 
 // Verificar si hay sesión activa

@@ -9,8 +9,8 @@ include "../conexion.php";
 $data = null;
 if (!empty($_GET['id'])) {
     $idUsuario = $_GET['id'];
-    $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
-    $result = mysqli_num_rows($query);
+    $query     = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
+    $result    = mysqli_num_rows($query);
     if ($result > 0) {
         $data = mysqli_fetch_assoc($query);
     } else {
@@ -18,43 +18,72 @@ if (!empty($_GET['id'])) {
         exit;
     }
 }
+
 if (!empty($_POST)) {
-    $id = $_POST['id'];
+    $id     = $_POST['id'];
     $nombre = $_POST['nombre'];
     $correo = $_POST['correo'];
-    $rol = $_POST['rol'];
-    $turno = $_POST['turno'];
-    $alert = "";
+    $rol    = $_POST['rol'];
+    $turno  = $_POST['turno'];
+    $alert  = "";
 
     if (empty($nombre) || empty($correo) || empty($rol) || empty($turno)) {
         $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
     } else {
+        // NUEVO USUARIO
         if (empty($id)) {
-
             $pass = $_POST['pass'];
             if (empty($pass)) {
                 $alert = '<div class="alert alert-warning">La contraseña es requerida.</div>';
             } else {
-                $pass = md5($pass);
-                $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
-                if (mysqli_num_rows($query) > 0) {
+                $hash = md5($pass);
+                $q    = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
+                if (mysqli_num_rows($q) > 0) {
                     $alert = '<div class="alert alert-warning">El correo ya existe.</div>';
                 } else {
-                    $query_insert = mysqli_query($conexion, "INSERT INTO usuarios (nombre, correo, rol, pass, turno) VALUES ('$nombre', '$correo', '$rol', '$pass', '$turno')");
+                    $query_insert = mysqli_query($conexion,
+                        "INSERT INTO usuarios (nombre, correo, rol, pass, turno, pass_temp)
+                         VALUES ('$nombre', '$correo', '$rol', '$hash', '$turno', 1)"
+                    );
                     if ($query_insert) {
-                        $alert = '<div class="alert alert-success">Usuario registrado exitosamente.</div>';
+                        require_once 'correo/Mail-Sent.php';
+                        enviarCorreoBienvenida($correo, $nombre, $pass);
+                        $alert = '<div class="alert alert-success">Usuario registrado exitosamente y correo enviado.</div>';
                     } else {
                         $alert = '<div class="alert alert-danger">Error al registrar el usuario.</div>';
                     }
                 }
             }
-        } else {
+        }
+        // ACTUALIZAR USUARIO
+        else {
             $pass = $_POST['pass'] ?? null;
             if (!empty($pass)) {
-                $pass = md5($pass);
-                $sql_update = mysqli_query($conexion, "UPDATE usuarios SET nombre = '$nombre', correo = '$correo', rol = '$rol', turno = '$turno', pass = '$pass' WHERE id = $id");
+                $hash = md5($pass);
+                // Marcamos contraseña como temporal y reenviamos correo
+                $sql_update = mysqli_query($conexion,
+                    "UPDATE usuarios
+                     SET nombre = '$nombre',
+                         correo = '$correo',
+                         rol    = '$rol',
+                         turno  = '$turno',
+                         pass   = '$hash',
+                         pass_temp = 1
+                     WHERE id = $id"
+                );
+                if ($sql_update) {
+                    require_once 'correo/Mail-Sent.php';
+                    enviarCorreoBienvenida($correo, $nombre, $pass);
+                }
             } else {
-                $sql_update = mysqli_query($conexion, "UPDATE usuarios SET nombre = '$nombre', correo = '$correo', rol = '$rol', turno = '$turno' WHERE id = $id");
+                $sql_update = mysqli_query($conexion,
+                    "UPDATE usuarios
+                     SET nombre = '$nombre',
+                         correo = '$correo',
+                         rol    = '$rol',
+                         turno  = '$turno'
+                     WHERE id = $id"
+                );
             }
 
             if ($sql_update) {
