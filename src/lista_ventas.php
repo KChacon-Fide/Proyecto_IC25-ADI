@@ -18,7 +18,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     $where_clause = $usuario_seleccionado ? "WHERE p.id_usuario = '$usuario_seleccionado'" : '';
 
     $query = mysqli_query($conexion, "
-        SELECT p.*, s.nombre AS sala, u.nombre 
+        SELECT p.*, p.transaccion, s.nombre AS sala, u.nombre 
         FROM pedidos p 
         INNER JOIN salas s ON p.id_sala = s.id 
         INNER JOIN usuarios u ON p.id_usuario = u.id 
@@ -31,33 +31,34 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         <div class="card-header bg-primary text-white d-flex align-items-center">
             <h4 class="mb-0"><i class="fas fa-door-open"></i> Historial de Órdenes</h4>
         </div>
-        
+
         <div class="card-body">
-        <form method="GET" class="mb-4">
-            <div class="form-group">
-                <label for="usuario">Filtrar por Usuario:</label>
-                <select id="usuario" name="usuario" class="form-control">
-                    <option value="">Todos</option>
-                    <?php
-                    // Obtener la lista de usuarios
-                    $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios");
-                    while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
-                        $selected = (isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id']) ? 'selected' : '';
-                        echo "<option value='{$usuario['id']}' $selected>{$usuario['nombre']}</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-        </form>
+            <form method="GET" class="mb-4">
+                <div class="form-group">
+                    <label for="usuario">Filtrar por Usuario:</label>
+                    <select id="usuario" name="usuario" class="form-control">
+                        <option value="">Todos</option>
+                        <?php
+                        // Obtener la lista de usuarios
+                        $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios WHERE estado = 1");
+                        while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
+                            $selected = (isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id']) ? 'selected' : '';
+                            echo "<option value='{$usuario['id']}' $selected>{$usuario['nombre']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">
                         <tr>
-                            
+
                             <th>Sala</th>
                             <th>Mesa</th>
                             <th>Fecha</th>
+                            <th>Nº Transacción</th>
                             <th>Total (₡)</th>
                             <th>Usuario</th>
                             <th>Estado</th>
@@ -70,15 +71,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                 : '<span class="badge badge-success p-2">Completado</span>';
                             ?>
                             <tr>
-                               
                                 <td class="text-center font-weight-bold"><?php echo strtoupper($row['sala']); ?></td>
                                 <td class="text-center"><?php echo $row['num_mesa']; ?></td>
                                 <td class="text-center"><?php echo $row['fecha']; ?></td>
+                                <td class="text-center">
+                                    <?php echo !empty($row['transaccion']) ? $row['transaccion'] : '-'; ?>
+                                </td>
                                 <td class="text-center font-weight-bold text-info">
                                     ₡<?php echo number_format($row['total'], 0, '', '.'); ?></td>
                                 <td class="text-center"><?php echo $row['nombre']; ?></td>
                                 <td class="text-center"><?php echo $estado; ?></td>
                             </tr>
+
                         <?php } ?>
                     </tbody>
                 </table>
@@ -129,25 +133,28 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             text-transform: uppercase;
         }
 
-        
-        .table tbody  {
-            background-color:  rgba(77, 100, 165, 0.1);
-            
+
+        .table tbody {
+            background-color: rgba(77, 100, 165, 0.1);
+
 
         }
-        .table th{
+
+        .table th {
             border: 0.5px solid #1E3A8A;
         }
+
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
-            
+
 
         }
+
         .table td {
             font-size: 14px;
             border: none;
         }
-   
+
 
         .badge {
             font-size: 14px;

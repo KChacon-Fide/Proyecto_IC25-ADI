@@ -74,6 +74,9 @@ $pdf->Cell(28, 6, '' . number_format($total, 0), 0, 1, 'R');
 $pdf->Ln(2);
 $pdf->SetFont('Arial', '', 8);
 $pdf->Cell(58, 5, "Pago: " . ucfirst($pedido['tipoPago']), 0, 1, 'C');
+if (strtolower($pedido['tipoPago']) === 'tarjeta' && !empty($pedido['transaccion'])) {
+    $pdf->Cell(58, 5, "Transaccion: " . utf8_decode($pedido['transaccion']), 0, 1, 'C');
+}
 $pdf->Cell(58, 5, "---------------------------------", 0, 1, 'C');
 $pdf->Ln(5);
 

@@ -52,6 +52,8 @@ CREATE TABLE pedidos (
   tipoPago ENUM('efectivo', 'tarjeta') NOT NULL,
   PRIMARY KEY (id),
   KEY id_sala (id_sala)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  ALTER TABLE pedidos
+  ADD COLUMN transaccion VARCHAR(100) NULL AFTER tipoPago;
 
 /*==========================================
   🧾 GESTIÓN DETALLE DE PEDIDOS

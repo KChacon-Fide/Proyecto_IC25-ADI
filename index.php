@@ -190,7 +190,7 @@ if (!empty($_POST)) {
         <button type="submit" class="btn btn-primary w-100">Ingresar al sistema</button>
       </form>
       <div class="login-footer">
-        Copyright &copy; <?php echo date('Y'); ?> Restaurante San Isidro. Todos los sabores reservados.
+        Copyright &copy; <?php echo date('Y'); ?> Restaurante San Isidro. Todos los derechos reservados.
       </div>
     </div>
   </div>

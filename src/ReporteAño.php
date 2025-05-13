@@ -32,17 +32,18 @@ $pdf->SetTextColor(255, 255, 255);
 $startX = ($pdf->GetPageWidth() - (25 + 60 + 25 + 60 + 60 + 35)) / 2;
 $pdf->SetX($startX);
 $pdf->Cell(25, 10, 'ID', 1, 0, 'C', true);
-$pdf->Cell(60, 10, 'Sala', 1, 0, 'C', true);
+$pdf->Cell(50, 10, 'Sala', 1, 0, 'C', true);
 $pdf->Cell(25, 10, 'Mesa', 1, 0, 'C', true);
-$pdf->Cell(60, 10, 'Fecha', 1, 0, 'C', true);
-$pdf->Cell(60, 10, 'Usuario', 1, 0, 'C', true);
-$pdf->Cell(35, 10, 'Total (¢)', 1, 1, 'C', true);
+$pdf->Cell(50, 10, 'Fecha', 1, 0, 'C', true);
+$pdf->Cell(35, 10, utf8_decode('Nº Transacción'), 1, 0, 'C', true);
+$pdf->Cell(35, 10, 'Usuario', 1, 0, 'C', true);
+$pdf->Cell(45, 10, 'Total (Colon)', 1, 1, 'C', true);
 
 $fecha_inicio_anio = date('Y-01-01');
 $fecha_fin_anio = date('Y-12-31');
 
 $query = mysqli_query($conexion, "
-    SELECT p.*, s.nombre AS sala, u.nombre 
+    SELECT p.*, p.transaccion, s.nombre AS sala, u.nombre  
     FROM pedidos p 
     INNER JOIN salas s ON p.id_sala = s.id 
     INNER JOIN usuarios u ON p.id_usuario = u.id 
@@ -56,11 +57,12 @@ $total_anual = 0;
 while ($row = mysqli_fetch_assoc($query)) {
     $pdf->SetX($startX);
     $pdf->Cell(25, 10, $row['id'], 1, 0, 'C');
-    $pdf->Cell(60, 10, utf8_decode($row['sala']), 1, 0, 'C');
+    $pdf->Cell(50, 10, utf8_decode($row['sala']), 1, 0, 'C');
     $pdf->Cell(25, 10, $row['num_mesa'], 1, 0, 'C');
-    $pdf->Cell(60, 10, date('Y-m-d H:i:s', strtotime($row['fecha'])), 1, 0, 'C');
-    $pdf->Cell(60, 10, utf8_decode($row['nombre']), 1, 0, 'C');
-    $pdf->Cell(35, 10, number_format($row['total'], 0, '', '.'), 1, 1, 'C');
+    $pdf->Cell(50, 10, date('d/m/Y H:i', strtotime($row['fecha'])), 1, 0, 'C');
+    $pdf->Cell(35, 10, !empty($row['transaccion']) ? $row['transaccion'] : '-', 1, 0, 'C');
+    $pdf->Cell(35, 10, utf8_decode($row['nombre']), 1, 0, 'C');
+    $pdf->Cell(45, 10, number_format($row['total'], 0, '', '.'), 1, 1, 'C');
     $total_anual += $row['total'];
 }
 
@@ -68,8 +70,8 @@ while ($row = mysqli_fetch_assoc($query)) {
 $pdf->SetFont('Arial', 'B', 12);
 $pdf->SetFillColor(240, 240, 240);
 $pdf->SetX($startX);
-$pdf->Cell(230, 10, utf8_decode('Total del Año:'), 1, 0, 'L', true);
-$pdf->Cell(35, 10, number_format($total_anual, 0, '', '.'), 1, 1, 'C', true);
+$pdf->Cell(220, 10, utf8_decode('Total del Año:'), 1, 0, 'L', true); // 25+50+25+50+35+35
+$pdf->Cell(45, 10, number_format($total_anual, 0, '', '.'), 1, 1, 'C', true);
 
 $pdf->Output('I', 'Reporte_Ordenes_Del_Ano.pdf');
 ?>
