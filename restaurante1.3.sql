@@ -138,6 +138,9 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*Ejecutar este alter que hace falta para la tabla de Users*/
 ALTER TABLE usuarios ADD COLUMN turno ENUM('diurno', 'nocturno') NOT NULL DEFAULT 'diurno';
+ALTER TABLE usuarios 
+ADD COLUMN pass_temp TINYINT(1) NOT NULL DEFAULT 1;
+
 
 /*==========================================
   📦 PROVEEDORES
