@@ -105,9 +105,12 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     </div>
     <div class="card shadow-lg">
         <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+            <div class="mb-3">
+                <input type="text" id="buscador" class="form-control" placeholder="Buscar bebida..." style="width: 100%;">
+            </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered text-center">
+                <table class="table table-bordered text-center" id="tablaBebidas">
                     <thead style="background-color: #1E3A8A; color: white; border: 0.5px solid #1E3A8A;">
                         <tr>
 
@@ -214,6 +217,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             document.getElementById("foto_actual").value = imagen;
         }
     </script>
+    <script>
+    document.getElementById('buscador').addEventListener('keyup', function () {
+        let filtro = this.value.toLowerCase();
+        let filas = document.querySelectorAll('#tablaBebidas tbody tr');
+
+        filas.forEach(function (fila) {
+            let texto = fila.textContent.toLowerCase();
+            fila.style.display = texto.includes(filtro) ? '' : 'none';
+        });
+    });
+</script>
+
     <?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');

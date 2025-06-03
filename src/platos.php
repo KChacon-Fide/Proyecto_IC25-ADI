@@ -129,8 +129,12 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     </div>
     <div class="card shadow-lg">
         <div class="card-body" style="max-height: 600px; overflow-y: auto; text-align: center;">
+            <div class="mb-3">
+                <input type="text" id="buscadorPlatos" class="form-control" placeholder="Buscar plato..."
+                    style="width: 100%;">
+            </div>
 
-            <table class="table table-bordered table-center">
+            <table class="table table-bordered table-center" id="tablaPlatos">
                 <thead style="background-color: #1E3A8A; color: white; border: 0.5px solid #1E3A8A;">
                     <tr>
 
@@ -214,7 +218,23 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
         </style>
-        <?php include_once "includes/footer.php";
+    </div>
+    </div>
+    </div>
+    <script>
+        document.getElementById('buscadorPlatos').addEventListener('keyup', function () {
+            let filtro = this.value.toLowerCase();
+            let filas = document.querySelectorAll('#tablaPlatos tbody tr');
+
+            filas.forEach(function (fila) {
+                let texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(filtro) ? '' : 'none';
+            });
+        });
+    </script>
+
+
+    <?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 } ?>

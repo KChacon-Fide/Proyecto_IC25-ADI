@@ -254,319 +254,322 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            function DividirFactura() {
-    const checkboxes = document.querySelectorAll('.detalle-checkbox:checked');
-    let itemsSeleccionados = [];
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function DividirFactura() {
+            const checkboxes = document.querySelectorAll('.detalle-checkbox:checked');
+            let itemsSeleccionados = [];
 
-    checkboxes.forEach(checkbox => {
-        const row = checkbox.closest('tr');
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
 
-        if (row.classList.contains('disabled-row')) return;
+                if (row.classList.contains('disabled-row')) return;
 
-        const id = checkbox.dataset.id;
-        const precio = parseFloat(checkbox.dataset.precio);
-        const cantidadInput = row.querySelector(`.cantidad-a-pagar[data-id="${id}"]`);
-        const cantidad = parseInt(cantidadInput.value);
+                const id = checkbox.dataset.id;
+                const precio = parseFloat(checkbox.dataset.precio);
+                const cantidadInput = row.querySelector(`.cantidad-a-pagar[data-id="${id}"]`);
+                const cantidad = parseInt(cantidadInput.value);
 
-        if (cantidad > 0) {
-            itemsSeleccionados.push({ id, cantidad, precio });
-        }
-    });
+                if (cantidad > 0) {
+                    itemsSeleccionados.push({ id, cantidad, precio });
+                }
+            });
 
-    if (itemsSeleccionados.length === 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'No hay elementos seleccionados',
-            text: 'Por favor, seleccione al menos un elemento para generar la factura.',
-        });
-        return;
-    }
-
-    const aplicarImpuesto = document.getElementById('aplicar_impuesto').value === '1';
-    const impServicio = parseFloat(document.getElementById('imp_servicio').value);
-    const tipoPago = document.getElementById('tipo_pago').value;
-    const transaccion = document.getElementById('voucher').value; // 👈 capturar valor del input oculto
-
-    const datos = {
-        items: itemsSeleccionados,
-        aplicarImpuesto: aplicarImpuesto,
-        impServicio: impServicio,
-        tipoPago: tipoPago,
-        transaccion: transaccion // 👈 enviar transacción
-    };
-
-    console.log('Datos enviados al servidor:', datos);
-
-    fetch('dividir_factura.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+            if (itemsSeleccionados.length === 0) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Factura Generada',
-                    html: `<a href="Factura_Seleccionada.pdf" class="btn btn-primary btn-lg" target="_blank">
+                    icon: 'warning',
+                    title: 'No hay elementos seleccionados',
+                    text: 'Por favor, seleccione al menos un elemento para generar la factura.',
+                });
+                return;
+            }
+
+            const aplicarImpuesto = document.getElementById('aplicar_impuesto').value === '1';
+            const impServicio = parseFloat(document.getElementById('imp_servicio').value);
+            const tipoPago = document.getElementById('tipo_pago').value;
+            const transaccion = document.getElementById('voucher').value; // capturar valor del input oculto
+
+            const datos = {
+                items: itemsSeleccionados,
+                aplicarImpuesto: aplicarImpuesto,
+                impServicio: impServicio,
+                tipoPago: tipoPago,
+                transaccion: transaccion // enviar transacción
+            };
+
+            console.log('Datos enviados al servidor:', datos);
+
+            fetch('dividir_factura.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Factura Generada',
+                            html: `<a href="Factura_Seleccionada.pdf" class="btn btn-primary btn-lg" target="_blank">
                             <i class="fas fa-file-pdf"></i> Descargar Factura
                            </a>`,
-                    confirmButtonText: 'Aceptar',
-                    allowOutsideClick: false
-                }).then(() => {
-                    // 🔁 recargar la página tras aceptar
-                    window.location.reload();
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message || 'No se pudo generar la factura.',
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error en la solicitud:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Ocurrió un error al procesar la solicitud.',
-            });
-        });
-}
-
-            function toggleImpuesto() {
-                var checkbox = document.getElementById('flexCheckDefault');
-                var aplicarImpuestoInput = document.getElementById('aplicar_impuesto');
-                var impuestoInfo = document.getElementById('impuestoInfo');
-                var impuestoServicio = document.getElementById('impuestoServicio');
-                var totalConImpuesto = document.getElementById('totalConImpuesto');
-                var impServicioInput = document.getElementById('imp_servicio');
-                var total = <?php echo $pedido['total']; ?>;
-                var impuesto = total * 0.10;
-                var totalConImpuestoValor = total + impuesto;
-
-                aplicarImpuestoInput.value = checkbox.checked ? '1' : '0';
-                impServicioInput.value = checkbox.checked ? impuesto.toFixed(0) : '0';
-
-                if (checkbox.checked) {
-                    impuestoServicio.innerText = impuesto.toFixed(0);
-                    totalConImpuesto.innerText = totalConImpuestoValor.toFixed(0);
-                    impuestoInfo.style.display = 'block';
-                    document.getElementById('total_con_impuesto').value = totalConImpuestoValor.toFixed(0);
-                } else {
-                    impuestoInfo.style.display = 'none';
-                    document.getElementById('total_con_impuesto').value = total.toFixed(0);
-                }
-            }
-            document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
-                elem.addEventListener("change", function (event) {
-                    var tipoPagoInput = document.getElementById('tipo_pago');
-                    tipoPagoInput.value = event.target.value;
-                });
-            });
-
-            // MODAL CALCULO DE VUELTO
-            // Mostrar/ocultar el botón del vuelto según el método de pago
-            document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
-                elem.addEventListener("change", function () {
-                    const btnVuelto = document.getElementById("btnVuelto");
-                    const tipo = this.value;
-                    document.getElementById('tipo_pago').value = tipo;
-
-                    if (tipo === "efectivo") {
-                        btnVuelto.classList.remove("d-none");
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false
+                        }).then(() => {
+                            // recargar la página tras aceptar
+                            window.location.reload();
+                        });
                     } else {
-                        btnVuelto.classList.add("d-none");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'No se pudo generar la factura.',
+                        });
                     }
-                });
-            });
-            const modalVuelto = document.getElementById('modalVuelto');
-            modalVuelto.addEventListener('show.bs.modal', () => {
-                const aplicarImpuesto = document.getElementById("aplicar_impuesto").value === "1";
-                let total = 0;
-                const checkboxes = document.querySelectorAll('.detalle-checkbox:checked');
-                if (checkboxes.length > 0) {
-                    checkboxes.forEach(checkbox => {
-                        const row = checkbox.closest('tr');
-                        if (row.classList.contains('disabled-row')) return;
-
-                        const id = checkbox.dataset.id;
-                        const precio = parseFloat(checkbox.dataset.precio);
-                        const cantidadInput = document.querySelector(`.cantidad-a-pagar[data-id="${id}"]`);
-                        const cantidad = parseInt(cantidadInput.value);
-
-                        if (!isNaN(cantidad) && cantidad > 0) {
-                            total += precio * cantidad;
-                        }
-                    });
-                    if (aplicarImpuesto) {
-                        const impuesto = total * 0.10;
-                        total += impuesto;
-                    }
-                } else {
-                    total = aplicarImpuesto
-                        ? parseFloat(document.getElementById("total_con_impuesto").value)
-                        : <?php echo $pedido['total']; ?>;
-                }
-                document.getElementById("totalVuelto").innerText = `₡${total.toLocaleString()}`;
-                document.getElementById("totalVuelto").dataset.total = total.toFixed(2);
-                document.getElementById("montoCliente").value = '';
-                document.getElementById("vueltoCalculado").innerText = "₡0";
-            });
-            function calcularVuelto() {
-                let valorInput = document.getElementById("montoCliente").value.replace(/[₡,]/g, '');
-                const montoCliente = parseFloat(valorInput);
-                const totalReal = parseFloat(document.getElementById("totalVuelto").dataset.total || "0");
-
-                if (isNaN(montoCliente) || montoCliente <= 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Monto inválido',
-                        text: 'Por favor, ingrese un monto válido entregado por el cliente.'
-                    });
-                    return;
-                }
-                const vuelto = montoCliente - totalReal;
-                document.getElementById("vueltoCalculado").innerText = vuelto >= 0
-                    ? `₡${vuelto.toLocaleString()}`
-                    : `₡0`;
-                if (vuelto < 0) {
+                })
+                .catch(error => {
+                    console.error('Error en la solicitud:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Monto insuficiente',
-                        text: `El monto entregado no cubre el total a pagar.`,
-                    });
-                }
-            }
-            document.getElementById("montoCliente").addEventListener("keydown", function (event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    calcularVuelto();
-                }
-            });
-            function formatearMonto(input) {
-                let valor = input.value.replace(/[₡,]/g, '').trim();
-
-                if (isNaN(valor)) {
-                    input.value = '';
-                    return;
-                }
-
-                let numero = parseFloat(valor);
-                if (isNaN(numero)) numero = 0;
-
-                input.value = '₡' + numero.toLocaleString();
-            }
-            function soloNumeros(evt) {
-                const charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode >= 48 && charCode <= 57) || charCode === 46) {
-                    return true;
-                }
-
-                evt.preventDefault();
-                return false;
-            }
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.toggle-row').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const id = button.dataset.id;
-                        const row = button.closest('tr');
-                        if (row.classList.contains('disabled-row')) {
-                            row.classList.remove('disabled-row');
-                            row.querySelectorAll('input, button, select').forEach(el => el.disabled = false);
-                            button.classList.remove('btn-danger');
-                            button.classList.add('btn-success');
-                            button.innerHTML = '<i class="bi bi-check-lg"></i>';
-                        } else {
-                            row.classList.add('disabled-row');
-                            row.querySelectorAll('input, button, select').forEach(el => {
-                                if (!el.classList.contains('toggle-row')) el.disabled = true;
-                            });
-                            button.classList.remove('btn-success');
-                            button.classList.add('btn-danger');
-                            button.innerHTML = '<i class="bi bi-x-lg"></i>';
-                        }
+                        title: 'Error',
+                        text: 'Ocurrió un error al procesar la solicitud.',
                     });
                 });
+        }
+
+        function toggleImpuesto() {
+            var checkbox = document.getElementById('flexCheckDefault');
+            var aplicarImpuestoInput = document.getElementById('aplicar_impuesto');
+            var impuestoInfo = document.getElementById('impuestoInfo');
+            var impuestoServicio = document.getElementById('impuestoServicio');
+            var totalConImpuesto = document.getElementById('totalConImpuesto');
+            var impServicioInput = document.getElementById('imp_servicio');
+            var total = <?php echo $pedido['total']; ?>;
+            var impuesto = total * 0.10;
+            var totalConImpuestoValor = total + impuesto;
+
+            aplicarImpuestoInput.value = checkbox.checked ? '1' : '0';
+            impServicioInput.value = checkbox.checked ? impuesto.toFixed(0) : '0';
+
+            if (checkbox.checked) {
+                impuestoServicio.innerText = impuesto.toFixed(0);
+                totalConImpuesto.innerText = totalConImpuestoValor.toFixed(0);
+                impuestoInfo.style.display = 'block';
+                document.getElementById('total_con_impuesto').value = totalConImpuestoValor.toFixed(0);
+            } else {
+                impuestoInfo.style.display = 'none';
+                document.getElementById('total_con_impuesto').value = total.toFixed(0);
+            }
+        }
+        document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
+            elem.addEventListener("change", function (event) {
+                var tipoPagoInput = document.getElementById('tipo_pago');
+                tipoPagoInput.value = event.target.value;
             });
+        });
 
+        // MODAL CALCULO DE VUELTO
+        // Mostrar/ocultar el botón del vuelto según el método de pago
+        document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
+            elem.addEventListener("change", function () {
+                const btnVuelto = document.getElementById("btnVuelto");
+                const tipo = this.value;
+                document.getElementById('tipo_pago').value = tipo;
 
-
-            // Mostrar/ocultar voucherDiv según selección de método de pago
-            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const voucherDiv = document.getElementById('voucherDiv');
-                    const btnVuelto = document.getElementById('btnVuelto');
-                    const tipo = radio.value;
-                    if (tipo === 'tarjeta' && radio.checked) {
-                        voucherDiv.style.display = 'block';
-                        // Limpiar antes
-                        document.getElementById('voucher').value = '';
-                    } else {
-                        voucherDiv.style.display = 'none';
-                    }
-                    // Vuelto solo si efectivo
-                    btnVuelto.classList.toggle('d-none', tipo !== 'efectivo');
-                    // Guardar tipo_pago hidden
-                    document.getElementById('tipo_pago').value = tipo;
-                });
-            });
-
-            // Cargar valor previo al abrir modal
-            document.getElementById('modalTransaccion').addEventListener('show.bs.modal', () => {
-                document.getElementById('inputTransaccion').value =
-                    document.getElementById('voucher').value;
-            });
-
-            // Al guardar en el modal, trasladar al input real
-            document.getElementById('saveTransaccion').addEventListener('click', () => {
-                document.getElementById('voucher').value =
-                    document.getElementById('inputTransaccion').value;
-            });
-
-            //Para icono boton de tarjeta
-            document.addEventListener("DOMContentLoaded", function () {
-                const radios = document.querySelectorAll('input[name="paymentMethod"]');
-                const btnTransaccion = document.getElementById("btnTransaccion");
-
-                function toggleBotonTransaccion() {
-                    const selected = document.querySelector('input[name="paymentMethod"]:checked').value;
-                    if (selected === "tarjeta") {
-                        btnTransaccion.classList.remove("d-none");
-                    } else {
-                        btnTransaccion.classList.add("d-none");
-                    }
+                if (tipo === "efectivo") {
+                    btnVuelto.classList.remove("d-none");
+                } else {
+                    btnVuelto.classList.add("d-none");
                 }
+            });
+        });
+        const modalVuelto = document.getElementById('modalVuelto');
+        modalVuelto.addEventListener('show.bs.modal', () => {
+            const aplicarImpuesto = document.getElementById("aplicar_impuesto").value === "1";
+            let total = 0;
+            const checkboxes = document.querySelectorAll('.detalle-checkbox:checked');
+            if (checkboxes.length > 0) {
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    if (row.classList.contains('disabled-row')) return;
 
-                // Al cargar por primera vez
-                toggleBotonTransaccion();
+                    const id = checkbox.dataset.id;
+                    const precio = parseFloat(checkbox.dataset.precio);
+                    const cantidadInput = document.querySelector(`.cantidad-a-pagar[data-id="${id}"]`);
+                    const cantidad = parseInt(cantidadInput.value);
 
-                // Al cambiar de método de pago
-                radios.forEach(r => {
-                    r.addEventListener("change", toggleBotonTransaccion);
+                    if (!isNaN(cantidad) && cantidad > 0) {
+                        total += precio * cantidad;
+                    }
+                });
+                if (aplicarImpuesto) {
+                    const impuesto = total * 0.10;
+                    total += impuesto;
+                }
+            } else {
+                total = aplicarImpuesto
+                    ? parseFloat(document.getElementById("total_con_impuesto").value)
+                    : <?php echo $pedido['total']; ?>;
+            }
+            document.getElementById("totalVuelto").innerText = `₡${total.toLocaleString()}`;
+            document.getElementById("totalVuelto").dataset.total = total.toFixed(2);
+            document.getElementById("montoCliente").value = '';
+            document.getElementById("vueltoCalculado").innerText = "₡0";
+        });
+        function calcularVuelto() {
+            let valorInput = document.getElementById("montoCliente").value.replace(/[₡,]/g, '');
+            const montoCliente = parseFloat(valorInput);
+            const totalReal = parseFloat(document.getElementById("totalVuelto").dataset.total || "0");
+
+            if (isNaN(montoCliente) || montoCliente <= 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Monto inválido',
+                    text: 'Por favor, ingrese un monto válido entregado por el cliente.'
+                });
+                return;
+            }
+            const vuelto = montoCliente - totalReal;
+            document.getElementById("vueltoCalculado").innerText = vuelto >= 0
+                ? `₡${vuelto.toLocaleString()}`
+                : `₡0`;
+            if (vuelto < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Monto insuficiente',
+                    text: `El monto entregado no cubre el total a pagar.`,
+                });
+            }
+        }
+        document.getElementById("montoCliente").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                calcularVuelto();
+            }
+        });
+        function formatearMonto(input) {
+            let valor = input.value.replace(/[₡,]/g, '').trim();
+
+            if (isNaN(valor)) {
+                input.value = '';
+                return;
+            }
+
+            let numero = parseFloat(valor);
+            if (isNaN(numero)) numero = 0;
+
+            input.value = '₡' + numero.toLocaleString();
+        }
+        function soloNumeros(evt) {
+            const charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ((charCode >= 48 && charCode <= 57) || charCode === 46) {
+                return true;
+            }
+
+            evt.preventDefault();
+            return false;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toggle-row').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.dataset.id;
+                    const row = button.closest('tr');
+                    if (row.classList.contains('disabled-row')) {
+                        row.classList.remove('disabled-row');
+                        row.querySelectorAll('input, button, select').forEach(el => el.disabled = false);
+                        button.classList.remove('btn-danger');
+                        button.classList.add('btn-success');
+                        button.innerHTML = '<i class="bi bi-check-lg"></i>';
+                    } else {
+                        row.classList.add('disabled-row');
+                        row.querySelectorAll('input, button, select').forEach(el => {
+                            if (!el.classList.contains('toggle-row')) el.disabled = true;
+                        });
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-danger');
+                        button.innerHTML = '<i class="bi bi-x-lg"></i>';
+                    }
                 });
             });
-        </script>
-
-        <?php
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['finalizar_pedido'])) {
-            $aplicar_impuesto = isset($_POST['aplicar_impuesto']) && $_POST['aplicar_impuesto'] == '1';
-            $total_con_impuesto = $_POST['total_con_impuesto'];
-            $imp_servicio = $_POST['imp_servicio'];
-            $tipo_pago = $_POST['tipo_pago'];
-            $transaccion = isset($_POST['transaccion']) ? $_POST['transaccion'] : '';
+        });
 
 
-            $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago', transaccion = '$transaccion' WHERE id = '$id_pedido'");
 
-            if ($update) {
-                $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE' WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
+        // Mostrar/ocultar voucherDiv según selección de método de pago
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const voucherDiv = document.getElementById('voucherDiv');
+                const btnVuelto = document.getElementById('btnVuelto');
+                const tipo = radio.value;
+                if (tipo === 'tarjeta' && radio.checked) {
+                    voucherDiv.style.display = 'block';
+                    // Limpiar antes
+                    document.getElementById('voucher').value = '';
+                } else {
+                    voucherDiv.style.display = 'none';
+                }
+                // Vuelto solo si efectivo
+                btnVuelto.classList.toggle('d-none', tipo !== 'efectivo');
+                // Guardar tipo_pago hidden
+                document.getElementById('tipo_pago').value = tipo;
+            });
+        });
 
-                echo "<script>
+        // Cargar valor previo al abrir modal
+        document.getElementById('modalTransaccion').addEventListener('show.bs.modal', () => {
+            document.getElementById('inputTransaccion').value =
+                document.getElementById('voucher').value;
+        });
+
+        // Al guardar en el modal, trasladar al input real
+        document.getElementById('saveTransaccion').addEventListener('click', () => {
+            document.getElementById('voucher').value =
+                document.getElementById('inputTransaccion').value;
+        });
+
+        //Para icono boton de tarjeta
+        document.addEventListener("DOMContentLoaded", function () {
+            const radios = document.querySelectorAll('input[name="paymentMethod"]');
+            const btnTransaccion = document.getElementById("btnTransaccion");
+
+            function toggleBotonTransaccion() {
+                const selected = document.querySelector('input[name="paymentMethod"]:checked').value;
+                if (selected === "tarjeta") {
+                    btnTransaccion.classList.remove("d-none");
+                } else {
+                    btnTransaccion.classList.add("d-none");
+                }
+            }
+
+            // Al cargar por primera vez
+            toggleBotonTransaccion();
+
+            // Al cambiar de método de pago
+            radios.forEach(r => {
+                r.addEventListener("change", toggleBotonTransaccion);
+            });
+        });
+    </script>
+
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['finalizar_pedido'])) {
+        $aplicar_impuesto = isset($_POST['aplicar_impuesto']) && $_POST['aplicar_impuesto'] == '1';
+        $total_con_impuesto = $_POST['total_con_impuesto'];
+        $imp_servicio = $_POST['imp_servicio'];
+        $tipo_pago = $_POST['tipo_pago'];
+        $transaccion = isset($_POST['transaccion']) ? $_POST['transaccion'] : '';
+
+
+        $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago', transaccion = '$transaccion' WHERE id = '$id_pedido'");
+
+        if ($update) {
+            $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE' WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
+
+            echo "<script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Pedido Finalizado',
@@ -581,8 +584,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                     window.location = 'index.php';
                 });
             </script>";
-            } else {
-                echo "<script>
+        } else {
+            echo "<script>
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -590,46 +593,46 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 confirmButtonText: 'Intentar de nuevo'
             });
         </script>";
-            }
         }
+    }
 
-        include_once "includes/footer.php";
+    include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 }
 ?>
 
 
-    <!-- Botón flotante -->
-    <div id="calc-bubble" onclick="toggleCalc()">
-        <i class="fas fa-calculator"></i>
+<!-- Botón flotante -->
+<div id="calc-bubble" onclick="toggleCalc()">
+    <i class="fas fa-calculator"></i>
+</div>
+<!-- Calculadora-->
+<div id="calculator">
+    <input type="text" id="calc-display" readonly>
+    <div class="calc-buttons">
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('+')">+</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('-')">-</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('*')">*</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="append('/')">/</button>
+
+        <button class="calc-equal" onclick="calculate()">=</button>
     </div>
-    <!-- Calculadora-->
-    <div id="calculator">
-        <input type="text" id="calc-display" readonly>
-        <div class="calc-buttons">
-            <button onclick="append('7')">7</button>
-            <button onclick="append('8')">8</button>
-            <button onclick="append('9')">9</button>
-            <button onclick="append('+')">+</button>
-
-            <button onclick="append('4')">4</button>
-            <button onclick="append('5')">5</button>
-            <button onclick="append('6')">6</button>
-            <button onclick="append('-')">-</button>
-
-            <button onclick="append('1')">1</button>
-            <button onclick="append('2')">2</button>
-            <button onclick="append('3')">3</button>
-            <button onclick="append('*')">*</button>
-
-            <button onclick="append('0')">0</button>
-            <button onclick="append('.')">.</button>
-            <button onclick="clearDisplay()">C</button>
-            <button onclick="append('/')">/</button>
-
-            <button class="calc-equal" onclick="calculate()">=</button>
-        </div>
-        <script src="../assets/js/calculator.js"></script>
-        <link rel="stylesheet" href="../assets/dist/css/calculator.css">
-        <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap-icons.css">
+    <script src="../assets/js/calculator.js"></script>
+    <link rel="stylesheet" href="../assets/dist/css/calculator.css">
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap-icons.css">

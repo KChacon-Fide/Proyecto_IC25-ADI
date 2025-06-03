@@ -53,7 +53,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     <select id="usuario" name="usuario" class="form-control">
                         <option value="">Todos</option>
                         <?php
-                        $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios");
+                        $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios WHERE estado = 1");
                         while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
                             $selected = ($usuario_seleccionado == $usuario['id']) ? 'selected' : '';
                             echo "<option value='{$usuario['id']}' $selected>{$usuario['nombre']}</option>";
