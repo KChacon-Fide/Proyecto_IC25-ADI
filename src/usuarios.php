@@ -9,8 +9,8 @@ include "../conexion.php";
 $data = null;
 if (!empty($_GET['id'])) {
     $idUsuario = $_GET['id'];
-    $query     = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
-    $result    = mysqli_num_rows($query);
+    $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
+    $result = mysqli_num_rows($query);
     if ($result > 0) {
         $data = mysqli_fetch_assoc($query);
     } else {
@@ -20,12 +20,12 @@ if (!empty($_GET['id'])) {
 }
 
 if (!empty($_POST)) {
-    $id     = $_POST['id'];
+    $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $correo = $_POST['correo'];
-    $rol    = $_POST['rol'];
-    $turno  = $_POST['turno'];
-    $alert  = "";
+    $rol = $_POST['rol'];
+    $turno = $_POST['turno'];
+    $alert = "";
 
     if (empty($nombre) || empty($correo) || empty($rol) || empty($turno)) {
         $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
@@ -37,16 +37,17 @@ if (!empty($_POST)) {
                 $alert = '<div class="alert alert-warning">La contraseña es requerida.</div>';
             } else {
                 $hash = md5($pass);
-                $q    = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
+                $q = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
                 if (mysqli_num_rows($q) > 0) {
                     $alert = '<div class="alert alert-warning">El correo ya existe.</div>';
                 } else {
-                    $query_insert = mysqli_query($conexion,
+                    $query_insert = mysqli_query(
+                        $conexion,
                         "INSERT INTO usuarios (nombre, correo, rol, pass, turno, pass_temp)
                          VALUES ('$nombre', '$correo', '$rol', '$hash', '$turno', 1)"
                     );
                     if ($query_insert) {
-                        require_once 'correo/Mail-Sent.php';
+                        require_once __DIR__ . '/Correo/Mail-Sent.php';
                         enviarCorreoBienvenida($correo, $nombre, $pass);
                         $alert = '<div class="alert alert-success">Usuario registrado exitosamente y correo enviado.</div>';
                     } else {
@@ -61,7 +62,8 @@ if (!empty($_POST)) {
             if (!empty($pass)) {
                 $hash = md5($pass);
                 // Marcamos contraseña como temporal y reenviamos correo
-                $sql_update = mysqli_query($conexion,
+                $sql_update = mysqli_query(
+                    $conexion,
                     "UPDATE usuarios
                      SET nombre = '$nombre',
                          correo = '$correo',
@@ -72,11 +74,12 @@ if (!empty($_POST)) {
                      WHERE id = $id"
                 );
                 if ($sql_update) {
-                    require_once 'correo/Mail-Sent.php';
+                    require_once __DIR__ . '/Correo/Mail-Sent.php';
                     enviarCorreoBienvenida($correo, $nombre, $pass);
                 }
             } else {
-                $sql_update = mysqli_query($conexion,
+                $sql_update = mysqli_query(
+                    $conexion,
                     "UPDATE usuarios
                      SET nombre = '$nombre',
                          correo = '$correo',
