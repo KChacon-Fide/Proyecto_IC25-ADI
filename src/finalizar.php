@@ -564,10 +564,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         $transaccion = isset($_POST['transaccion']) ? $_POST['transaccion'] : '';
 
 
-        $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago', transaccion = '$transaccion' WHERE id = '$id_pedido'");
+        $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago' WHERE id = '$id_pedido'");
 
         if ($update) {
-            $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE' WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
+            $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE', nombre_cliente = NULL WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
 
             echo "<script>
                 Swal.fire({

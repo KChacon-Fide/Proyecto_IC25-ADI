@@ -50,15 +50,21 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         </select>
                                     </div>
                                 </div>
+                                
+                                <div class="col-md-5">
+                                    <div class="form-group mb-2">
+                                        <label for="nombre_cliente" class="font-weight-bold">Nombre del Cliente</label>
+                                        <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control"
+                                            placeholder="Ingrese el nombre del cliente">
+                                    </div>
+                                </div>
 
                                 <div class="col-md-2 d-flex" style="padding-top: 32px;">
-                                    <button type="submit" class="btn btn-primary btn-block align-self-start"
-                                        style="height: 38px;">
+                                    <button type="submit" class="btn btn-primary btn-block align-self-start" style="height: 38px;">
                                         <i class="fas fa-save"></i> Guardar
                                     </button>
                                 </div>
                             </div>
-
                         </form>
                     <?php } ?>
                 </div>
@@ -97,6 +103,9 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     <h5 class="font-weight-bold mb-0">MESA <?php echo $data['num_mesa']; ?></h5>
                                 </div>
                                 <div class="card-body text-center">
+                                <p class="text-muted">Cliente: <span class="font-weight-bold">
+                                    <?php echo $data['nombre_cliente'] ? $data['nombre_cliente'] : 'Sin asignar'; ?>
+                                </span></p>
                                     <img src="../assets/img/mesa.jpg" class="img-thumbnail rounded-circle mb-2" alt="Mesa">
                                     <p class="text-muted">Capacidad: <span
                                             class="font-weight-bold"><?php echo $data['capacidad']; ?></span></p>
@@ -212,10 +221,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        function cargarDatosMesa(idMesa, capacidad, estado) {
+        function cargarDatosMesa(idMesa, capacidad, estado, nombreCliente) {
             document.getElementById('id_mesa').value = idMesa;
             document.getElementById('capacidad').value = capacidad;
             document.getElementById('estado').value = estado;
+            document.getElementById('nombre_cliente').value = nombreCliente || ''; // Maneja valores nulos
         }
 
         function setMesaId(mesaId) {
