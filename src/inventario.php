@@ -102,7 +102,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     }
 
 
-    $bebidas_query = mysqli_query($conexion, "SELECT * FROM bebidas");
+    $bebidas_query = mysqli_query($conexion, "SELECT * FROM bebidas WHERE estado = 1");
 
     $proveedores_query = mysqli_query($conexion, "SELECT * FROM proveedores");
 
@@ -228,14 +228,19 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                             class="btn btn-warning">
                                             <i class='fas fa-edit'></i>
                                         </a>
-                                        <form action="eliminar_inventario.php" method="POST" class="d-inline"
-                                            onsubmit="return confirm('¿Estás seguro de eliminar este registro?');">
-                                            <input type="hidden" name="id_inventario"
-                                                value="<?php echo $data['id_inventario']; ?>">
-                                            <button type="submit" class="btn btn-danger " style="margin-left: 4px;">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                        <!-- El formulario oculto para POST -->
+                                        <form action="eliminar_inventario.php" method="POST"
+                                            id="formDel<?= $data['id_inventario'] ?>" class="d-inline">
+                                            <input type="hidden" name="id_inventario" value="<?= $data['id_inventario'] ?>">
                                         </form>
+                                        <!-- Sin <form>, solo un botón que ejecuta tu alerta -->
+                                        <button class="btn btn-danger" style="margin-left:4px;" onclick="confirmDeleteInventario(
+    <?php echo $data['id_inventario']; ?>,
+    '<?php echo addslashes($data['nombre_bebida']); ?>'
+  )">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -304,6 +309,34 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                 .catch(error => console.error('Error:', error));
         }
     </script>
+    <script src="/assets/js/sweetalert2@11.js"></script>
+    <script>
+        function confirmDeleteInventario(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar inventario?',
+                text: `Se eliminará el inventario de "${nombre}"`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1E3A8A',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+                width: 350,
+                preConfirm: () => {
+                    Swal.showLoading();
+                    return new Promise(r => setTimeout(r, 300));
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Envía el formulario oculto vía POST
+                    document.getElementById(`formDel${id}`).submit();
+                }
+            });
+        }
+    </script>
+
+
 
     <?php
 }

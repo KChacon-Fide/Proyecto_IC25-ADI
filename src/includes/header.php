@@ -44,13 +44,14 @@ if (isset($_GET['keepalive'])) {
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../assets/plugins/fontawesome-free/css/all.min.css?v=2">
     <!-- IonIcons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../assets/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../assets/dist/css/custom.css">
+     <link rel="stylesheet" href="../assets/dist/css/custom.css">
+     <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+   
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- FontAwesome para los íconos -->
@@ -59,7 +60,7 @@ if (isset($_GET['keepalive'])) {
 
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <script src="../assets/js/sweetalert2.all.min.js"></script>
     <div class="wrapper">
         <!-- Navbar -->
@@ -343,15 +344,15 @@ if (isset($_GET['keepalive'])) {
                     </style>
 
                     <script>
-                        const tiempoInactividad = <?php echo $tiempo_expiracion; ?>; // 40 segundos
-                        const tiempoModal = <?php echo $tiempo_modal; ?>; // 20 segundos
+                        const tiempoInactividad = <?php echo $tiempo_expiracion; ?>;
+                        const tiempoModal = <?php echo $tiempo_modal; ?>;
                         let tiempoRestante = tiempoInactividad;
                         let modalAbierto = false;
                         let cuentaRegresivaModal;
                         let inactividadTimeout;
 
                         function reiniciarTemporizador() {
-                            if (modalAbierto) return; // No reiniciar si el modal está abierto
+                            if (modalAbierto) return;
 
                             clearTimeout(inactividadTimeout);
                             inactividadTimeout = setTimeout(mostrarModal, tiempoInactividad * 1000);
@@ -375,7 +376,6 @@ if (isset($_GET['keepalive'])) {
                         }
 
                         function extenderSesion() {
-                            // Hacer petición para mantener la sesión activa
                             fetch('?keepalive=1')
                                 .then(response => {
                                     if (response.ok) {
@@ -402,27 +402,22 @@ if (isset($_GET['keepalive'])) {
                             window.location.href = "salir.php?timeout=1";
                         }
 
-                        // Event listeners
                         document.getElementById('extenderSesion').addEventListener('click', extenderSesion);
                         document.getElementById('cerrarSesion').addEventListener('click', cerrarSesion);
 
-                        // Eventos que reinician el temporizador
                         const eventos = ['click', 'mousemove', 'keypress', 'scroll', 'keydown', 'touchstart'];
                         eventos.forEach(evento => {
                             document.addEventListener(evento, reiniciarTemporizador);
                         });
 
-                        // Bloquear interacción cuando el modal está abierto
                         $(document).on('keydown', function (e) {
-                            if (modalAbierto && e.keyCode === 9) { // Bloquear tabulación
+                            if (modalAbierto && e.keyCode === 9) {
                                 e.preventDefault();
                             }
                         });
 
-                        // Iniciar el temporizador al cargar la página
                         reiniciarTemporizador();
 
-                        // Verificar si la sesión ya expiró al cargar la página
                         if (sessionStorage.getItem('sesionExpirada') === 'true') {
                             sessionStorage.removeItem('sesionExpirada');
                             cerrarSesionForzado();

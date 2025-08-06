@@ -28,8 +28,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         if (!is_dir($directorio)) {
             mkdir($directorio, 0777, true);
         }
-        if (empty($nombre) || empty($precio) || $precio < 0) {
+        if (empty($nombre) || empty($precio)) {
             $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
+        } elseif (!is_numeric($precio) || $precio < 0) {
+            $alert = '<div class="alert alert-warning">El precio debe ser un número válido mayor o igual a cero.</div>';
         } else {
             $imagen = $foto_actual;
             if (!empty($foto['name'])) {
@@ -46,11 +48,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             move_uploaded_file($foto['tmp_name'], $imagen);
                         }
                         $alert = '<div class="alert alert-success">Bebida registrada correctamente.</div>';
+                        $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM bebidas WHERE estado = 1");
+                        $total_result = mysqli_fetch_assoc($total_query);
+                        $total_items = $total_result['total'];
+                        $total_pages = ceil($total_items / $items_per_page);
+                        header("Location: bebidas.php?page={$total_pages}");
+                        exit;
                     } else {
                         $alert = '<div class="alert alert-danger">Error al registrar la bebida.</div>';
                     }
                 }
             } else {
+
                 $query_update = mysqli_query($conexion, "UPDATE bebidas SET nombre = '$nombre', precio = $precio, imagen = '$imagen' WHERE id = $id");
                 if ($query_update) {
                     if (!empty($foto['name'])) {
@@ -64,6 +73,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         }
     }
     include_once "includes/header.php";
+
     ?>
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white">
@@ -106,7 +116,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     <div class="card shadow-lg">
         <div class="card-body" style="max-height: 600px; overflow-y: auto;">
             <div class="mb-3">
-                <input type="text" id="buscador" class="form-control" placeholder="Buscar bebida..." style="width: 100%;">
+                <input type="text" id="buscador" class="form-control" placeholder="Buscar bebida..." ini Copiar Editar
+                    style="width: 100%;" onkeyup="buscarBebidas(this.value)">
             </div>
 
             <div class="table-responsive">
@@ -143,12 +154,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                         class="btn btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=bebidas" method="post"
-                                        class="d-inline">
-                                        <button class="btn btn-danger" type="submit">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-danger"
+                                        onclick="confirmDelete(<?php echo $data['id']; ?>, '<?php echo htmlspecialchars($data['nombre'], ENT_QUOTES); ?>')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+
                                 </td>
                             </tr>
                         <?php } ?>
@@ -218,16 +228,67 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         }
     </script>
     <script>
-    document.getElementById('buscador').addEventListener('keyup', function () {
-        let filtro = this.value.toLowerCase();
-        let filas = document.querySelectorAll('#tablaBebidas tbody tr');
+        document.getElementById('buscador').addEventListener('keyup', function () {
+            let filtro = this.value.toLowerCase();
+            let filas = document.querySelectorAll('#tablaBebidas tbody tr');
 
-        filas.forEach(function (fila) {
-            let texto = fila.textContent.toLowerCase();
-            fila.style.display = texto.includes(filtro) ? '' : 'none';
+            filas.forEach(function (fila) {
+                let texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(filtro) ? '' : 'none';
+            });
         });
-    });
-</script>
+    </script>
+    <script src="/assets/js/sweetalert2@11.js"></script>
+
+    <script>
+        function confirmDelete(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar bebida?',
+                text: 'Confirma que deseas borrar "' + nombre + '"',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1E3A8A',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+                width: 350,
+                preConfirm: () => {
+                    Swal.showLoading();
+                    const icon = Swal.getIcon();
+                    icon.classList.remove('swal2-warning');
+                    icon.classList.add('swal2-success', 'swal2-icon-show');
+                    icon.innerHTML = '<div class="swal2-success-circular-line-left"></div>'
+                        + '<span class="swal2-success-line-tip"></span>'
+                        + '<span class="swal2-success-line-long"></span>'
+                        + '<div class="swal2-success-ring"></div>'
+                        + '<div class="swal2-success-fix"></div>'
+                        + '<div class="swal2-success-circular-line-right"></div>';
+                    return new Promise(resolve => setTimeout(resolve, 600));
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'eliminar.php?id=' + id + '&accion=bebidas';
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function buscarBebidas(valor) {
+            if (valor.trim() === '') {
+                window.location.href = 'bebidas.php';
+                return;
+            }
+            fetch('buscar_bebidas.php?search=' + encodeURIComponent(valor))
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector("#tablaBebidas tbody").innerHTML = html;
+                })
+                .catch(err => console.error('Error al buscar bebidas:', err));
+        }
+    </script>
+
 
     <?php include_once "includes/footer.php";
 } else {

@@ -9,8 +9,8 @@ include "../conexion.php";
 $data = null;
 if (!empty($_GET['id'])) {
     $idUsuario = $_GET['id'];
-    $query     = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
-    $result    = mysqli_num_rows($query);
+    $query = mysqli_query($conexion, "SELECT * FROM usuarios WHERE id = $idUsuario AND estado = 1");
+    $result = mysqli_num_rows($query);
     if ($result > 0) {
         $data = mysqli_fetch_assoc($query);
     } else {
@@ -20,12 +20,12 @@ if (!empty($_GET['id'])) {
 }
 
 if (!empty($_POST)) {
-    $id     = $_POST['id'];
+    $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $correo = $_POST['correo'];
-    $rol    = $_POST['rol'];
-    $turno  = $_POST['turno'];
-    $alert  = "";
+    $rol = $_POST['rol'];
+    $turno = $_POST['turno'];
+    $alert = "";
 
     if (empty($nombre) || empty($correo) || empty($rol) || empty($turno)) {
         $alert = '<div class="alert alert-warning">Todos los campos son obligatorios.</div>';
@@ -37,11 +37,12 @@ if (!empty($_POST)) {
                 $alert = '<div class="alert alert-warning">La contraseña es requerida.</div>';
             } else {
                 $hash = md5($pass);
-                $q    = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
+                $q = mysqli_query($conexion, "SELECT * FROM usuarios WHERE correo = '$correo' AND estado = 1");
                 if (mysqli_num_rows($q) > 0) {
                     $alert = '<div class="alert alert-warning">El correo ya existe.</div>';
                 } else {
-                    $query_insert = mysqli_query($conexion,
+                    $query_insert = mysqli_query(
+                        $conexion,
                         "INSERT INTO usuarios (nombre, correo, rol, pass, turno, pass_temp)
                          VALUES ('$nombre', '$correo', '$rol', '$hash', '$turno', 1)"
                     );
@@ -61,7 +62,8 @@ if (!empty($_POST)) {
             if (!empty($pass)) {
                 $hash = md5($pass);
                 // Marcamos contraseña como temporal y reenviamos correo
-                $sql_update = mysqli_query($conexion,
+                $sql_update = mysqli_query(
+                    $conexion,
                     "UPDATE usuarios
                      SET nombre = '$nombre',
                          correo = '$correo',
@@ -76,7 +78,8 @@ if (!empty($_POST)) {
                     enviarCorreoBienvenida($correo, $nombre, $pass);
                 }
             } else {
-                $sql_update = mysqli_query($conexion,
+                $sql_update = mysqli_query(
+                    $conexion,
                     "UPDATE usuarios
                      SET nombre = '$nombre',
                          correo = '$correo',
@@ -102,7 +105,7 @@ include "includes/header.php";
         <h4 class="mb-0"><i class="fas fa-user"></i> Gestión de Usuarios</h4>
     </div>
     <div class="card-body">
-        <form action="" method="post" autocomplete="off">
+        <form id="usuarioForm" autocomplete="off">
             <?php echo isset($alert) ? $alert : ''; ?>
             <div class="row">
                 <input type="hidden" name="id" value="<?php echo $data['id'] ?? ''; ?>">
@@ -163,12 +166,11 @@ include "includes/header.php";
                             </button>
                         </div>
                     </div>
-                    <div class="d-flex mt-3" style="gap: 10px;">
-                        <input type="submit" id="btnRegistrar"
-                            value="<?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>"
-                            class="btn btn-primary" style="background-color: #1E3A8A; display: none;">
-                        <a href="usuarios.php" class="btn btn-danger"> <i class="fas fa-trash-alt"></i></a>
-                    </div>
+                    <button type="button" id="btnRegistrar" class="btn btn-primary"
+                        style="background-color: #1E3A8A; display: none;">
+                        <?php echo empty($data['id']) ? 'Registrar' : 'Modificar'; ?>
+                    </button>
+                    <a href="usuarios.php" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
 
                 </div>
 
@@ -219,12 +221,11 @@ include "includes/header.php";
                             <td>
                                 <a href="usuarios.php?id=<?php echo $data['id']; ?>" class="btn btn-warning"><i
                                         class="fas fa-edit"></i></a>
-                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=usuarios" method="post"
-                                    class="d-inline">
-                                    <button class="btn btn-danger" type="submit">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger"
+                                    onclick="confirmDeleteUsuario(<?php echo $data['id']; ?>, '<?php echo addslashes($data['nombre']); ?>')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+
                             </td>
                         </tr>
                     <?php } ?>
@@ -365,6 +366,83 @@ include "includes/header.php";
         }
     });
 </script>
+<script src="/assets/js/sweetalert2@11.js"></script>
+<script>
+    function confirmDeleteUsuario(id, nombre) {
+        Swal.fire({
+            title: '¿Eliminar usuario?',
+            text: 'Confirma que deseas borrar a "' + nombre + '"',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#1E3A8A',   // color primario de tu tema
+            cancelButtonColor: '#dc3545',    // rojo bootstrap
+            reverseButtons: true,
+            width: 350,
+            preConfirm: () => {
+                Swal.showLoading();
+                // Cambiamos el icono al de éxito tras la confirmación
+                const icon = Swal.getIcon();
+                icon.classList.remove('swal2-warning');
+                icon.classList.add('swal2-success', 'swal2-icon-show');
+                icon.innerHTML =
+                    '<div class="swal2-success-circular-line-left"></div>' +
+                    '<span class="swal2-success-line-tip"></span>' +
+                    '<span class="swal2-success-line-long"></span>' +
+                    '<div class="swal2-success-ring"></div>' +
+                    '<div class="swal2-success-fix"></div>' +
+                    '<div class="swal2-success-circular-line-right"></div>';
+                return new Promise(resolve => setTimeout(resolve, 600));
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Una vez confirmado, redirige al script de eliminación
+                window.location.href = 'eliminar.php?id=' + id + '&accion=usuarios';
+            }
+        });
+    }
+</script>
+<script>
+    document.getElementById('btnRegistrar').addEventListener('click', function () {
+        const form = document.getElementById('usuarioForm');
+        const formData = new FormData(form);
+
+        Swal.fire({
+            title: 'Registrando usuario...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.text())
+            .then(html => {
+                // Si tu PHP imprime el alert "<div class='alert-success'>", damos por bueno:
+                if (html.includes("alert-success")) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Listo!',
+                        showConfirmButton: false,
+                        timer: 800
+                    }).then(() => {
+                        // recarga para actualizar la tabla
+                        window.location.reload();
+                    });
+                } else {
+                    // si vino un error o warning, lo volcamos en la página y cerramos el loading
+                    Swal.close();
+                    document.querySelector('#usuarioForm').insertAdjacentHTML('afterbegin', html);
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error', 'No se pudo conectar al servidor', 'error');
+            });
+    });
+</script>
+
 
 
 

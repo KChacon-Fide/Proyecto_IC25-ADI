@@ -6,7 +6,15 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     $items_per_page = 5;
     $offset = ($page - 1) * $items_per_page;
 
-    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM platos WHERE estado = 1");
+    $busqueda = '';
+    if (!empty($_GET['search'])) {
+        $busqueda = mysqli_real_escape_string($conexion, $_GET['search']);
+        $where = "AND nombre LIKE '%$busqueda%'";
+    } else {
+        $where = '';
+    }
+
+    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM platos WHERE estado = 1 $where");
     $total_result = mysqli_fetch_assoc($total_query);
     $total_items = $total_result['total'];
     $total_pages = ceil($total_items / $items_per_page);
@@ -27,6 +35,13 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>';
+        } elseif (!is_numeric($precio) || $precio < 0) {
+            $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    El precio debe ser un número válido mayor o igual a cero
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>';
         } else {
             $nombre = null;
             if (!empty($foto['name'])) {
@@ -57,10 +72,16 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>';
+                        $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM platos WHERE estado = 1 $where");
+                        $total_result = mysqli_fetch_assoc($total_query);
+                        $total_items = $total_result['total'];
+                        $total_pages = ceil($total_items / $items_per_page);
+                        header("Location: platos.php?page={$total_pages}");
+                        exit;
                     } else {
                         $alert = '<div class="alert alert-danger" role="alert">
-                    Error al registrar el plato
-                  </div>';
+                        Error al registrar el plato
+                      </div>';
                     }
                 }
             } else {
@@ -86,10 +107,17 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             }
         }
     }
-    $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1 LIMIT $items_per_page OFFSET $offset");
+
+    if (!empty($busqueda)) {
+        $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1 AND nombre LIKE '%$busqueda%'");
+        $total_pages = 1;
+    } else {
+        $query = mysqli_query($conexion, "SELECT * FROM platos WHERE estado = 1 LIMIT $items_per_page OFFSET $offset");
+    }
 
     include_once "includes/header.php";
     ?>
+
     <div class="card shadow-lg">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0"><i class="fas fa-door-open"></i> Gestión de Platos</h4>
@@ -131,7 +159,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
         <div class="card-body" style="max-height: 600px; overflow-y: auto; text-align: center;">
             <div class="mb-3">
                 <input type="text" id="buscadorPlatos" class="form-control" placeholder="Buscar plato..."
-                    style="width: 100%;">
+                    style="width: 100%;" onkeyup="buscarPlatos(this.value)">
             </div>
 
             <table class="table table-bordered table-center" id="tablaPlatos">
@@ -161,12 +189,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                 <a onclick="editarPlato(<?php echo $data['id']; ?>)" class="btn btn-warning">
                                     <i class='fas fa-edit'></i>
                                 </a>
-                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=platos" method="post"
-                                    class="d-inline">
-                                    <button class="btn btn-danger" type="submit">
-                                        <i class='fas fa-trash-alt'></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger"
+                                    onclick="confirmDeletePlato(<?php echo $data['id']; ?>, '<?php echo htmlspecialchars($data['nombre'], ENT_QUOTES); ?>')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+
                             </td>
                         </tr>
                     <?php } ?>
@@ -232,6 +259,60 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             });
         });
     </script>
+    <script src="/assets/js/sweetalert2@11.js"></script>
+
+    <script>
+        function confirmDeletePlato(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar plato?',
+                text: 'Confirma que deseas borrar "' + nombre + '"',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1E3A8A',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+                width: 350,
+                preConfirm: () => {
+                    Swal.showLoading();
+                    const icon = Swal.getIcon();
+                    icon.classList.remove('swal2-warning');
+                    icon.classList.add('swal2-success', 'swal2-icon-show');
+                    icon.innerHTML =
+                        '<div class="swal2-success-circular-line-left"></div>' +
+                        '<span class="swal2-success-line-tip"></span>' +
+                        '<span class="swal2-success-line-long"></span>' +
+                        '<div class="swal2-success-ring"></div>' +
+                        '<div class="swal2-success-fix"></div>' +
+                        '<div class="swal2-success-circular-line-right"></div>';
+                    return new Promise(resolve => setTimeout(resolve, 600));
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'eliminar.php?id=' + id + '&accion=platos';
+                }
+            });
+        }
+    </script>
+    <script>
+        function buscarPlatos(valor) {
+            if (valor.trim() === '') {
+                window.location.href = 'platos.php';
+                return;
+            }
+            fetch('buscar_platos.php?search=' + encodeURIComponent(valor))
+                .then(response => response.text())
+                .then(data => {
+                    document.querySelector("#tablaPlatos tbody").innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error al buscar platos:', error);
+                });
+        }
+    </script>
+
+
 
 
     <?php include_once "includes/footer.php";

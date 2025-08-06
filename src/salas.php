@@ -52,31 +52,28 @@ include_once "includes/header.php";
     <div class="card-header bg-primary text-white">
         <h4 class="mb-0"><i class="fas fa-door-open"></i> Gestión de Salas</h4>
     </div>
-    <div class="card-body text-center">
-        <form action="" method="post" >
+    <div class="card-body">
+        <form action="" method="post">
             <?php echo isset($alert) ? $alert : ''; ?>
-            <div class="row">
-                <div class="col-md-2 ">
-                    <div class="form-group">
-                        <input type="hidden" id="id" name="id">
-                        <label for="nombre" class="font-weight-bold">Nombre de la Sala</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese nombre">
-                    </div>
+            <div class="form-row">
+                <input type="hidden" id="id" name="id">
+                <div class="form-group col-md-4">
+                    <label for="nombre" class="font-weight-bold">Nombre de la Sala</label>
+                    <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese nombre">
                 </div>
-                <div class="col-md-2 ">
-                    <div class="form-group">
-                        <label for="mesas" class="font-weight-bold">Cantidad de Mesas</label>
-                        <input type="number" name="mesas" id="mesas" class="form-control" placeholder="Número de mesas">
-                    </div>
+                <div class="form-group col-md-4">
+                    <label for="mesas" class="font-weight-bold">Cantidad de Mesas</label>
+                    <input type="number" class="form-control" name="mesas" id="mesas" placeholder="Número de mesas">
                 </div>
-                <div class="col-md-2 ">
-                    <label for="">Acciones</label> <br>
-                    <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
-                    
+                <div class="form-group col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary" style="background-color: #1E3A8A;">
+                        Registrar
+                    </button>
                 </div>
             </div>
         </form>
     </div>
+
 </div>
 <div class="card shadow-lg">
     <div class="card-body" style="max-height: 600px; overflow-y: auto;">
@@ -84,7 +81,7 @@ include_once "includes/header.php";
             <table class="table table-bordered text-center" style="border: 0.5px solid #1E3A8A;">
                 <thead style="background-color: #1E3A8A; color: white;">
                     <tr>
-                       
+
                         <th style="border: 0.5px solid #1E3A8A;">Nombre</th>
                         <th style="border: 0.5px solid #1E3A8A;">Mesas</th>
                         <th style="border: 0.5px solid #1E3A8A;">Acciones</th>
@@ -95,25 +92,24 @@ include_once "includes/header.php";
                     $query = mysqli_query($conexion, "SELECT * FROM salas WHERE estado = 1");
                     while ($data = mysqli_fetch_assoc($query)) { ?>
                         <tr>
-                            
-                            <td class="font-weight-bold" >
+
+                            <td class="font-weight-bold">
                                 <?php echo strtoupper($data['nombre']); ?>
                             </td>
-                            <td class=" font-weight-bold" >
+                            <td class=" font-weight-bold">
                                 <?php echo $data['mesas']; ?>
                             </td>
-                            <td >
+                            <td>
                                 <a href="#"
                                     onclick="editarSala(<?php echo $data['id']; ?>, '<?php echo $data['nombre']; ?>', '<?php echo $data['mesas']; ?>')"
                                     class="btn btn-warning">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="eliminar.php?id=<?php echo $data['id']; ?>&accion=salas" method="post"
-                                    class="d-inline">
-                                    <button class="btn btn-danger" type="submit">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger"
+                                    onclick="confirmDeleteSala(<?= $data['id'] ?>,'<?= addslashes($data['nombre']) ?>')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+
                             </td>
                         </tr>
                     <?php } ?>
@@ -123,24 +119,27 @@ include_once "includes/header.php";
     </div>
 </div>
 <style>
-        .table tbody  {
-            background-color:  rgba(77, 100, 165, 0.1);
-            
+    .table tbody {
+        background-color: rgba(77, 100, 165, 0.1);
 
-        }
-        .table th{
-            border: 0.5px solid #1E3A8A;
-        }
-        .table tbody tr:hover {
-            background: rgba(30, 58, 138, 0.1);
-            
 
-        }
-        .table td {
-            font-size: 14px;
-            border: none;
-        }
-    </style>
+    }
+
+    .table th {
+        border: 0.5px solid #1E3A8A;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(30, 58, 138, 0.1);
+
+
+    }
+
+    .table td {
+        font-size: 14px;
+        border: none;
+    }
+</style>
 <script>
     function editarSala(id, nombre, mesas) {
         document.getElementById("id").value = id;
@@ -154,4 +153,29 @@ include_once "includes/header.php";
         document.getElementById("mesas").value = '';
     }
 </script>
+<script src="/assets/js/sweetalert2@11.js"></script>
+<script>
+    function confirmDeleteSala(id, nombre) {
+        Swal.fire({
+            title: '¿Eliminar sala?',
+            text: `Se borrará "${nombre}" y sus mesas`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#1E3A8A',
+            cancelButtonColor: '#dc3545',
+            reverseButtons: true,
+            width: 350,
+            preConfirm: () => Swal.showLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `eliminar.php?id=${id}&accion=salas`;
+            }
+        });
+    }
+</script>
+
+
+
 <?php include_once "includes/footer.php"; ?>

@@ -50,17 +50,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         </select>
                                     </div>
                                 </div>
-                                
-                                <div class="col-md-5">
-                                    <div class="form-group mb-2">
-                                        <label for="nombre_cliente" class="font-weight-bold">Nombre del Cliente</label>
-                                        <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control"
-                                            placeholder="Ingrese el nombre del cliente">
-                                    </div>
-                                </div>
 
                                 <div class="col-md-2 d-flex" style="padding-top: 32px;">
-                                    <button type="submit" class="btn btn-primary btn-block align-self-start" style="height: 38px;">
+                                    <button type="submit" class="btn btn-primary btn-block align-self-start"
+                                        style="height: 38px;">
                                         <i class="fas fa-save"></i> Guardar
                                     </button>
                                 </div>
@@ -79,7 +72,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             <div class="row">
                 <?php
                 include "../conexion.php";
-                $query = mysqli_query($conexion, "SELECT * FROM mesas WHERE id_sala = $id");
+                $query = mysqli_query($conexion, "SELECT * FROM mesas WHERE id_sala = $id ORDER BY num_mesa");
                 $result = mysqli_num_rows($query);
                 if ($result > 0) {
                     while ($data = mysqli_fetch_assoc($query)) {
@@ -103,9 +96,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                     <h5 class="font-weight-bold mb-0">MESA <?php echo $data['num_mesa']; ?></h5>
                                 </div>
                                 <div class="card-body text-center">
-                                <p class="text-muted">Cliente: <span class="font-weight-bold">
-                                    <?php echo $data['nombre_cliente'] ? $data['nombre_cliente'] : 'Sin asignar'; ?>
-                                </span></p>
                                     <img src="../assets/img/mesa.jpg" class="img-thumbnail rounded-circle mb-2" alt="Mesa">
                                     <p class="text-muted">Capacidad: <span
                                             class="font-weight-bold"><?php echo $data['capacidad']; ?></span></p>
@@ -131,14 +121,18 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                                 onclick="cargarDatosMesa(<?php echo $data['id_mesa']; ?>, <?php echo $data['capacidad']; ?>, '<?php echo $data['estado']; ?>')">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <form action="eliminar_mesa.php" method="post" class="d-inline">
-                                                <input type="hidden" name="id_mesa" value="<?php echo $data['id_mesa']; ?>">
-                                                <input type="hidden" name="id_sala" value="<?php echo $id; ?>">
-                                                <input type="hidden" name="mesas" value="<?php echo $mesas; ?>">
-                                                <button class="btn btn-danger mx-2" type="submit">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
+                                            <!-- Formulario oculto para eliminación -->
+                                            <form id="delMesa<?= $data['id_mesa'] ?>" action="eliminar_mesa.php" method="post"
+                                                class="d-none">
+                                                <input type="hidden" name="id_mesa" value="<?= $data['id_mesa'] ?>">
+                                                <input type="hidden" name="id_sala" value="<?= $id ?>">
+                                                <input type="hidden" name="mesas" value="<?= $mesas ?>">
                                             </form>
+                                            <button class="btn btn-danger mx-2"
+                                                onclick="confirmDeleteMesa(<?= $data['id_mesa'] ?>, <?= $data['num_mesa'] ?>)">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+
                                         </div>
                                     <?php } ?>
                                 </div>
@@ -216,16 +210,14 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             </div>
         </div>
     <?php } ?>
-    <!-- jQuery y Bootstrap JS (justo antes de cerrar el body) -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        function cargarDatosMesa(idMesa, capacidad, estado, nombreCliente) {
+        function cargarDatosMesa(idMesa, capacidad, estado) {
             document.getElementById('id_mesa').value = idMesa;
             document.getElementById('capacidad').value = capacidad;
             document.getElementById('estado').value = estado;
-            document.getElementById('nombre_cliente').value = nombreCliente || ''; // Maneja valores nulos
         }
 
         function setMesaId(mesaId) {
@@ -234,6 +226,31 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
 
 
     </script>
+
+    <script src="/assets/js/sweetalert2@11.js"></script>
+    <script>
+        function confirmDeleteMesa(idMesa, numMesa) {
+            Swal.fire({
+                title: '¿Eliminar mesa?',
+                text: `Se borrará la mesa ${numMesa}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1E3A8A',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+                width: 350,
+                preConfirm: () => Swal.showLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delMesa${idMesa}`).submit();
+                }
+            });
+        }
+    </script>
+
+
 
     <?php
     include_once "includes/footer.php";

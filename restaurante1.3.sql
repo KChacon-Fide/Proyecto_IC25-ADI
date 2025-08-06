@@ -149,7 +149,8 @@ ADD COLUMN pass_temp TINYINT(1) NOT NULL DEFAULT 1;
 ==========================================*/
 CREATE TABLE proveedores (
     id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(50) UNIQUE NOT NULL);
+    nombre VARCHAR(50) UNIQUE NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1);
     
 /*==========================================
   📦 INVENTARIO

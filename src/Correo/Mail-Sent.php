@@ -2,13 +2,10 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// En producción apuntamos directo al src
-$base = __DIR__; // /home/.../public_html/src
+$base = __DIR__;
 
-// Incluimos primero el envío de correo
 $base = dirname(__DIR__);
 
-// Clases de PHPMailer
 require_once $base . '/mailer/PHPMailer.php';
 require_once $base . '/mailer/SMTP.php';
 require_once $base . '/mailer/Exception.php';
@@ -17,7 +14,6 @@ function enviarCorreoBienvenida($correoDestino, $nombreUsuario, $contrasenaTempo
 {
   $mail = new PHPMailer(true);
   try {
-    // Sin debug en producción
     $mail->SMTPDebug = 0;
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
@@ -27,18 +23,15 @@ function enviarCorreoBienvenida($correoDestino, $nombreUsuario, $contrasenaTempo
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
-    // Remitente
     $mail->setFrom('restaurantesanisidro7@gmail.com', 'Sistema RSI');
     $mail->addAddress($correoDestino, $nombreUsuario);
 
-    // Incrustar imágenes (CID)
     global $base;
     $logoPath = dirname($base) . '/assets/img/logo.png';
     $perfilPath = dirname($base) . '/assets/img/logo.png';
     $mail->addEmbeddedImage($logoPath, 'logo_cid');
     $mail->addEmbeddedImage($perfilPath, 'perfil_cid');
 
-    // Contenido
     $mail->isHTML(true);
     $mail->Subject = 'Bienvenido a Restaurante San Isidro';
     $mail->Body = '

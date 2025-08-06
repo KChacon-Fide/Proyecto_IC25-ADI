@@ -8,23 +8,51 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
     $offset = ($page - 1) * $limit;
 
+    $usuario = $_GET['usuario'] ?? '';
+    $from_date = $_GET['from_date'] ?? '';
+    $to_date = $_GET['to_date'] ?? '';
+
+    $where = [];
+    if ($usuario)
+        $where[] = "p.id_usuario = '" . mysqli_real_escape_string($conexion, $usuario) . "'";
+    if ($from_date)
+        $where[] = "DATE(p.fecha) >= '" . mysqli_real_escape_string($conexion, $from_date) . "'";
+    if ($to_date)
+        $where[] = "DATE(p.fecha) <= '" . mysqli_real_escape_string($conexion, $to_date) . "'";
+    $where_sql = count($where)
+        ? "WHERE " . implode(" AND ", $where)
+        : "";
+
+    $query = mysqli_query($conexion, "
+        SELECT p.*, s.nombre AS sala, u.nombre AS usuario
+        FROM pedidos p
+        JOIN salas   s ON p.id_sala   = s.id
+        JOIN usuarios u ON p.id_usuario = u.id
+        $where_sql
+        ORDER BY p.fecha DESC
+        LIMIT $limit OFFSET $offset
+    ");
+
+
     $total_pedidos_query = mysqli_query($conexion, "SELECT COUNT(id) AS total FROM pedidos");
     $total_pedidos = mysqli_fetch_assoc($total_pedidos_query)['total'];
     $total_pages = ceil($total_pedidos / $limit);
 
     $usuario_seleccionado = isset($_GET['usuario']) ? $_GET['usuario'] : '';
 
-    // Modificar la consulta para filtrar por usuario si se seleccionó uno
     $where_clause = $usuario_seleccionado ? "WHERE p.id_usuario = '$usuario_seleccionado'" : '';
 
     $query = mysqli_query($conexion, "
-        SELECT p.*, p.transaccion, s.nombre AS sala, u.nombre 
-        FROM pedidos p 
-        INNER JOIN salas s ON p.id_sala = s.id 
-        INNER JOIN usuarios u ON p.id_usuario = u.id 
-        $where_clause 
-        LIMIT $limit OFFSET $offset
-    ");
+    SELECT 
+      p.*, p.transaccion, s.nombre AS sala, u.nombre 
+    FROM pedidos p 
+    INNER JOIN salas s ON p.id_sala   = s.id 
+    INNER JOIN usuarios u ON p.id_usuario = u.id 
+    $where_clause
+    ORDER BY p.fecha DESC       -- aquí ordenas los más recientes primero
+    LIMIT $limit 
+    OFFSET $offset
+");
     include_once "includes/header.php";
     ?>
     <div class="card shadow-lg rounded">
@@ -34,22 +62,40 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
 
         <div class="card-body">
             <form method="GET" class="mb-4">
-                <div class="form-group">
-                    <label for="usuario">Filtrar por Usuario:</label>
-                    <select id="usuario" name="usuario" class="form-control">
-                        <option value="">Todos</option>
-                        <?php
-                        // Obtener la lista de usuarios
-                        $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios WHERE estado = 1");
-                        while ($usuario = mysqli_fetch_assoc($usuarios_query)) {
-                            $selected = (isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id']) ? 'selected' : '';
-                            echo "<option value='{$usuario['id']}' $selected>{$usuario['nombre']}</option>";
-                        }
-                        ?>
-                    </select>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="from_date">Desde:</label>
+                            <input type="date" id="from_date" name="from_date" class="form-control"
+                                value="<?php echo htmlspecialchars($_GET['from_date'] ?? ''); ?>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="to_date">Hasta:</label>
+                            <input type="date" id="to_date" name="to_date" class="form-control"
+                                value="<?php echo htmlspecialchars($_GET['to_date'] ?? ''); ?>">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="usuario">Usuario:</label>
+                            <select id="usuario" name="usuario" class="form-control">
+                                <option value="">Todos</option>
+                                <?php
+                                $usuarios_query = mysqli_query($conexion, "SELECT id, nombre FROM usuarios WHERE estado = 1");
+                                while ($u = mysqli_fetch_assoc($usuarios_query)) {
+                                    $sel = (($_GET['usuario'] ?? '') == $u['id']) ? 'selected' : '';
+                                    echo "<option value='{$u['id']}' $sel>{$u['nombre']}</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
             </form>
+
             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="custom-thead">
@@ -122,6 +168,13 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
             <a href="ReporteAño.php" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
                 <i class="fas fa-file-pdf"></i> Año
             </a>
+            <a href="ReporteEspecial.php?
+  usuario=<?php echo urlencode($usuario); ?>&
+  from_date=<?php echo urlencode($from_date); ?>&
+  to_date=<?php echo urlencode($to_date); ?>" class="btn btn-danger btn-lg shadow" style="background-color: #1E3A8A;">
+                <i class="fas fa-file-pdf"></i> Especial
+            </a>
+
         </div>
     </div>
 

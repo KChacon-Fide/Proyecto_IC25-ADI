@@ -59,8 +59,11 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                             <h5 class="mb-0"><i class="fas fa-money-bill-wave"></i> Total del Pedido</h5>
                         </div>
                         <div class="card-body text-center">
-                            <h4 class="text-success"><strong>Total:</strong>
-                                ₡<?php echo number_format($pedido['total'], 0); ?></h4>
+                            <h4 class="text-success">
+                                <strong>Total:</strong> ₡<span
+                                    id="displayTotal"><?php echo number_format($pedido['total'], 0); ?></span>
+                            </h4>
+
                             <div class="form-check form-switch mt-3">
                                 <input class="form-check-input" type="checkbox" id="flexCheckDefault"
                                     onclick="toggleImpuesto()">
@@ -69,10 +72,14 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                 </label>
                             </div>
                             <div class="mt-3" id="impuestoInfo" style="display: none;">
-                                <h5 class="text-info"><strong>Impuesto al Servicio:</strong> ₡<span
-                                        id="impuestoServicio"></span></h5>
-                                <h5 class="text-success"><strong>Total con Impuesto:</strong> ₡<span
-                                        id="totalConImpuesto"></span></h5>
+                                <h5 class="text-info">
+                                    <strong>Impuesto al Servicio:</strong>
+                                    ₡<span id="impuestoServicio"></span>
+                                </h5>
+                                <h5 class="text-success">
+                                    <strong>Total con Impuesto:</strong>
+                                    ₡<span id="totalConImpuesto"></span>
+                                </h5>
                             </div>
                         </div>
                     </div>
@@ -150,7 +157,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                                         <input type='checkbox' class='detalle-checkbox' data-id='{$detalle['id']}' data-precio='{$detalle['precio']}'>
                                     </td>
                                     <td style='position: relative;'>
-                                   <input type='number' class='cantidad-a-pagar' data-id='{$detalle['id']}' min='1' max='{$detalle['cantidad']}' value='1' style='width: 60px;'>
+                                   <input type='number' class='cantidad-a-pagar' data-id='{$detalle['id']}' min='1' max='100' value='1' style='width: 60px;'>
                                    <button type='button' class='btn btn-success btn-sm toggle-row' 
                                    data-id='{$detalle['id']}' title='Inhabilitar' 
                                    style='position: absolute; top: 50%; transform: translateY(-50%); right:60px;'>
@@ -291,14 +298,14 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
             const aplicarImpuesto = document.getElementById('aplicar_impuesto').value === '1';
             const impServicio = parseFloat(document.getElementById('imp_servicio').value);
             const tipoPago = document.getElementById('tipo_pago').value;
-            const transaccion = document.getElementById('voucher').value; // capturar valor del input oculto
+            const transaccion = document.getElementById('voucher').value;
 
             const datos = {
                 items: itemsSeleccionados,
                 aplicarImpuesto: aplicarImpuesto,
                 impServicio: impServicio,
                 tipoPago: tipoPago,
-                transaccion: transaccion // enviar transacción
+                transaccion: transaccion
             };
 
             console.log('Datos enviados al servidor:', datos);
@@ -320,7 +327,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                             confirmButtonText: 'Aceptar',
                             allowOutsideClick: false
                         }).then(() => {
-                            // recargar la página tras aceptar
                             window.location.reload();
                         });
                     } else {
@@ -373,7 +379,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         });
 
         // MODAL CALCULO DE VUELTO
-        // Mostrar/ocultar el botón del vuelto según el método de pago
         document.querySelectorAll('input[name="paymentMethod"]').forEach((elem) => {
             elem.addEventListener("change", function () {
                 const btnVuelto = document.getElementById("btnVuelto");
@@ -496,10 +501,6 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 });
             });
         });
-
-
-
-        // Mostrar/ocultar voucherDiv según selección de método de pago
         document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
             radio.addEventListener('change', () => {
                 const voucherDiv = document.getElementById('voucherDiv');
@@ -507,31 +508,25 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                 const tipo = radio.value;
                 if (tipo === 'tarjeta' && radio.checked) {
                     voucherDiv.style.display = 'block';
-                    // Limpiar antes
                     document.getElementById('voucher').value = '';
                 } else {
                     voucherDiv.style.display = 'none';
                 }
-                // Vuelto solo si efectivo
                 btnVuelto.classList.toggle('d-none', tipo !== 'efectivo');
-                // Guardar tipo_pago hidden
                 document.getElementById('tipo_pago').value = tipo;
             });
         });
 
-        // Cargar valor previo al abrir modal
         document.getElementById('modalTransaccion').addEventListener('show.bs.modal', () => {
             document.getElementById('inputTransaccion').value =
                 document.getElementById('voucher').value;
         });
 
-        // Al guardar en el modal, trasladar al input real
         document.getElementById('saveTransaccion').addEventListener('click', () => {
             document.getElementById('voucher').value =
                 document.getElementById('inputTransaccion').value;
         });
 
-        //Para icono boton de tarjeta
         document.addEventListener("DOMContentLoaded", function () {
             const radios = document.querySelectorAll('input[name="paymentMethod"]');
             const btnTransaccion = document.getElementById("btnTransaccion");
@@ -544,11 +539,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
                     btnTransaccion.classList.add("d-none");
                 }
             }
-
-            // Al cargar por primera vez
             toggleBotonTransaccion();
 
-            // Al cambiar de método de pago
             radios.forEach(r => {
                 r.addEventListener("change", toggleBotonTransaccion);
             });
@@ -564,10 +556,16 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
         $transaccion = isset($_POST['transaccion']) ? $_POST['transaccion'] : '';
 
 
-        $update = mysqli_query($conexion, "UPDATE pedidos SET estado = 'FINALIZADO', total = '$total_con_impuesto', ImpServicio = '$imp_servicio', tipoPago = '$tipo_pago' WHERE id = '$id_pedido'");
+        $update = mysqli_query($conexion, "UPDATE pedidos 
+    SET estado       = 'FINALIZADO',
+        total        = '$total_con_impuesto',
+        ImpServicio  = '$imp_servicio',
+        tipoPago     = '$tipo_pago',
+        transaccion  = '$transaccion'
+    WHERE id = '$id_pedido'");
 
         if ($update) {
-            $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE', nombre_cliente = NULL WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
+            $updateMesa = mysqli_query($conexion, "UPDATE mesas SET estado = 'DISPONIBLE' WHERE id_sala = '$id_sala' AND num_mesa = '$mesa'");
 
             echo "<script>
                 Swal.fire({
@@ -636,3 +634,49 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 3) {
     <script src="../assets/js/calculator.js"></script>
     <link rel="stylesheet" href="../assets/dist/css/calculator.css">
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap-icons.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const originalTotal = <?php echo (float) $pedido['total']; ?>;
+            const displayTotal = document.getElementById('displayTotal');
+            const impuestoInfo = document.getElementById('impuestoInfo');
+            const impSrvSpan = document.getElementById('impuestoServicio');
+            const totalSrvSpan = document.getElementById('totalConImpuesto');
+            const switchTax = document.getElementById('flexCheckDefault');
+            const checkboxes = document.querySelectorAll('.detalle-checkbox');
+            const qtyInputs = document.querySelectorAll('.cantidad-a-pagar');
+
+            function recalcTotal() {
+                let subtotal = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        const row = cb.closest('tr');
+                        const price = parseFloat(cb.dataset.precio);
+                        let qty = parseInt(row.querySelector('.cantidad-a-pagar').value) || 0;
+                        const maxQty = parseInt(row.querySelector('.cantidad-a-pagar').max);
+                        if (qty > maxQty) qty = maxQty;
+                        subtotal += price * qty;
+                    }
+                });
+
+                if (subtotal === 0) subtotal = originalTotal;
+                displayTotal.innerText = subtotal.toLocaleString('en-US');
+
+                if (switchTax.checked) {
+                    const tax = Math.round(subtotal * 0.10);
+                    impSrvSpan.innerText = tax.toLocaleString();
+                    totalSrvSpan.innerText = (subtotal + tax).toLocaleString();
+                    impuestoInfo.style.display = 'block';
+                } else {
+                    impuestoInfo.style.display = 'none';
+                }
+            }
+
+            checkboxes.forEach(cb => cb.addEventListener('change', recalcTotal));
+            qtyInputs.forEach(q => {
+                q.addEventListener('input', recalcTotal);
+                q.addEventListener('change', recalcTotal);
+            });
+            switchTax.addEventListener('change', recalcTotal);
+        });
+    </script>

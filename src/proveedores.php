@@ -2,18 +2,19 @@
 session_start();
 if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     include "../conexion.php";
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $items_per_page = 5; // Número de proveedores por página
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $items_per_page = 5;
     $offset = ($page - 1) * $items_per_page;
 
-    // Contar el total de registros
-    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM proveedores");
+    $total_query = mysqli_query($conexion, "SELECT COUNT(*) as total FROM proveedores WHERE estado = 1");
     $total_result = mysqli_fetch_assoc($total_query);
     $total_items = $total_result['total'];
     $total_pages = ceil($total_items / $items_per_page);
 
-    // Modificar la consulta para incluir paginación
-    $query = mysqli_query($conexion, "SELECT * FROM proveedores LIMIT $items_per_page OFFSET $offset");
+    $query = mysqli_query(
+        $conexion,
+        "SELECT * FROM proveedores WHERE estado = 1 LIMIT $items_per_page OFFSET $offset"
+    );
 
     if (!empty($_POST)) {
         $alert = "";
@@ -29,18 +30,33 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                         </button>
                     </div>';
         } else {
+
             if (empty($id)) {
-                $query = mysqli_query($conexion, "SELECT * FROM proveedores WHERE nombre = '$nombre'");
-                $result = mysqli_fetch_array($query);
-                if ($result > 0) {
-                    $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        El proveedor ya existe
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>';
+                $q_activo = mysqli_query(
+                    $conexion,
+                    "SELECT * FROM proveedores WHERE nombre = '$nombre' AND estado = 1"
+                );
+                if (mysqli_num_rows($q_activo) > 0) {
+                    $alert = '<div class="alert alert-warning">El proveedor ya existe</div>';
                 } else {
-                    $query_insert = mysqli_query($conexion, "INSERT INTO proveedores (nombre) VALUES ('$nombre')");
+                    $q_inactivo = mysqli_query(
+                        $conexion,
+                        "SELECT * FROM proveedores WHERE nombre = '$nombre' AND estado = 0"
+                    );
+                    if (mysqli_num_rows($q_inactivo) > 0) {
+                        mysqli_query(
+                            $conexion,
+                            "UPDATE proveedores SET estado = 1 WHERE nombre = '$nombre'"
+                        );
+                    } else {
+                        mysqli_query(
+                            $conexion,
+                            "INSERT INTO proveedores (nombre, estado) VALUES ('$nombre', 1)"
+                        );
+                    }
+                    header("Location: proveedores.php?page={$page}&msg=created");
+                    exit;
+
                     if ($query_insert) {
                         $alert = '<div class="alert alert-success alert-dismissible fade show" role="alert">
                         Proveedor registrado correctamente
@@ -48,6 +64,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>';
+                        header("Location: proveedores.php?page={$page}&msg=created");
+                        exit;
                     } else {
                         $alert = '<div class="alert alert-danger" role="alert">
                     Error al registrar el proveedor
@@ -63,6 +81,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>';
+                    header("Location: proveedores.php?page={$page}");
+                    exit;
                 } else {
                     $alert = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
                         Error al modificar el proveedor
@@ -70,6 +90,8 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>';
+                    header("Location: proveedores.php?page={$page}");
+                    exit;
                 }
             }
         }
@@ -96,7 +118,7 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                     <div class="col-md-3">
                         <label for="">Acciones</label> <br>
                         <input type="submit" value="Registrar" class="btn btn-primary" style="background-color: #1E3A8A;">
-                        
+
                     </div>
                 </div>
             </form>
@@ -106,10 +128,10 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     <div class="card shadow-lg">
         <div class="card-body" style="max-height: 600px; overflow-y: auto;">
             <div class="table-responsive">
-                <table class="table table-bordered table-center text-center"  style="border: 0.5px solid #1E3A8A;">
+                <table class="table table-bordered table-center text-center" style="border: 0.5px solid #1E3A8A;">
                     <thead style="background-color: #1E3A8A; color: white;">
                         <tr>
-                            
+
                             <th style="border: 0.5px solid #1E3A8A;">Proveedor</th>
                             <th style="border: 0.5px solid #1E3A8A;">Acciones</th>
                         </tr>
@@ -122,10 +144,21 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
                                     <?php echo strtoupper($data['nombre']); ?>
                                 </td>
                                 <td>
-                                    <button class="btn btn-warning" onclick="editarProveedor(<?php echo $data['id_proveedor']; ?>, '<?php echo $data['nombre']; ?>')">
+                                    <button class="btn btn-warning"
+                                        onclick="editarProveedor(<?= $data['id_proveedor'] ?>,'<?= addslashes($data['nombre']) ?>')">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <form id="delProv<?= $data['id_proveedor'] ?>" action="eliminar-proveedor.php" method="post"
+                                        class="d-none">
+                                        <input type="hidden" name="id_proveedor" value="<?= $data['id_proveedor'] ?>">
+                                        <input type="hidden" name="accion" value="proveedores">
+                                    </form>
+                                    <button class="btn btn-danger ml-2"
+                                        onclick="confirmDeleteProveedor(<?= $data['id_proveedor'] ?>,'<?= addslashes($data['nombre']) ?>')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </td>
+
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -154,40 +187,64 @@ if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
     </div>
 
     <style>
-        .table tbody  {
-            background-color:  rgba(77, 100, 165, 0.1);
-            
+        .table tbody {
+            background-color: rgba(77, 100, 165, 0.1);
+
 
         }
-        .table th{
+
+        .table th {
             border: 0.5px solid #1E3A8A;
         }
+
         .table tbody tr:hover {
             background: rgba(30, 58, 138, 0.1);
-            
+
 
         }
+
         .table td {
             font-size: 14px;
             border: none;
         }
     </style>
     <script>
-         function limpiarFormulario() {
+        function limpiarFormulario() {
             document.getElementById("id").value = "";
             document.getElementById("nombre").value = "";
         }
 
-        // Función para llenar el formulario con los datos del proveedor a editar
         function editarProveedor(id, nombre) {
             document.getElementById("id").value = id;
             document.getElementById("nombre").value = nombre;
         }
     </script>
+    <script src="/assets/js/sweetalert2@11.js"></script>
+    <script>
+        function confirmDeleteProveedor(id, nombre) {
+            Swal.fire({
+                title: '¿Eliminar proveedor?',
+                text: `Se borrará "${nombre}"`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#1E3A8A',
+                cancelButtonColor: '#dc3545',
+                reverseButtons: true,
+                width: 350,
+                preConfirm: () => Swal.showLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delProv${id}`).submit();
+                }
+            });
+        }
+    </script>
+
 
     <?php include_once "includes/footer.php";
 } else {
     header('Location: permisos.php');
 }
 ?>
-

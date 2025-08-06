@@ -99,10 +99,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div  style="width: 1000px; ">
                     <div id="detalle_pedido"></div>
                     </div>
+                    <form id="form_limpia" action="limpiar-pedido.php" method="post" class="d-none">
+  <input type="hidden" name="id_sala" value="<?php echo $_GET['id_sala'] ?>">
+  <input type="hidden" name="mesa"    value="<?php echo $_GET['mesa'] ?>">
+</form>
+
                     <hr>
                     <button class="btn btn-danger btn-block" id="limpiar_pedido">
-                        <i class="fas fa-trash-alt"></i>  Limpiar Pedido
-                    </button>
+  <i class="fas fa-trash-alt"></i>  Limpiar Pedido
+</button>
+
                     <button class="btn btn-primary btn-block" id="realizar_pedido" style="background-color: #1E3A8A;">
                         <i class="fas fa-check"></i>  Realizar Pedido
                     </button>
@@ -198,6 +204,22 @@ document.addEventListener("DOMContentLoaded", function () {
     border: none;
 }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const btnLimpiar = document.getElementById("limpiar_pedido");
+  const detalle   = document.getElementById("detalle_pedido");
+  const formLimpia = document.getElementById("form_limpia"); // el formulario oculto
+
+  btnLimpiar.addEventListener("click", function() {
+    detalle.innerHTML = "";
+
+    formLimpia.submit();
+  });
+});
+</script>
+
+
 
 <?php include_once "includes/footer.php";
 } else {
