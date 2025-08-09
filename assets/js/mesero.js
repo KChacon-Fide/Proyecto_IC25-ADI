@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Cargar los pedidos al iniciar la página
     cargarPedidos();
 
-    // Refrescar la lista de pedidos cada 5 segundos para actualizar en tiempo real
+    // Refrescar la lista de pedidos cada 10 segundos para actualizar en tiempo real
 
-     setInterval(cargarPedidos, 5000);
+     setInterval(cargarPedidos, 10000);
 });
 
 // Función para obtener los pedidos pendientes desde la API
@@ -115,128 +115,63 @@ async function cargarPedidos() {
         contenedor.innerHTML = error.message;
     }
 }
-
-function obtenerDisenoPedido(MesaNumero, idPedido,estadoPedido, horaPedido, duracionPedido, detallePlatos) {
+function obtenerDisenoPedido(MesaNumero, idPedido, estadoPedido, horaPedido, duracionPedido, detallePlatos) {
     let card = `
-              <div class="card ${BordeSegunEstado(estadoPedido)}">
-                  <div class="card-header ${fondoSegunEstado(estadoPedido)}">
-                    <h5 class="card-title"><strong>Mesa #${MesaNumero}</strong></h5>
-                    <span class="m-1 badge position-absolute top-0 end-0 ${fondoSegunEstado(estadoPedido)}">${iconoSegunEstado(estadoPedido)} ${estadoPedido}</span> 
-                    <p class="card-text"><i class=" mx-1 fa-regular fa-clock"></i>${duracionPedido}<span class="fs-6  position-absolute top-50 end-0 mx-1">Pedido: ${idPedido}</span></p>
-                  </div>
-                  <div class="card-body"> 
-                    ${detallePlatos}
-                  </div>
-              </div>`;
+        <div class="card ${BordeSegunEstado(estadoPedido)}">
+            <div class="card-header ${fondoSegunEstado(estadoPedido)} position-relative">
+                <h5 class="card-title mb-1"><strong>Mesa #${MesaNumero}</strong></h5>
+                <span class="badge position-absolute top-0 end-0 m-1 ${fondoSegunEstado(estadoPedido)}">
+                    ${iconoSegunEstado(estadoPedido)} ${estadoPedido}
+                </span> 
+                <p class="card-text mb-0">
+                    <i class="mx-1 fa-regular fa-clock"></i>${duracionPedido}
+                    <span class="fs-6 position-absolute top-50 end-0 mx-1">Pedido: ${idPedido}</span>
+                </p>
+            </div>
+            <div class="card-body">
+                ${detallePlatos}
+            </div>
+        </div>`;
     return card;
 }
 
 function obtenerDisenoDetallePedido(index, nombrePlato, cantidadPlato, observacionesPedido, idDetallePedido, estadoPlato) {
     let card = `
-    <div class="border-bottom ${BordeSegunEstado(estadoPlato)} position-relative mb-2">
-        <div>
-            <span class="m-1 badge bg-secondary">x${cantidadPlato}</span>
-            <strong>${nombrePlato}</strong>
-             <span class="position-absolute top-0 end-0">
-                <button 
-                    class="btn ${botonSegunEstado("PENDIENTE", estadoPlato)} cambiarEstadoPendiente botones-cambiar-estado" 
-                    data-toggle="tooltip" 
-                    data-placement="bottom" 
-                    title="${toolTipSegunEstado("PENDIENTE", estadoPlato)}" 
-                    type="button" 
-                    data-id="${idDetallePedido}">
-                    ${iconoSegunEstado("PENDIENTE")}
-                </button>
-                <button 
-                    class="btn ${botonSegunEstado("EN PREPARACION", estadoPlato)} cambiarEstadoEnPreparacion botones-cambiar-estado" 
-                    data-toggle="tooltip" 
-                    data-placement="bottom" 
-                    title="${toolTipSegunEstado("EN PREPARACION", estadoPlato)}" 
-                    type="button" 
-                    data-id="${idDetallePedido}">
-                    ${iconoSegunEstado("EN PREPARACION")}
-                </button>
-                <button 
-                    class="btn ${botonSegunEstado("LISTO PARA SERVIR", estadoPlato)} cambiarEstadoListo botones-cambiar-estado" 
-                    data-toggle="tooltip" 
-                    data-placement="bottom" 
-                    title="${toolTipSegunEstado("LISTO PARA SERVIR", estadoPlato)}" 
-                    type="button" 
-                    data-id="${idDetallePedido}">
-                    ${iconoSegunEstado("LISTO PARA SERVIR")}
-                </button>
-                <button 
-                    class="btn ${botonSegunEstado("SERVIDO", estadoPlato)} cambiarEstadoServido botones-cambiar-estado" 
-                    data-toggle="tooltip" 
-                    data-placement="bottom" 
-                    title="${toolTipSegunEstado("SERVIDO", estadoPlato)}" 
-                    type="button" 
-                    data-id="${idDetallePedido}">
-                    ${iconoSegunEstado("SERVIDO")}
-                </button>
-            </span>
+        <div class="border-bottom ${BordeSegunEstado(estadoPlato)} mb-2 pb-2">
+            <div class="d-flex justify-content-between align-items-start flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                    <span class="m-1 badge bg-secondary">x${cantidadPlato}</span>
+                    <strong class="me-2">${nombrePlato}</strong>
+                </div>
+                <div class="btn-group btn-group-sm flex-wrap" role="group">
+                    <button class="btn ${botonSegunEstado("PENDIENTE", estadoPlato)} cambiarEstadoPendiente botones-cambiar-estado" 
+                        title="${toolTipSegunEstado("PENDIENTE", estadoPlato)}" 
+                        type="button" data-id="${idDetallePedido}">
+                        ${iconoSegunEstado("PENDIENTE")}
+                    </button>
+                    <button class="btn ${botonSegunEstado("EN PREPARACION", estadoPlato)} cambiarEstadoEnPreparacion botones-cambiar-estado" 
+                        title="${toolTipSegunEstado("EN PREPARACION", estadoPlato)}" 
+                        type="button" data-id="${idDetallePedido}">
+                        ${iconoSegunEstado("EN PREPARACION")}
+                    </button>
+                    <button class="btn ${botonSegunEstado("LISTO PARA SERVIR", estadoPlato)} cambiarEstadoListo botones-cambiar-estado" 
+                        title="${toolTipSegunEstado("LISTO PARA SERVIR", estadoPlato)}" 
+                        type="button" data-id="${idDetallePedido}">
+                        ${iconoSegunEstado("LISTO PARA SERVIR")}
+                    </button>
+                    <button class="btn ${botonSegunEstado("SERVIDO", estadoPlato)} cambiarEstadoServido botones-cambiar-estado" 
+                        title="${toolTipSegunEstado("SERVIDO", estadoPlato)}" 
+                        type="button" data-id="${idDetallePedido}">
+                        ${iconoSegunEstado("SERVIDO")}
+                    </button>
+                </div>
             </div>
-        <div>
-            <small>${observacionesPedido}</small>
+            ${observacionesPedido ? `<div class="mt-1"><small>${observacionesPedido}</small></div>` : ""}
         </div>
-    </div>
     `;
     return card;
 }
 
-
-// function obtenerDisenoDetallePedido(index, nombrePlato, cantidadPlato, observacionesPedido, idDetallePedido, estadoPlato) {
-//     let card = `
-//     <div class="border-bottom ${BordeSegunEstado(estadoPlato)} position-relative mb-2">
-//         <div >
-//             <span class="m-1 badge bg-secondary">x${cantidadPlato}</span>
-//             <strong>${nombrePlato}</strong>
-//             <span class="position-absolute top-0 end-0">
-//                 <button 
-//                     class="btn ${botonSegunEstado("PENDIENTE", estadoPlato)} cambiarEstadoPendiente botones-cambiar-estado" 
-//                     data-toggle="tooltip" 
-//                     data-placement="bottom" 
-//                     title="${toolTipSegunEstado("PENDIENTE", estadoPlato)}" 
-//                     type="button" 
-//                     data-id="${idDetallePedido}">
-//                     ${iconoSegunEstado("PENDIENTE")}
-//                 </button>
-//                 <button 
-//                     class="btn ${botonSegunEstado("EN PREPARACION", estadoPlato)} cambiarEstadoEnPreparacion botones-cambiar-estado" 
-//                     data-toggle="tooltip" 
-//                     data-placement="bottom" 
-//                     title="${toolTipSegunEstado("EN PREPARACION", estadoPlato)}" 
-//                     type="button" 
-//                     data-id="${idDetallePedido}">
-//                     ${iconoSegunEstado("EN PREPARACION")}
-//                 </button>
-//                 <button 
-//                     class="btn ${botonSegunEstado("LISTO PARA SERVIR", estadoPlato)} cambiarEstadoListo botones-cambiar-estado" 
-//                     data-toggle="tooltip" 
-//                     data-placement="bottom" 
-//                     title="${toolTipSegunEstado("LISTO PARA SERVIR", estadoPlato)}" 
-//                     type="button" 
-//                     data-id="${idDetallePedido}">
-//                     ${iconoSegunEstado("LISTO PARA SERVIR")}
-//                 </button>
-//                 <button 
-//                     class="btn ${botonSegunEstado("SERVIDO", estadoPlato)} cambiarEstadoServido botones-cambiar-estado" 
-//                     data-toggle="tooltip" 
-//                     data-placement="bottom" 
-//                     title="${toolTipSegunEstado("SERVIDO", estadoPlato)}" 
-//                     type="button" 
-//                     data-id="${idDetallePedido}">
-//                     ${iconoSegunEstado("SERVIDO")}
-//                 </button>
-//             </span>
-//         </div>
-//         <div>
-//             <small>${observacionesPedido}</small>
-//         </div>
-//     </div>
-//     `;
-//     return card;
-// }
 
 async function obtenerListaPedidos(idTipo, vista) {
     try {

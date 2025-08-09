@@ -120,13 +120,13 @@ $totalVentas = mysqli_fetch_assoc($query5);
 <?php 
  if ($_SESSION['rol'] == 2) {
      echo "<script>
-        document.getElementById('panel').innerHTML = \"<img src='../assets/img/cocinero.jpg' style='width: 100%; height: 100%; object-fit: contain;'>\";
+        document.getElementById('panel').innerHTML = \"<img src='../assets/img/cocinero.jpg' style='width: 50%; height: 500px; object-fit: fill;'>\";
      </script>";
  } 
 
 if ($_SESSION['rol'] == 4) {
     echo "<script>
-       document.getElementById('panel').innerHTML = \"<img src='../assets/img/bartender.jpg' style='width: 100%; height: 100%; object-fit: contain;'>\";
+       document.getElementById('panel').innerHTML = \"<img src='../assets/img/bartender.jpg' style='width: 50%; height: 500px; object-fit: fill;'>\";
     </script>";
 } 
 
